@@ -1,0 +1,267 @@
+﻿/* Header */
+.header {
+    background-color: #1e3a8a;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 15px;
+    position: fixed;
+    width: 100%;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+}
+
+/* ===== Đảm bảo body và html luôn có chiều cao 100% ===== */
+html, body {
+    height: 100%;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+/* ===== Nội dung chính (content) sẽ co giãn để đẩy footer xuống dưới ===== */
+.content {
+    flex: 1; /* Đảm bảo nội dung chiếm phần lớn trang, đẩy footer xuống */
+}
+
+/* ===== Header Menu ===== */
+.header-menu {
+    display: flex;
+    justify-content: center; /* Căn giữa menu */
+    align-items: center;
+    flex-grow: 1;
+    gap: 30px; /* Khoảng cách giữa các mục */
+}
+.header-menu a {
+        color: white;
+        text-decoration: none;
+        font-size: 16px;
+        font-weight: bold;
+        padding: 8px 15px;
+        transition: 0.3s;
+    }
+
+.header-menu a i {
+            margin-right: 8px;
+ }
+.header-menu a:hover {
+            text-decoration: underline;
+            color: #ffcc00;
+        }
+
+/* ===== Sidebar ===== */
+.sidebar {
+    width: 250px;
+    height: 100vh;
+    background-color: #1e3a8a;
+    position: fixed;
+    top: 0;
+    left: -250px; /* Ẩn sidebar ban đầu */
+    transition: left 0.3s ease-in-out;
+    padding-top: 70px;
+}
+
+    .sidebar.open {
+        left: 0;
+    }
+
+.sidebar-menu {
+    list-style: none; /* Xóa dấu chấm */
+    padding: 0;
+    margin: 0;
+}
+
+    .sidebar-menu li {
+        padding: 15px 20px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+        .sidebar-menu li a {
+            color: white;
+            text-decoration: none;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+            .sidebar-menu li a i {
+                font-size: 20px;
+            }
+
+            /* Hiệu ứng hover */
+            .sidebar-menu li a:hover {
+                color: #ffcc00;
+            }
+
+/* ===== Nút toggle menu ===== */
+.btn-toggle {
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    background: white;
+    border: 2px solid black;
+    padding: 5px 10px;
+    font-size: 20px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+    .btn-toggle:hover {
+        background: #f1f1f1;
+    }
+
+/* Khi sidebar mở, đẩy nội dung chính sang phải */
+.sidebar.open + .content {
+    margin-left: 250px;
+    transition: margin-left 0.3s ease-in-out;
+}
+
+/* ===== Dropdown menu ===== */
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.dropdown-toggle {
+    color: white;
+    text-decoration: none;
+    font-size: 16px;
+    font-weight: bold;
+    padding: 10px 15px;
+    transition: 0.3s;
+}
+
+.dropdown-menu {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background: white;
+    min-width: 200px;
+    border-radius: 5px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+}
+
+    .dropdown-menu .dropdown-item {
+        display: block;
+        padding: 10px 15px;
+        color: black;
+        text-decoration: none;
+        transition: 0.3s;
+    }
+
+        .dropdown-menu .dropdown-item:hover {
+            background: #007bff;
+            color: white;
+        }
+
+/* Khi hover vào "Khóa Học", hiển thị menu */
+.dropdown:hover .dropdown-menu {
+    display: block;
+}
+
+
+
+/* ===== Footer ===== */
+.footer-custom {
+    background-color: #d1ccc0;
+    padding: 20px 0;
+    font-size: 14px;
+}
+
+    .footer-custom .container {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        flex-wrap: wrap;
+    }
+
+    .footer-custom h5 {
+        font-weight: bold;
+        margin-bottom: 10px;
+    }
+
+    .footer-custom p {
+        margin: 5px 0;
+    }
+
+    .footer-custom a {
+        color: black;
+        text-decoration: none;
+        font-weight: bold;
+    }
+
+        .footer-custom a:hover {
+            text-decoration: underline;
+        }
+
+    /* Căn phải nội dung bản quyền */
+    .footer-custom .text-end {
+        text-align: right;
+    }
+
+/* ===== Nút Liên Hệ nổi (Floating Contact Button) ===== */
+.contact-button {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: #0099ff;
+    color: white;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    font-size: 24px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease-in-out;
+}
+
+    .contact-button i {
+        margin-right: 5px;
+    }
+
+    /* Hiệu ứng hover */
+    .contact-button:hover {
+        background: #007bff;
+        transform: scale(1.1);
+    }
+
+    /* Hiển thị chữ "Liên Hệ" khi hover */
+    .contact-button span {
+        display: none;
+        position: absolute;
+        bottom: 70px;
+        background: white;
+        color: black;
+        padding: 5px 10px;
+        border-radius: 5px;
+        font-size: 14px;
+        white-space: nowrap;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    .contact-button:hover span {
+        display: block;
+    }
+/*Ngôn ngữ*/
+.language-selector {
+    margin-right: auto; /* Đẩy nút sang bên phải */
+    display: flex;
+    align-items: center;
+}
+
+    .language-selector select {
+        padding: 5px;
+        border: none;
+        background: white;
+        font-size: 14px;
+        border-radius: 5px;
+        cursor: pointer;
+    }

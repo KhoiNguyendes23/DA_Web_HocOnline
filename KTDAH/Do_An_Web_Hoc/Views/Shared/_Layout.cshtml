@@ -1,50 +1,132 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Localization
+@using Microsoft.AspNetCore.Http
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@inject IHttpContextAccessor HttpContextAccessor
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - Do_An_Web_Hoc</title>
-    <script type="importmap"></script>
+
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/Do_An_Web_Hoc.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/layout.css" asp-append-version="true" />
+
+    @if (ViewData["CssFile"] != null)
+    {
+        <link rel="stylesheet" href="~/css/@ViewData["CssFile"]" asp-append-version="true" />
+    }
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Do_An_Web_Hoc</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
-                    </ul>
+
+    <!-- Header -->
+    <header class="header">
+        <button class="btn-toggle" id="toggleSidebar">
+            <i class="fas fa-bars"></i>
+        </button>
+
+        <nav class="header-menu">
+            <div class="dropdown">
+                <a class="dropdown-toggle" href="#" id="courseMenu">
+                    <i class="fas fa-list"></i> @Localizer["Courses"]
+                </a>
+                <div class="dropdown-menu" id="courseDropdown">
+                    <a href="#" class="dropdown-item">Lập trình Web</a>
+                    <a href="#" class="dropdown-item">Phát triển Game</a>
+                    <a href="#" class="dropdown-item">Khoa học Dữ liệu</a>
+                    <a href="#" class="dropdown-item">AI & Machine Learning</a>
+                    <a href="#" class="dropdown-item">Cấu Trúc Dữ Liệu & Giải Thuật</a>
+                    <a href="#" class="dropdown-item">Cơ Sở Dữ Liệu Nâng Cao</a>
                 </div>
             </div>
+            <a asp-controller="Product" asp-action="Add"><i class="fas fa-plus"></i>Tin Tức</a>
+            <a asp-controller="Product" asp-action="Add"><i class="fas fa-plus"></i>Khám Phá</a>
+            <a asp-controller="Contact" asp-action="Contact"><i class="fas fa-plus"></i>@Localizer["Contact"]</a>
+            <a asp-controller="Auth" asp-action="Login"><i class="fas fa-plus"></i> @Localizer["LoginRegister"]</a>
         </nav>
+
+        <!-- Lấy ngôn ngữ hiện tại từ Cookie -->
+        @{
+            var cultureFeature = HttpContextAccessor.HttpContext?.Features.Get<IRequestCultureFeature>();
+            var currentCulture = cultureFeature?.RequestCulture.Culture.Name ?? "vi-VN"; // Mặc định là tiếng Việt
+        }
+
+        <!-- Dropdown chọn ngôn ngữ -->
+        <div class="language-selector">
+            <form asp-controller="Language" asp-action="SetLanguage" method="post">
+                <select name="culture" onchange="this.form.submit();">
+                    <option value="vi-VN" selected="@(currentCulture == "vi-VN" ? "selected" : null)">🇻🇳 @Localizer["Vietnamese"]</option>
+                    <option value="en-US" selected="@(currentCulture == "en-US" ? "selected" : null)">🇺🇸 @Localizer["English"]</option>
+                    <option value="fr-FR" selected="@(currentCulture == "fr-FR" ? "selected" : null)">🇫🇷 @Localizer["French"]</option>
+                </select>
+                <input type="hidden" name="returnUrl" value="@Context.Request.Path" />
+            </form>
+        </div>
+
     </header>
-    <div class="container">
+
+    <!-- Sidebar -->
+    <div class="sidebar" id="sidebar">
+        <ul class="sidebar-menu">
+            <li><a asp-controller="Home" asp-action="Index"><i class="fas fa-home"></i> @Localizer["Home"]</a></li>
+            <li><a asp-controller="Product" asp-action="Index"><i class="fas fa-list"></i> @Localizer["ViewProducts"]</a></li>
+            <li><a asp-controller="Product" asp-action="Add"><i class="fas fa-plus"></i> @Localizer["AddProduct"]</a></li>
+        </ul>
+    </div>
+
+    <!-- Nội dung chính -->
+    <div class="content">
         <main role="main" class="pb-3">
             @RenderBody()
         </main>
     </div>
 
-    <footer class="border-top footer text-muted">
+    <!-- Footer -->
+    <footer class="footer-custom">
         <div class="container">
-            &copy; 2025 - Do_An_Web_Hoc - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            <div class="row">
+                <!-- Cột 1: Thông tin -->
+                <div class="col-md-6">
+                    <h5>Thông tin</h5>
+                    <p><i class="fas fa-home"></i> TRUNG TÂM DẠY HỌC SỐ - HUTECH</p>
+                    <p><i class="fas fa-map-marker-alt"></i> 108 Hoàng Hoa Thám, P.24, Q.Thủ Đức, TP.HCM</p>
+                    <p><i class="fas fa-phone"></i> +84 90 1235598</p>
+                    <p><i class="fas fa-envelope"></i> anhtkng@gmail.com</p>
+                </div>
+
+                <!-- Cột 2: Kết nối mạng xã hội -->
+                <div class="col-md-3">
+                    <h5>Kết nối</h5>
+                    <p>
+                        <i class="fab fa-facebook"></i>
+                        <a href="https://www.facebook.com/dungnoway/" target="_blank">Facebook</a>
+                    </p>
+                    <p><i class="fab fa-youtube"></i> <a href="#">Youtube</a></p>
+                    <p><i class="fab fa-instagram"></i> <a href="#">Instagram</a></p>
+                </div>
+
+                <!-- Cột 3: Bản quyền -->
+                <div class="col-md-3 text-end">
+                    <p>2025 (Tên đề tài), bản quyền website</p>
+                </div>
+            </div>
         </div>
     </footer>
+
+    <!-- Nút Liên Hệ nổi -->
+    <a href="https://zalo.me/yourzaloid" target="_blank" class="contact-button">
+        <i class="fas fa-comments"></i>
+        <span>Liên hệ</span>
+    </a>
+
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="~/js/sidebar-toggle.js"></script>
     @await RenderSectionAsync("Scripts", required: false)
+
 </body>
 </html>
