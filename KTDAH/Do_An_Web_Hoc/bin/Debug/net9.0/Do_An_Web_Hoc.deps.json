@@ -20,11 +20,14 @@
           "Do_An_Web_Hoc.dll": {}
         },
         "resources": {
-          "en/Do_An_Web_Hoc.resources.dll": {
-            "locale": "en"
+          "en-US/Do_An_Web_Hoc.resources.dll": {
+            "locale": "en-US"
           },
-          "fr/Do_An_Web_Hoc.resources.dll": {
-            "locale": "fr"
+          "fr-FR/Do_An_Web_Hoc.resources.dll": {
+            "locale": "fr-FR"
+          },
+          "vi-VN/Do_An_Web_Hoc.resources.dll": {
+            "locale": "vi-VN"
           }
         }
       },
