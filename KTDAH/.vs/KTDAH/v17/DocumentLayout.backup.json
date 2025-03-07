@@ -3,6 +3,7 @@
   "WorkspaceRootPath": "C:\\Users\\TUF\\Desktop\\DA_Web_HocOnline\\KTDAH\\",
   "Documents": [
     {
+<<<<<<< HEAD
       "AbsoluteMoniker": "D:0:0:{FE6D6C4D-0F78-4959-8E33-B924FBAA67D2}|Do_An_Web_Hoc\\Do_An_Web_Hoc.csproj|c:\\users\\tuf\\desktop\\da_web_hoconline\\ktdah\\do_an_web_hoc\\controllers\\homecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{FE6D6C4D-0F78-4959-8E33-B924FBAA67D2}|Do_An_Web_Hoc\\Do_An_Web_Hoc.csproj|solutionrelative:do_an_web_hoc\\controllers\\homecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
@@ -20,6 +21,21 @@
     },
     {
       "AbsoluteMoniker": "D:0:0:{FE6D6C4D-0F78-4959-8E33-B924FBAA67D2}|Do_An_Web_Hoc\\Do_An_Web_Hoc.csproj|c:\\users\\tuf\\desktop\\da_web_hoconline\\ktdah\\do_an_web_hoc\\wwwroot\\css\\layout.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
+=======
+      "AbsoluteMoniker": "D:0:0:{FE6D6C4D-0F78-4959-8E33-B924FBAA67D2}|Do_An_Web_Hoc\\Do_An_Web_Hoc.csproj|c:\\users\\pc\\onedrive\\desktop\\da_web_hoconline\\ktdah\\do_an_web_hoc\\controllers\\coursescontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{FE6D6C4D-0F78-4959-8E33-B924FBAA67D2}|Do_An_Web_Hoc\\Do_An_Web_Hoc.csproj|solutionrelative:do_an_web_hoc\\controllers\\coursescontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{FE6D6C4D-0F78-4959-8E33-B924FBAA67D2}|Do_An_Web_Hoc\\Do_An_Web_Hoc.csproj|c:\\users\\pc\\onedrive\\desktop\\da_web_hoconline\\ktdah\\do_an_web_hoc\\views\\shared\\_layout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{FE6D6C4D-0F78-4959-8E33-B924FBAA67D2}|Do_An_Web_Hoc\\Do_An_Web_Hoc.csproj|solutionrelative:do_an_web_hoc\\views\\shared\\_layout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{FE6D6C4D-0F78-4959-8E33-B924FBAA67D2}|Do_An_Web_Hoc\\Do_An_Web_Hoc.csproj|c:\\users\\pc\\onedrive\\desktop\\da_web_hoconline\\ktdah\\do_an_web_hoc\\controllers\\homecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{FE6D6C4D-0F78-4959-8E33-B924FBAA67D2}|Do_An_Web_Hoc\\Do_An_Web_Hoc.csproj|solutionrelative:do_an_web_hoc\\controllers\\homecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{FE6D6C4D-0F78-4959-8E33-B924FBAA67D2}|Do_An_Web_Hoc\\Do_An_Web_Hoc.csproj|c:\\users\\pc\\onedrive\\desktop\\da_web_hoconline\\ktdah\\do_an_web_hoc\\wwwroot\\css\\layout.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
+>>>>>>> e041533e066d82b956865d2cb93bc2bb141169a3
       "RelativeMoniker": "D:0:0:{FE6D6C4D-0F78-4959-8E33-B924FBAA67D2}|Do_An_Web_Hoc\\Do_An_Web_Hoc.csproj|solutionrelative:do_an_web_hoc\\wwwroot\\css\\layout.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
     },
     {
@@ -66,7 +82,11 @@
       "DocumentGroups": [
         {
           "DockedWidth": 299,
+<<<<<<< HEAD
           "SelectedChildIndex": 4,
+=======
+          "SelectedChildIndex": 1,
+>>>>>>> e041533e066d82b956865d2cb93bc2bb141169a3
           "Children": [
             {
               "$type": "Bookmark",
@@ -99,7 +119,21 @@
             },
             {
               "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "CoursesController.cs",
+              "DocumentMoniker": "C:\\Users\\PC\\OneDrive\\Desktop\\DA_Web_HocOnline\\KTDAH\\Do_An_Web_Hoc\\Controllers\\CoursesController.cs",
+              "RelativeDocumentMoniker": "Do_An_Web_Hoc\\Controllers\\CoursesController.cs",
+              "ToolTip": "C:\\Users\\PC\\OneDrive\\Desktop\\DA_Web_HocOnline\\KTDAH\\Do_An_Web_Hoc\\Controllers\\CoursesController.cs",
+              "RelativeToolTip": "Do_An_Web_Hoc\\Controllers\\CoursesController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-03-07T06:54:45.413Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
               "DocumentIndex": 2,
+<<<<<<< HEAD
               "Title": "Index.cshtml",
               "DocumentMoniker": "C:\\Users\\TUF\\Desktop\\DA_Web_HocOnline\\KTDAH\\Do_An_Web_Hoc\\Views\\Language\\Index.cshtml",
               "RelativeDocumentMoniker": "Do_An_Web_Hoc\\Views\\Language\\Index.cshtml",
@@ -108,11 +142,25 @@
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
               "WhenOpened": "2025-03-07T06:28:02.214Z",
+=======
+              "Title": "HomeController.cs",
+              "DocumentMoniker": "C:\\Users\\PC\\OneDrive\\Desktop\\DA_Web_HocOnline\\KTDAH\\Do_An_Web_Hoc\\Controllers\\HomeController.cs",
+              "RelativeDocumentMoniker": "Do_An_Web_Hoc\\Controllers\\HomeController.cs",
+              "ToolTip": "C:\\Users\\PC\\OneDrive\\Desktop\\DA_Web_HocOnline\\KTDAH\\Do_An_Web_Hoc\\Controllers\\HomeController.cs",
+              "RelativeToolTip": "Do_An_Web_Hoc\\Controllers\\HomeController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-03-07T06:46:23.307Z",
+>>>>>>> e041533e066d82b956865d2cb93bc2bb141169a3
               "EditorCaption": ""
             },
             {
               "$type": "Document",
+<<<<<<< HEAD
               "DocumentIndex": 5,
+=======
+              "DocumentIndex": 4,
+>>>>>>> e041533e066d82b956865d2cb93bc2bb141169a3
               "Title": "Error.cshtml",
               "DocumentMoniker": "C:\\Users\\TUF\\Desktop\\DA_Web_HocOnline\\KTDAH\\Do_An_Web_Hoc\\Views\\Shared\\Error.cshtml",
               "RelativeDocumentMoniker": "Do_An_Web_Hoc\\Views\\Shared\\Error.cshtml",
@@ -124,7 +172,11 @@
             },
             {
               "$type": "Document",
+<<<<<<< HEAD
               "DocumentIndex": 7,
+=======
+              "DocumentIndex": 6,
+>>>>>>> e041533e066d82b956865d2cb93bc2bb141169a3
               "Title": "_Layout.vi-VN.resx",
               "DocumentMoniker": "C:\\Users\\TUF\\Desktop\\DA_Web_HocOnline\\KTDAH\\Do_An_Web_Hoc\\Resources\\Views\\Shared\\_Layout.vi-VN.resx",
               "RelativeDocumentMoniker": "Do_An_Web_Hoc\\Resources\\Views\\Shared\\_Layout.vi-VN.resx",
@@ -135,7 +187,11 @@
             },
             {
               "$type": "Document",
+<<<<<<< HEAD
               "DocumentIndex": 11,
+=======
+              "DocumentIndex": 10,
+>>>>>>> e041533e066d82b956865d2cb93bc2bb141169a3
               "Title": "_Layout.fr-FR.resx",
               "DocumentMoniker": "C:\\Users\\TUF\\Desktop\\DA_Web_HocOnline\\KTDAH\\Do_An_Web_Hoc\\Resources\\Views\\Shared\\_Layout.fr-FR.resx",
               "RelativeDocumentMoniker": "Do_An_Web_Hoc\\Resources\\Views\\Shared\\_Layout.fr-FR.resx",
@@ -146,7 +202,11 @@
             },
             {
               "$type": "Document",
+<<<<<<< HEAD
               "DocumentIndex": 12,
+=======
+              "DocumentIndex": 11,
+>>>>>>> e041533e066d82b956865d2cb93bc2bb141169a3
               "Title": "Resource.resx",
               "DocumentMoniker": "C:\\Users\\TUF\\Desktop\\DA_Web_HocOnline\\KTDAH\\Do_An_Web_Hoc\\Resources\\Resource.resx",
               "RelativeDocumentMoniker": "Do_An_Web_Hoc\\Resources\\Resource.resx",
@@ -157,7 +217,11 @@
             },
             {
               "$type": "Document",
+<<<<<<< HEAD
               "DocumentIndex": 9,
+=======
+              "DocumentIndex": 8,
+>>>>>>> e041533e066d82b956865d2cb93bc2bb141169a3
               "Title": "Program.cs",
               "DocumentMoniker": "C:\\Users\\TUF\\Desktop\\DA_Web_HocOnline\\KTDAH\\Do_An_Web_Hoc\\Program.cs",
               "RelativeDocumentMoniker": "Do_An_Web_Hoc\\Program.cs",
@@ -169,7 +233,11 @@
             },
             {
               "$type": "Document",
+<<<<<<< HEAD
               "DocumentIndex": 4,
+=======
+              "DocumentIndex": 3,
+>>>>>>> e041533e066d82b956865d2cb93bc2bb141169a3
               "Title": "Layout.css",
               "DocumentMoniker": "C:\\Users\\TUF\\Desktop\\DA_Web_HocOnline\\KTDAH\\Do_An_Web_Hoc\\wwwroot\\css\\Layout.css",
               "RelativeDocumentMoniker": "Do_An_Web_Hoc\\wwwroot\\css\\Layout.css",
@@ -181,19 +249,31 @@
             },
             {
               "$type": "Document",
+<<<<<<< HEAD
               "DocumentIndex": 3,
+=======
+              "DocumentIndex": 1,
+>>>>>>> e041533e066d82b956865d2cb93bc2bb141169a3
               "Title": "_Layout.cshtml",
               "DocumentMoniker": "C:\\Users\\TUF\\Desktop\\DA_Web_HocOnline\\KTDAH\\Do_An_Web_Hoc\\Views\\Shared\\_Layout.cshtml",
               "RelativeDocumentMoniker": "Do_An_Web_Hoc\\Views\\Shared\\_Layout.cshtml",
               "ToolTip": "C:\\Users\\TUF\\Desktop\\DA_Web_HocOnline\\KTDAH\\Do_An_Web_Hoc\\Views\\Shared\\_Layout.cshtml",
               "RelativeToolTip": "Do_An_Web_Hoc\\Views\\Shared\\_Layout.cshtml",
+<<<<<<< HEAD
               "ViewState": "AgIAADkAAAAAAAAAAAAAACcAAAA+AAAAAAAAAA==",
+=======
+              "ViewState": "AgIAAB4AAAAAAAAAAAAAADMAAAAwAAAAAAAAAA==",
+>>>>>>> e041533e066d82b956865d2cb93bc2bb141169a3
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
               "WhenOpened": "2025-03-06T15:49:03.061Z"
             },
             {
               "$type": "Document",
+<<<<<<< HEAD
               "DocumentIndex": 8,
+=======
+              "DocumentIndex": 7,
+>>>>>>> e041533e066d82b956865d2cb93bc2bb141169a3
               "Title": "_Layout.en-US.resx",
               "DocumentMoniker": "C:\\Users\\TUF\\Desktop\\DA_Web_HocOnline\\KTDAH\\Do_An_Web_Hoc\\Resources\\Views\\Shared\\_Layout.en-US.resx",
               "RelativeDocumentMoniker": "Do_An_Web_Hoc\\Resources\\Views\\Shared\\_Layout.en-US.resx",
@@ -204,7 +284,11 @@
             },
             {
               "$type": "Document",
+<<<<<<< HEAD
               "DocumentIndex": 10,
+=======
+              "DocumentIndex": 9,
+>>>>>>> e041533e066d82b956865d2cb93bc2bb141169a3
               "Title": "LanguageController.cs",
               "DocumentMoniker": "C:\\Users\\TUF\\Desktop\\DA_Web_HocOnline\\KTDAH\\Do_An_Web_Hoc\\Controllers\\LanguageController.cs",
               "RelativeDocumentMoniker": "Do_An_Web_Hoc\\Controllers\\LanguageController.cs",
@@ -216,7 +300,11 @@
             },
             {
               "$type": "Document",
+<<<<<<< HEAD
               "DocumentIndex": 6,
+=======
+              "DocumentIndex": 5,
+>>>>>>> e041533e066d82b956865d2cb93bc2bb141169a3
               "Title": "_ValidationScriptsPartial.cshtml",
               "DocumentMoniker": "C:\\Users\\TUF\\Desktop\\DA_Web_HocOnline\\KTDAH\\Do_An_Web_Hoc\\Views\\Shared\\_ValidationScriptsPartial.cshtml",
               "RelativeDocumentMoniker": "Do_An_Web_Hoc\\Views\\Shared\\_ValidationScriptsPartial.cshtml",
@@ -228,7 +316,11 @@
             },
             {
               "$type": "Document",
+<<<<<<< HEAD
               "DocumentIndex": 1,
+=======
+              "DocumentIndex": 13,
+>>>>>>> e041533e066d82b956865d2cb93bc2bb141169a3
               "Title": "Index.cshtml",
               "DocumentMoniker": "C:\\Users\\TUF\\Desktop\\DA_Web_HocOnline\\KTDAH\\Do_An_Web_Hoc\\Views\\Home\\Index.cshtml",
               "RelativeDocumentMoniker": "Do_An_Web_Hoc\\Views\\Home\\Index.cshtml",
@@ -241,7 +333,11 @@
             },
             {
               "$type": "Document",
+<<<<<<< HEAD
               "DocumentIndex": 13,
+=======
+              "DocumentIndex": 12,
+>>>>>>> e041533e066d82b956865d2cb93bc2bb141169a3
               "Title": "Privacy.cshtml",
               "DocumentMoniker": "C:\\Users\\TUF\\Desktop\\DA_Web_HocOnline\\KTDAH\\Do_An_Web_Hoc\\Views\\Home\\Privacy.cshtml",
               "RelativeDocumentMoniker": "Do_An_Web_Hoc\\Views\\Home\\Privacy.cshtml",

@@ -14,7 +14,11 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Do_An_Web_Hoc")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
+<<<<<<< HEAD
 [assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+292f57051029a7c4524c8c8fc5b687a491e199ef")]
+=======
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+a68c519da841d2b7beacf1a01f423e1477ea83ad")]
+>>>>>>> e041533e066d82b956865d2cb93bc2bb141169a3
 [assembly: System.Reflection.AssemblyProductAttribute("Do_An_Web_Hoc")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Do_An_Web_Hoc")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
