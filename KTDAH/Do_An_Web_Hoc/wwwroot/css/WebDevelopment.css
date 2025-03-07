@@ -43,8 +43,14 @@ ul {
         padding: 8px 0;
         font-size: 18px;
     }
+/*footer {
+    width: 100vw;*/ /* Chiều rộng toàn bộ màn hình */
+    /*position: relative;*/ /* Đảm bảo không bị che phủ nội dung */
+    /*left: 0;
+    bottom: 0;
+}*/
 
-footer {
+/*footer {
     background-color: #0a2a7a;
     color: white;
     text-align: center;
@@ -52,8 +58,8 @@ footer {
     position: relative;
     bottom: 0;
     width: 100%;
-    margin-top: 50px; /* Đẩy footer xuống dưới để tránh đè lên nội dung */
-}
+    margin-top: 50px;*/ /* Đẩy footer xuống dưới để tránh đè lên nội dung */
+/*}*/
 
 section p, section ul li {
     font-size: 16px;
@@ -128,3 +134,8 @@ img {
     .btn-primary:hover {
         background-color: #08408c;
     }
+    .btn-primary:active {
+        background-color: #ff5733 !important; /* Đổi màu thành cam khi nhấn */
+        border-color: #ff5733 !important;
+    }
+

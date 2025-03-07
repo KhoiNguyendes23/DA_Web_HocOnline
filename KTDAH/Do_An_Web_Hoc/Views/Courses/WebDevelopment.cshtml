@@ -1,5 +1,5 @@
 ﻿@{
-    ViewData["Title"] = "Khóa Học Lập Trình Web Frontend";
+    ViewData["Title"] = "Khóa Học Lập Trình Web";
 }
 
 <!DOCTYPE html>
@@ -23,64 +23,242 @@
 
     <!-- Main Content -->
     <main class="container mt-5">
-        <section class="mb-5">
-            <h3 class="text-primary">1. Giới Thiệu Về Khóa Học</h3>
-            <p class="lead">
-                Khóa học <strong>Lập Trình Web Frontend</strong> giúp bạn nắm vững các công nghệ HTML, CSS, JavaScript,
-                và các framework hiện đại như React, Vue, hoặc Angular. Đây là một khóa học toàn diện dành cho những ai muốn
-                bắt đầu sự nghiệp trong lĩnh vực phát triển web hoặc muốn nâng cao kỹ năng frontend của mình.
+        <section class="mb-5 container">
+            <h3 class="text-primary text-start border-bottom pb-2">1. Giới Thiệu Về Khóa Học</h3>
+            <p class="lead text-justify" style="max-width: 880px; text-align: justify;">
+                Khóa học <strong>Lập Trình Web</strong> giúp bạn nắm vững các công nghệ HTML, CSS, JavaScript, và các framework hiện đại như React, Vue, hoặc Angular. Đây là một khóa học toàn diện dành cho những ai muốn bắt đầu sự nghiệp trong lĩnh vực phát triển web hoặc muốn nâng cao kỹ năng frontend của mình.
             </p>
         </section>
+
+
+
+
 
         <section class="mb-5">
             <h3 class="text-primary">2. Nội Dung Chương Trình</h3>
             <div class="row">
+                <!-- Chương 1 -->
                 <div class="col-md-6">
-                    <a href="@Url.Action("Chuong1", "Home")" class="fw-bold">Chương 1: Cơ Bản Về Web & HTML</a>
-                    <img src="~/Images/Screenshot1.png" class="img-fluid rounded my-2" alt="Hình minh họa HTML cơ bản">
+                    <div class="card p-3 shadow-sm border-primary">
+                        <div class="card-body">
+                            <h5 class="fw-bold text-primary">Chương 1: Cơ Bản Về Web & HTML</h5>
+                            <a href="@Url.Action("Chuong1", "Home")">
+                                <img src="~/Images/Screenshot1.png" class="img-fluid rounded my-2" alt="Hình minh họa HTML cơ bản">
+                            </a>
+                            <ul>
+                                <li>🔹 Web hoạt động như thế nào?</li>
+                                <li>🔹 Giới thiệu HTML và vai trò của nó</li>
+                                <li>🔹 Cấu trúc cơ bản của một trang HTML</li>
+                                <li>🔹 Các thẻ HTML quan trọng (tiêu đề, đoạn văn, hình ảnh,...)</li>
+                                <li>🔹 Cách tạo biểu mẫu (form) để thu thập dữ liệu từ người dùng</li>
+                            </ul>
+                            <div class="text-center mt-2">
+                                <a href="@Url.Action("Chuong1", "Home")" class="btn btn-primary">Bắt đầu học</a>
+                            </div>
+                        </div>
+                    </div>
                 </div>
+
+                <!-- Chương 2 -->
                 <div class="col-md-6">
-                    <a href="@Url.Action("Chuong2", "Home")" class="fw-bold">Chương 2: CSS - Thiết Kế Giao Diện Web</a>
-                    <img src="~/Images/Screenshot2.png" class="img-fluid rounded my-2" alt="Hình minh họa CSS">
+                    <div class="card p-3 shadow-sm border-primary">
+                        <div class="card-body">
+                            <h5 class="fw-bold text-primary">Chương 2: CSS - Thiết Kế Giao Diện Web</h5>
+                            <a href="@Url.Action("Chuong2", "Home")">
+                                <img src="~/Images/Screenshot2.png" class="img-fluid rounded my-2" alt="Hình minh họa CSS">
+                            </a>
+                            <ul>
+                                <li>🔹 Giới thiệu về CSS và vai trò của nó</li>
+                                <li>🔹 Cách sử dụng CSS để tạo giao diện đẹp mắt</li>
+                                <li>🔹 Các thuộc tính quan trọng trong CSS (màu sắc, kích thước,...)</li>
+                                <li>🔹 Flexbox và Grid - Công cụ bố cục mạnh mẽ</li>
+                                <li>🔹 Tạo giao diện responsive (tương thích với mọi màn hình)</li>
+                            </ul>
+                            <div class="text-center mt-2">
+                                <a href="@Url.Action("Chuong2", "Home")" class="btn btn-primary">Bắt đầu học</a>
+                            </div>
+                        </div>
+                    </div>
                 </div>
+
+                <!-- Chương 3 -->
                 <div class="col-md-6">
-                    <a href="@Url.Action("Chuong3", "Home")" class="fw-bold">Chương 3: JavaScript Cơ Bản</a>
-                    <img src="~/Images/Screenshot3.png" class="img-fluid rounded my-2" alt="Hình minh họa JavaScript">
+                    <div class="card p-3 shadow-sm border-primary">
+                        <div class="card-body">
+                            <h5 class="fw-bold text-primary">Chương 3: JavaScript Cơ Bản</h5>
+                            <a href="@Url.Action("Chuong3", "Home")">
+                                <img src="~/Images/Screenshot3.png" class="img-fluid rounded my-2" alt="Hình minh họa JavaScript">
+                            </a>
+                            <ul>
+                                <li>🔹 Giới thiệu về JavaScript và cách hoạt động</li>
+                                <li>🔹 Biến, kiểu dữ liệu và toán tử trong JavaScript</li>
+                                <li>🔹 Cấu trúc điều kiện và vòng lặp</li>
+                                <li>🔹 Hàm và cách sử dụng</li>
+                                <li>🔹 Xử lý sự kiện và tương tác với HTML bằng JavaScript</li>
+                            </ul>
+                            <div class="text-center mt-2">
+                                <a href="@Url.Action("Chuong3", "Home")" class="btn btn-primary">Bắt đầu học</a>
+                            </div>
+                        </div>
+                    </div>
                 </div>
+
+                <!-- Chương 4 -->
                 <div class="col-md-6">
-                    <a href="@Url.Action("Chuong4", "Home")" class="fw-bold">Chương 4: JavaScript Nâng Cao</a>
-                    <img src="~/Images/Screenshot4.png" class="img-fluid rounded my-2" alt="Hình minh họa JavaScript nâng cao">
+                    <div class="card p-3 shadow-sm border-primary">
+                        <div class="card-body">
+                            <h5 class="fw-bold text-primary">Chương 4: JavaScript Nâng Cao</h5>
+                            <a href="@Url.Action("Chuong4", "Home")">
+                                <img src="~/Images/Screenshot4.png" class="img-fluid rounded my-2" alt="Hình minh họa JavaScript nâng cao">
+                            </a>
+                            <ul>
+                                <li>🔹 DOM Manipulation - Tương tác với trang web</li>
+                                <li>🔹 Async JavaScript - Promise, Callback, Async/Await</li>
+                                <li>🔹 Fetch API & Xử lý dữ liệu từ server</li>
+                                <li>🔹 Object-Oriented Programming (Lập trình hướng đối tượng)</li>
+                                <li>🔹 ES6+ và các tính năng hiện đại trong JavaScript</li>
+                            </ul>
+                            <div class="text-center mt-2">
+                                <a href="@Url.Action("Chuong4", "Home")" class="btn btn-primary">Bắt đầu học</a>
+                            </div>
+                        </div>
+                    </div>
                 </div>
+
+                <!-- Chương 5 -->
                 <div class="col-md-6">
-                    <a href="@Url.Action("Chuong5", "Home")" class="fw-bold">Chương 5: Framework Frontend - React</a>
-                    <img src="~/Images/Screenshot5.png" class="img-fluid rounded my-2" alt="Hình minh họa React">
+                    <div class="card p-3 shadow-sm border-primary">
+                        <div class="card-body">
+                            <h5 class="fw-bold text-primary">Chương 5: Framework Frontend - React</h5>
+                            <a href="@Url.Action("Chuong5", "Home")">
+                                <img src="~/Images/Screenshot5.png" class="img-fluid rounded my-2" alt="Hình minh họa React">
+                            </a>
+                            <ul>
+                                <li>🔹 Giới thiệu về React và lý do sử dụng</li>
+                                <li>🔹 JSX - Cách viết HTML trong JavaScript</li>
+                                <li>🔹 Component & Props - Xây dựng UI theo từng phần</li>
+                                <li>🔹 State & Lifecycle - Quản lý trạng thái ứng dụng</li>
+                                <li>🔹 Kết nối API và quản lý dữ liệu với React</li>
+                            </ul>
+                            <div class="text-center mt-2">
+                                <a href="@Url.Action("Chuong5", "Home")" class="btn btn-primary">Bắt đầu học</a>
+                            </div>
+                        </div>
+                    </div>
                 </div>
+
+                <!-- Chương 6 -->
                 <div class="col-md-6">
-                    <a href="@Url.Action("Chuong6", "Home")" class="fw-bold">Chương 6: Dự án Cuối Khóa</a>
-                    <img src="~/Images/Screenshot6.png" class="img-fluid rounded my-2" alt="Hình minh họa Dự án cuối khóa">
+                    <div class="card p-3 shadow-sm border-primary">
+                        <div class="card-body">
+                            <h5 class="fw-bold text-primary">Chương 6: Dự án Cuối Khóa</h5>
+                            <a href="@Url.Action("Chuong6", "Home")">
+                                <img src="~/Images/Screenshot6.png" class="img-fluid rounded my-2" alt="Hình minh họa Dự án cuối khóa">
+                            </a>
+                            <ul>
+                                <li>🔹 Lập kế hoạch và thiết kế giao diện</li>
+                                <li>🔹 Xây dựng trang web hoàn chỉnh với HTML, CSS, JavaScript</li>
+                                <li>🔹 Sử dụng React để tạo UI động</li>
+                                <li>🔹 Kết nối dữ liệu và xử lý sự kiện</li>
+                                <li>🔹 Triển khai sản phẩm lên môi trường thực tế</li>
+                            </ul>
+                            <div class="text-center mt-2">
+                                <a href="@Url.Action("Chuong6", "Home")" class="btn btn-primary">Bắt đầu học</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+        </section>
+
+
+
+        <section class="mb-5">
+            <h3 class="text-primary border-bottom pb-2">3. Cách Học</h3>
+            <div class="container">
+                <div class="card p-4 shadow-sm border-primary">
+                    <div class="card-body">
+                       
+                        <p class="lead text-justify">
+                            Trong khóa học <strong>Lập Trình Web</strong>, bạn sẽ được hướng dẫn từ cơ bản đến nâng cao thông qua nhiều phương pháp học tập khác nhau.
+                            Chúng tôi tập trung vào việc giúp bạn học thực tế, làm thực tế để có thể áp dụng ngay vào công việc. Dưới đây là các phương pháp bạn sẽ trải qua trong khóa học:
+                        </p>
+
+                        <!-- Hàng chứa 3 cột -->
+                        <div class="row mt-3">
+                            <!-- Cột 1: Học qua video -->
+                            <div class="col-md-4">
+                                <div class="card shadow-sm h-100">
+                                    <div class="card-body">
+                                        <h5 class="fw-bold text-primary">Học qua video và bài giảng tương tác</h5>
+                                        <img src="~/Images/Screenshot1.png" class="img-fluid rounded my-2" alt="Hình minh họa">
+                                        <p class="text-muted">
+                                            - Hệ thống video bài giảng từ cơ bản đến nâng cao, giúp bạn nắm chắc lý thuyết quan trọng.<br>
+                                            - Cung cấp tài liệu tham khảo, slide bài giảng, và ghi chú để dễ dàng ôn tập.
+                                        </p>
+
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Cột 2: Thực hành coding trực tiếp -->
+                            <div class="col-md-4">
+                                <div class="card shadow-sm h-100">
+                                    <div class="card-body">
+                                        <h5 class="fw-bold text-primary">Thực hành coding trực tiếp</h5>
+                                        <img src="~/Images/Screenshot1.png" class="img-fluid rounded my-2" alt="Hình minh họa">
+                                        <p class="text-muted">
+                                            - Mỗi bài học đều có code mẫu để bạn thử nghiệm ngay.<br>
+                                            - Có bài tập thực hành sau mỗi phần để đảm bảo bạn hiểu rõ trước khi tiếp tục.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Cột 3: Bài tập & Project tự do -->
+                            <div class="col-md-4">
+                                <div class="card shadow-sm h-100">
+                                    <div class="card-body">
+                                        <h5 class="fw-bold text-primary">Bài tập và project tự do</h5>
+                                        <img src="~/Images/Screenshot1.png" class="img-fluid rounded my-2" alt="Hình minh họa">
+                                        <p class="text-muted">
+                                            - Hệ thống bài tập phong phú từ đơn giản đến phức tạp giúp bạn nâng cao kỹ năng.<br>
+                                            - Các project thực tế giúp bạn làm quen với quy trình phát triển sản phẩm.<br>
+                                            - Hoàn thành project cuối khóa để xây dựng portfolio.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div> <!-- Kết thúc row -->
+                    </div>
                 </div>
             </div>
         </section>
 
-        <section class="mb-5">
-            <h3 class="text-primary">3. Cách Học</h3>
-            <ul class="list-group">
-                <li class="list-group-item">Học qua video và bài giảng tương tác</li>
-                <li class="list-group-item">Thực hành coding trực tiếp</li>
-                <li class="list-group-item">Bài tập và project tự do</li>
-                <li class="list-group-item">Hỗ trợ từ giáo viên và cộng đồng</li>
-            </ul>
-        </section>
+
 
         
     </main>
 
-    <!-- Footer -->
-    <footer class="bg-primary text-white text-center py-3 mt-5">
-        <p>&copy; @DateTime.Now.Year Khóa Học Frontend. Mọi quyền được bảo lưu.</p>
-    </footer>
+ 
+    
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            let buttons = document.querySelectorAll(".btn-primary");
+
+            buttons.forEach(function (button) {
+                button.addEventListener("click", function () {
+                    button.classList.add("btn-success"); // Đổi thành màu xanh lá cây
+                    button.innerText = "Đang học..."; // Thay đổi nội dung nút
+                });
+            });
+        });
+    </script>
+
 </body>
 </html>

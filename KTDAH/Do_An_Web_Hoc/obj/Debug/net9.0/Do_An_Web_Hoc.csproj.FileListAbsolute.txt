@@ -474,4 +474,4 @@ C:\Users\huynh\Desktop\DA_Web_HocOnline\KTDAH\Do_An_Web_Hoc\obj\Debug\net9.0\ref
 C:\Users\huynh\Desktop\DA_Web_HocOnline\KTDAH\Do_An_Web_Hoc\obj\Debug\net9.0\Do_An_Web_Hoc.pdb
 C:\Users\huynh\Desktop\DA_Web_HocOnline\KTDAH\Do_An_Web_Hoc\obj\Debug\net9.0\Do_An_Web_Hoc.genruntimeconfig.cache
 C:\Users\huynh\Desktop\DA_Web_HocOnline\KTDAH\Do_An_Web_Hoc\obj\Debug\net9.0\ref\Do_An_Web_Hoc.dll
-C:\Users\huynh\Desktop\DA_Web_HocOnline\KTDAH\Do_An_Web_Hoc\obj\Debug\net9.0\compressed\tgvzawlolj-qges5vxwvw.gz
+C:\Users\huynh\Desktop\DA_Web_HocOnline\KTDAH\Do_An_Web_Hoc\obj\Debug\net9.0\compressed\tgvzawlolj-79ez3t5hlz.gz

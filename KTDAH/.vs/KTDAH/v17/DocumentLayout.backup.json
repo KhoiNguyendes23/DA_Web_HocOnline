@@ -96,7 +96,7 @@
               "RelativeDocumentMoniker": "Do_An_Web_Hoc\\wwwroot\\css\\WebDevelopment.css",
               "ToolTip": "C:\\Users\\huynh\\Desktop\\DA_Web_HocOnline\\KTDAH\\Do_An_Web_Hoc\\wwwroot\\css\\WebDevelopment.css",
               "RelativeToolTip": "Do_An_Web_Hoc\\wwwroot\\css\\WebDevelopment.css",
-              "ViewState": "AgIAAFYAAAAAAAAAAAAuwGsAAAAUAAAAAAAAAA==",
+              "ViewState": "AgIAABIAAAAAAAAAAAAAADMAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
               "WhenOpened": "2025-03-07T08:40:48.053Z",
               "EditorCaption": ""
@@ -109,7 +109,7 @@
               "RelativeDocumentMoniker": "Do_An_Web_Hoc\\Views\\Courses\\WebDevelopment.cshtml",
               "ToolTip": "C:\\Users\\huynh\\Desktop\\DA_Web_HocOnline\\KTDAH\\Do_An_Web_Hoc\\Views\\Courses\\WebDevelopment.cshtml",
               "RelativeToolTip": "Do_An_Web_Hoc\\Views\\Courses\\WebDevelopment.cshtml",
-              "ViewState": "AgIAADgAAAAAAAAAAAAYwEoAAAAIAAAAAAAAAA==",
+              "ViewState": "AgIAADwAAAAAAAAAAAAAAB8AAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
               "WhenOpened": "2025-03-07T06:57:16.862Z",
               "EditorCaption": ""
@@ -136,8 +136,7 @@
               "RelativeToolTip": "Do_An_Web_Hoc\\Controllers\\HomeController.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-03-07T06:46:23.307Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-03-07T06:46:23.307Z"
             },
             {
               "$type": "Document",
@@ -170,14 +169,10 @@
               "RelativeDocumentMoniker": "Do_An_Web_Hoc\\Views\\Shared\\_Layout.cshtml",
               "ToolTip": "C:\\Users\\huynh\\Desktop\\DA_Web_HocOnline\\KTDAH\\Do_An_Web_Hoc\\Views\\Shared\\_Layout.cshtml",
               "RelativeToolTip": "Do_An_Web_Hoc\\Views\\Shared\\_Layout.cshtml",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAMAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAFoAAAAAAAAAAAAUwIQAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
               "WhenOpened": "2025-03-06T15:49:03.061Z",
               "EditorCaption": ""
-            },
-            {
-              "$type": "Bookmark",
-              "Name": "ST:0:0:{cce594b6-0c39-4442-ba28-10c64ac7e89f}"
             },
             {
               "$type": "Document",
@@ -283,6 +278,10 @@
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
               "WhenOpened": "2025-03-06T15:55:24.242Z"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{cce594b6-0c39-4442-ba28-10c64ac7e89f}"
             }
           ]
         },
