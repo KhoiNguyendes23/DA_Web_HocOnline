@@ -3,12 +3,24 @@
   "WorkspaceRootPath": "C:\\Users\\PC\\OneDrive\\Desktop\\DA_Web_HocOnline\\KTDAH\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{FE6D6C4D-0F78-4959-8E33-B924FBAA67D2}|Do_An_Web_Hoc\\Do_An_Web_Hoc.csproj|c:\\users\\pc\\onedrive\\desktop\\da_web_hoconline\\ktdah\\do_an_web_hoc\\resources\\views\\shared\\_layout.vi-vn.resx||{81828910-B8B3-4D2B-99A3-067027C180C1}",
-      "RelativeMoniker": "D:0:0:{FE6D6C4D-0F78-4959-8E33-B924FBAA67D2}|Do_An_Web_Hoc\\Do_An_Web_Hoc.csproj|solutionrelative:do_an_web_hoc\\resources\\views\\shared\\_layout.vi-vn.resx||{81828910-B8B3-4D2B-99A3-067027C180C1}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{FE6D6C4D-0F78-4959-8E33-B924FBAA67D2}|Do_An_Web_Hoc\\Do_An_Web_Hoc.csproj|c:\\users\\pc\\onedrive\\desktop\\da_web_hoconline\\ktdah\\do_an_web_hoc\\views\\shared\\_layout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
       "RelativeMoniker": "D:0:0:{FE6D6C4D-0F78-4959-8E33-B924FBAA67D2}|Do_An_Web_Hoc\\Do_An_Web_Hoc.csproj|solutionrelative:do_an_web_hoc\\views\\shared\\_layout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{FE6D6C4D-0F78-4959-8E33-B924FBAA67D2}|Do_An_Web_Hoc\\Do_An_Web_Hoc.csproj|c:\\users\\pc\\onedrive\\desktop\\da_web_hoconline\\ktdah\\do_an_web_hoc\\wwwroot\\css\\layout.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
+      "RelativeMoniker": "D:0:0:{FE6D6C4D-0F78-4959-8E33-B924FBAA67D2}|Do_An_Web_Hoc\\Do_An_Web_Hoc.csproj|solutionrelative:do_an_web_hoc\\wwwroot\\css\\layout.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{FE6D6C4D-0F78-4959-8E33-B924FBAA67D2}|Do_An_Web_Hoc\\Do_An_Web_Hoc.csproj|c:\\users\\pc\\onedrive\\desktop\\da_web_hoconline\\ktdah\\do_an_web_hoc\\views\\shared\\error.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{FE6D6C4D-0F78-4959-8E33-B924FBAA67D2}|Do_An_Web_Hoc\\Do_An_Web_Hoc.csproj|solutionrelative:do_an_web_hoc\\views\\shared\\error.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{FE6D6C4D-0F78-4959-8E33-B924FBAA67D2}|Do_An_Web_Hoc\\Do_An_Web_Hoc.csproj|c:\\users\\pc\\onedrive\\desktop\\da_web_hoconline\\ktdah\\do_an_web_hoc\\views\\shared\\_validationscriptspartial.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{FE6D6C4D-0F78-4959-8E33-B924FBAA67D2}|Do_An_Web_Hoc\\Do_An_Web_Hoc.csproj|solutionrelative:do_an_web_hoc\\views\\shared\\_validationscriptspartial.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{FE6D6C4D-0F78-4959-8E33-B924FBAA67D2}|Do_An_Web_Hoc\\Do_An_Web_Hoc.csproj|c:\\users\\pc\\onedrive\\desktop\\da_web_hoconline\\ktdah\\do_an_web_hoc\\resources\\views\\shared\\_layout.vi-vn.resx||{81828910-B8B3-4D2B-99A3-067027C180C1}",
+      "RelativeMoniker": "D:0:0:{FE6D6C4D-0F78-4959-8E33-B924FBAA67D2}|Do_An_Web_Hoc\\Do_An_Web_Hoc.csproj|solutionrelative:do_an_web_hoc\\resources\\views\\shared\\_layout.vi-vn.resx||{81828910-B8B3-4D2B-99A3-067027C180C1}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{FE6D6C4D-0F78-4959-8E33-B924FBAA67D2}|Do_An_Web_Hoc\\Do_An_Web_Hoc.csproj|c:\\users\\pc\\onedrive\\desktop\\da_web_hoconline\\ktdah\\do_an_web_hoc\\resources\\views\\shared\\_layout.en-us.resx||{81828910-B8B3-4D2B-99A3-067027C180C1}",
@@ -31,14 +43,6 @@
       "RelativeMoniker": "D:0:0:{FE6D6C4D-0F78-4959-8E33-B924FBAA67D2}|Do_An_Web_Hoc\\Do_An_Web_Hoc.csproj|solutionrelative:do_an_web_hoc\\resources\\resource.resx||{81828910-B8B3-4D2B-99A3-067027C180C1}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{FE6D6C4D-0F78-4959-8E33-B924FBAA67D2}|Do_An_Web_Hoc\\Do_An_Web_Hoc.csproj|c:\\users\\pc\\onedrive\\desktop\\da_web_hoconline\\ktdah\\do_an_web_hoc\\views\\shared\\_validationscriptspartial.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{FE6D6C4D-0F78-4959-8E33-B924FBAA67D2}|Do_An_Web_Hoc\\Do_An_Web_Hoc.csproj|solutionrelative:do_an_web_hoc\\views\\shared\\_validationscriptspartial.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{FE6D6C4D-0F78-4959-8E33-B924FBAA67D2}|Do_An_Web_Hoc\\Do_An_Web_Hoc.csproj|c:\\users\\pc\\onedrive\\desktop\\da_web_hoconline\\ktdah\\do_an_web_hoc\\wwwroot\\css\\layout.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
-      "RelativeMoniker": "D:0:0:{FE6D6C4D-0F78-4959-8E33-B924FBAA67D2}|Do_An_Web_Hoc\\Do_An_Web_Hoc.csproj|solutionrelative:do_an_web_hoc\\wwwroot\\css\\layout.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{FE6D6C4D-0F78-4959-8E33-B924FBAA67D2}|Do_An_Web_Hoc\\Do_An_Web_Hoc.csproj|c:\\users\\pc\\onedrive\\desktop\\da_web_hoconline\\ktdah\\do_an_web_hoc\\views\\home\\privacy.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
       "RelativeMoniker": "D:0:0:{FE6D6C4D-0F78-4959-8E33-B924FBAA67D2}|Do_An_Web_Hoc\\Do_An_Web_Hoc.csproj|solutionrelative:do_an_web_hoc\\views\\home\\privacy.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
@@ -54,7 +58,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 299,
-          "SelectedChildIndex": 1,
+          "SelectedChildIndex": 7,
           "Children": [
             {
               "$type": "Bookmark",
@@ -62,7 +66,20 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 2,
+              "Title": "Error.cshtml",
+              "DocumentMoniker": "C:\\Users\\PC\\OneDrive\\Desktop\\DA_Web_HocOnline\\KTDAH\\Do_An_Web_Hoc\\Views\\Shared\\Error.cshtml",
+              "RelativeDocumentMoniker": "Do_An_Web_Hoc\\Views\\Shared\\Error.cshtml",
+              "ToolTip": "C:\\Users\\PC\\OneDrive\\Desktop\\DA_Web_HocOnline\\KTDAH\\Do_An_Web_Hoc\\Views\\Shared\\Error.cshtml",
+              "RelativeToolTip": "Do_An_Web_Hoc\\Views\\Shared\\Error.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-03-07T06:02:00.88Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
               "Title": "_Layout.vi-VN.resx",
               "DocumentMoniker": "C:\\Users\\PC\\OneDrive\\Desktop\\DA_Web_HocOnline\\KTDAH\\Do_An_Web_Hoc\\Resources\\Views\\Shared\\_Layout.vi-VN.resx",
               "RelativeDocumentMoniker": "Do_An_Web_Hoc\\Resources\\Views\\Shared\\_Layout.vi-VN.resx",
@@ -74,7 +91,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 8,
               "Title": "_Layout.fr-FR.resx",
               "DocumentMoniker": "C:\\Users\\PC\\OneDrive\\Desktop\\DA_Web_HocOnline\\KTDAH\\Do_An_Web_Hoc\\Resources\\Views\\Shared\\_Layout.fr-FR.resx",
               "RelativeDocumentMoniker": "Do_An_Web_Hoc\\Resources\\Views\\Shared\\_Layout.fr-FR.resx",
@@ -86,7 +103,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
+              "DocumentIndex": 9,
               "Title": "Resource.resx",
               "DocumentMoniker": "C:\\Users\\PC\\OneDrive\\Desktop\\DA_Web_HocOnline\\KTDAH\\Do_An_Web_Hoc\\Resources\\Resource.resx",
               "RelativeDocumentMoniker": "Do_An_Web_Hoc\\Resources\\Resource.resx",
@@ -98,7 +115,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 6,
               "Title": "Program.cs",
               "DocumentMoniker": "C:\\Users\\PC\\OneDrive\\Desktop\\DA_Web_HocOnline\\KTDAH\\Do_An_Web_Hoc\\Program.cs",
               "RelativeDocumentMoniker": "Do_An_Web_Hoc\\Program.cs",
@@ -111,33 +128,33 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 8,
+              "DocumentIndex": 1,
               "Title": "Layout.css",
               "DocumentMoniker": "C:\\Users\\PC\\OneDrive\\Desktop\\DA_Web_HocOnline\\KTDAH\\Do_An_Web_Hoc\\wwwroot\\css\\Layout.css",
               "RelativeDocumentMoniker": "Do_An_Web_Hoc\\wwwroot\\css\\Layout.css",
               "ToolTip": "C:\\Users\\PC\\OneDrive\\Desktop\\DA_Web_HocOnline\\KTDAH\\Do_An_Web_Hoc\\wwwroot\\css\\Layout.css",
               "RelativeToolTip": "Do_An_Web_Hoc\\wwwroot\\css\\Layout.css",
-              "ViewState": "AgIAAJAAAAAAAAAAAAAQwAYBAAAaAAAAAAAAAA==",
+              "ViewState": "AgIAAGMAAAAAAAAAAAAQwAYBAAAaAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
               "WhenOpened": "2025-03-06T15:50:46.17Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 0,
               "Title": "_Layout.cshtml",
               "DocumentMoniker": "C:\\Users\\PC\\OneDrive\\Desktop\\DA_Web_HocOnline\\KTDAH\\Do_An_Web_Hoc\\Views\\Shared\\_Layout.cshtml",
               "RelativeDocumentMoniker": "Do_An_Web_Hoc\\Views\\Shared\\_Layout.cshtml",
               "ToolTip": "C:\\Users\\PC\\OneDrive\\Desktop\\DA_Web_HocOnline\\KTDAH\\Do_An_Web_Hoc\\Views\\Shared\\_Layout.cshtml",
               "RelativeToolTip": "Do_An_Web_Hoc\\Views\\Shared\\_Layout.cshtml",
-              "ViewState": "AgIAABsAAAAAAAAAAAAAADEAAAAOAAAAAAAAAA==",
+              "ViewState": "AgIAABsAAAAAAAAAAAAAAC0AAAA2AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
               "WhenOpened": "2025-03-06T15:49:03.061Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 5,
               "Title": "_Layout.en-US.resx",
               "DocumentMoniker": "C:\\Users\\PC\\OneDrive\\Desktop\\DA_Web_HocOnline\\KTDAH\\Do_An_Web_Hoc\\Resources\\Views\\Shared\\_Layout.en-US.resx",
               "RelativeDocumentMoniker": "Do_An_Web_Hoc\\Resources\\Views\\Shared\\_Layout.en-US.resx",
@@ -149,7 +166,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 7,
               "Title": "LanguageController.cs",
               "DocumentMoniker": "C:\\Users\\PC\\OneDrive\\Desktop\\DA_Web_HocOnline\\KTDAH\\Do_An_Web_Hoc\\Controllers\\LanguageController.cs",
               "RelativeDocumentMoniker": "Do_An_Web_Hoc\\Controllers\\LanguageController.cs",
@@ -162,7 +179,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 7,
+              "DocumentIndex": 3,
               "Title": "_ValidationScriptsPartial.cshtml",
               "DocumentMoniker": "C:\\Users\\PC\\OneDrive\\Desktop\\DA_Web_HocOnline\\KTDAH\\Do_An_Web_Hoc\\Views\\Shared\\_ValidationScriptsPartial.cshtml",
               "RelativeDocumentMoniker": "Do_An_Web_Hoc\\Views\\Shared\\_ValidationScriptsPartial.cshtml",
@@ -175,7 +192,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 10,
+              "DocumentIndex": 11,
               "Title": "Index.cshtml",
               "DocumentMoniker": "C:\\Users\\PC\\OneDrive\\Desktop\\DA_Web_HocOnline\\KTDAH\\Do_An_Web_Hoc\\Views\\Home\\Index.cshtml",
               "RelativeDocumentMoniker": "Do_An_Web_Hoc\\Views\\Home\\Index.cshtml",
@@ -188,7 +205,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 9,
+              "DocumentIndex": 10,
               "Title": "Privacy.cshtml",
               "DocumentMoniker": "C:\\Users\\PC\\OneDrive\\Desktop\\DA_Web_HocOnline\\KTDAH\\Do_An_Web_Hoc\\Views\\Home\\Privacy.cshtml",
               "RelativeDocumentMoniker": "Do_An_Web_Hoc\\Views\\Home\\Privacy.cshtml",
