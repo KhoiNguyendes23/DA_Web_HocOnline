@@ -1,3 +1,0 @@
-﻿<Project>
-  <Import Project="..\buildMultiTargeting\Do_An_Web_Hoc.props" />
-</Project>
