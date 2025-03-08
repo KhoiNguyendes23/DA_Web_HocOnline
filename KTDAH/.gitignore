@@ -1,0 +1,20 @@
+# Bỏ qua thư mục node_modules
+node_modules/
+
+# Bỏ qua file log
+*.log
+
+# Bỏ qua file môi trường
+.env
+
+# Bỏ qua thư mục build/output
+dist/
+build/
+<<<<<<< HEAD
+bin/
+=======
+.vs/
+bin/
+obj/
+
+>>>>>>> 6077fdf680d7e7fca69dc1bc180b9f8948290c20
