@@ -4,7 +4,7 @@
 @inject IViewLocalizer Localizer
 @inject IHttpContextAccessor HttpContextAccessor
 @{
-    ViewData["Title"] = "Khóa Học Cơ Sở Dữ Liệu Nâng Cao";
+    ViewData["Title"] = "Khóa Học Khoa Học Dữ Liệu";
 }
 
 <!DOCTYPE html>
@@ -18,58 +18,39 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- Custom CSS -->
-    <link href="~/css/AdvancedDatabase.css" rel="stylesheet" />
+    <link href="~/css/DataScience.css" rel="stylesheet" />
 </head>
 <body>
-   
 
+    <!-- Main Content -->
     <main class="container mt-5">
-        <section class="mb-5 text-center">
-            <h1 class="display-4 fw-bolder text-primary">@ViewData["Title"]</h1>
+        <section class="mb-5 container text-center">
+            <h2 class="display-4 fw-bolder text-primary">@ViewData["Title"]</h2>
         </section>
-        <section class="mb-5 ">
-            <h2 class="text-primary">1. Giới Thiệu Về Khóa Học</h2>
 
-            <p class="lead text-justify" style="max-width: 880px; text-align: justify; margin: auto;">
-                Khóa học <strong>Cơ Sở Dữ Liệu Nâng Cao</strong> giúp bạn nắm vững các kiến thức quan trọng về quản lý, tối ưu hóa và bảo mật hệ thống cơ sở dữ liệu. Bạn sẽ được học về kỹ thuật tối ưu hóa truy vấn SQL, phân mảnh và nhân bản dữ liệu, thiết kế cơ sở dữ liệu hiệu quả, quản lý NoSQL, bảo mật hệ thống, cũng như cách giám sát và nâng cao hiệu suất hệ quản trị CSDL. Đây là khóa học lý tưởng dành cho các lập trình viên, quản trị viên hệ thống hoặc bất kỳ ai muốn chuyên sâu về lĩnh vực cơ sở dữ liệu.
+        <section class="mb-5 container">
+            <h3 class="text-primary text-start border-bottom pb-2">1. Giới Thiệu Về Khóa Học</h3>
+            <p class="lead text-justify" style="max-width: 880px; text-align: justify;">
+                Khóa học <strong>Khoa Học Dữ Liệu</strong> giúp bạn nắm vững các khái niệm và công nghệ quan trọng như Python, Pandas, NumPy, Machine Learning, Deep Learning và các kỹ thuật phân tích dữ liệu. Đây là khóa học lý tưởng dành cho những ai muốn làm việc trong lĩnh vực dữ liệu và trí tuệ nhân tạo.
             </p>
-
         </section>
 
         <section class="mb-5">
             <h3 class="text-primary">2. Nội Dung Chương Trình</h3>
             <div class="row">
+                <!-- Chương 1 -->
                 <div class="col-md-6">
                     <div class="card p-3 shadow-sm border-primary">
                         <div class="card-body">
-                            <h5 class="fw-bold text-primary">Chương 1: Tối Ưu Hóa Truy Vấn SQL</h5>
+                            <h5 class="fw-bold text-primary">Chương 1: Giới thiệu về Khoa Học Dữ Liệu</h5>
                             <a href="#">
                                 <img src="#" class="img-fluid rounded my-2" alt="Hình minh họa HTML cơ bản">
                             </a>
                             <ul>
-                                <li>🔹 Indexing và tác động đến hiệu suất</li>
-                                <li>🔹 Query Execution Plan</li>
-                                <li>🔹 Phân tích và tối ưu hóa truy vấn SQL</li>
-                            </ul>
-                            <div class="text-center mt-2">
-                                <a href="#" class="btn btn-primary">Bắt đầu học</a>
-                            </div>
-
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-md-6">
-                    <div class="card p-3 shadow-sm border-primary">
-                        <div class="card-body">
-                            <h5 class="fw-bold text-primary">Chương 2: Phân Mảnh Và Nhân Bản Dữ Liệu</h5>
-                            <a href="#">
-                                <img src="#" class="img-fluid rounded my-2" alt="Hình minh họa HTML cơ bản">
-                            </a>
-                            <ul>
-                                <li>🔹 Phân mảnh ngang và dọc</li>
-                                <li>🔹 Nhân bản dữ liệu và cân bằng tải</li>
-                                <li>🔹 Các kỹ thuật quản lý dữ liệu lớn</li>
+                                <li>🔹 Khoa học dữ liệu là gì?</li>
+                                <li>🔹 Ứng dụng thực tế của khoa học dữ liệu</li>
+                                <li>🔹 Giới thiệu Python cho khoa học dữ liệu</li>
+                                <li>🔹 Cài đặt môi trường Jupyter Notebook</li>
                             </ul>
                             <div class="text-center mt-2">
                                 <a href="#" class="btn btn-primary">Bắt đầu học</a>
@@ -78,17 +59,19 @@
                     </div>
                 </div>
 
+                <!-- Chương 2 -->
                 <div class="col-md-6">
                     <div class="card p-3 shadow-sm border-primary">
                         <div class="card-body">
-                            <h5 class="fw-bold text-primary">Chương 3: Cấu Trúc và Thiết Kế CSDL</h5>
+                            <h5 class="fw-bold text-primary">Chương 2: Xử Lý Dữ Liệu với Pandas và NumPy</h5>
                             <a href="#">
                                 <img src="#" class="img-fluid rounded my-2" alt="Hình minh họa HTML cơ bản">
                             </a>
                             <ul>
-                                <li>🔹 Mô hình hóa dữ liệu nâng cao</li>
-                                <li>🔹 Chuẩn hóa và phi chuẩn hóa</li>
-                                <li>🔹 Mối quan hệ và ràng buộc toàn vẹn</li>
+                                <li>🔹 Làm việc với Pandas DataFrame</li>
+                                <li>🔹 Các phép toán trên dữ liệu</li>
+                                <li>🔹 Xử lý dữ liệu thiếu và làm sạch dữ liệu</li>
+                                <li>🔹 Biểu đồ trực quan hóa dữ liệu</li>
                             </ul>
                             <div class="text-center mt-2">
                                 <a href="#" class="btn btn-primary">Bắt đầu học</a>
@@ -97,17 +80,19 @@
                     </div>
                 </div>
 
+                <!-- Chương 3 -->
                 <div class="col-md-6">
                     <div class="card p-3 shadow-sm border-primary">
                         <div class="card-body">
-                            <h5 class="fw-bold text-primary">Chương 4: Hệ Quản Trị CSDL NoSQL</h5>
+                            <h5 class="fw-bold text-primary">Chương 3: Thống Kê và Trực Quan Hóa Dữ Liệu</h5>
                             <a href="#">
                                 <img src="#" class="img-fluid rounded my-2" alt="Hình minh họa HTML cơ bản">
                             </a>
                             <ul>
-                                <li>🔹 Tổng quan về NoSQL</li>
-                                <li>🔹 Các mô hình dữ liệu NoSQL phổ biến</li>
-                                <li>🔹 Khi nào nên sử dụng NoSQL?</li>
+                                <li>🔹 Các khái niệm thống kê cơ bản</li>
+                                <li>🔹 Biểu đồ và đồ thị trong trực quan hóa</li>
+                                <li>🔹 Thư viện Matplotlib và Seaborn</li>
+                                <li>🔹 Phân tích xu hướng dữ liệu</li>
                             </ul>
                             <div class="text-center mt-2">
                                 <a href="#" class="btn btn-primary">Bắt đầu học</a>
@@ -116,17 +101,19 @@
                     </div>
                 </div>
 
+                <!-- Chương 4 -->
                 <div class="col-md-6">
                     <div class="card p-3 shadow-sm border-primary">
                         <div class="card-body">
-                            <h5 class="fw-bold text-primary">Chương 5: Bảo Mật Cơ Sở Dữ Liệu</h5>
+                            <h5 class="fw-bold text-primary">Chương 4: Machine Learning Cơ Bản</h5>
                             <a href="#">
                                 <img src="#" class="img-fluid rounded my-2" alt="Hình minh họa HTML cơ bản">
                             </a>
                             <ul>
-                                <li>🔹 Mã hóa và bảo mật dữ liệu</li>
-                                <li>🔹 Phân quyền và kiểm soát truy cập</li>
-                                <li>🔹 Các phương pháp bảo mật tiên tiến</li>
+                                <li>🔹 Giới thiệu về Machine Learning</li>
+                                <li>🔹 Các thuật toán học máy cơ bản</li>
+                                <li>🔹 Training và Testing mô hình</li>
+                                <li>🔹 Đánh giá hiệu suất mô hình</li>
                             </ul>
                             <div class="text-center mt-2">
                                 <a href="#" class="btn btn-primary">Bắt đầu học</a>
@@ -135,17 +122,43 @@
                     </div>
                 </div>
 
+                <!-- Chương 5 -->
                 <div class="col-md-6">
                     <div class="card p-3 shadow-sm border-primary">
                         <div class="card-body">
-                            <h5 class="fw-bold text-primary">Chương 6: Quản Lý Hiệu Suất Cơ Sở Dữ Liệu</h5>
+                            <h5 class="fw-bold text-primary">Chương 5: Deep Learning và Neural Networks</h5>
                             <a href="#">
                                 <img src="#" class="img-fluid rounded my-2" alt="Hình minh họa HTML cơ bản">
                             </a>
                             <ul>
-                                <li>🔹 Giám sát hiệu suất CSDL</li>
-                                <li>🔹 Caching và tối ưu hóa</li>
-                                <li>🔹 Cân bằng tải và xử lý truy vấn lớn</li>
+                                <li>🔹 Giới thiệu về Deep Learning</li>
+                                <li>🔹 Mô hình mạng nơ-ron</li>
+                                <li>🔹 Thư viện TensorFlow và Keras</li>
+                                <li>🔹 Ứng dụng Deep Learning trong thực tế</li>
+                              
+                             
+                            </ul>
+                            <div class="text-center mt-2">
+                                <a href="#" class="btn btn-primary">Bắt đầu học</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Chương 6 -->
+                <div class="col-md-6">
+                    <div class="card p-3 shadow-sm border-primary">
+                        <div class="card-body">
+                            <h5 class="fw-bold text-primary">Chương 6: Dự Án Thực Tế</h5>
+                            <a href="#">
+                                <img src="#" class="img-fluid rounded my-2" alt="Hình minh họa HTML cơ bản">
+                            </a>
+                            <ul>
+                                <li>🔹 Lập kế hoạch và thiết kế dự án</li>
+                                <li>🔹 Xử lý dữ liệu thực tế</li>
+                                <li>🔹 Ứng dụng Machine Learning để phân tích dữ liệu</li>
+                                <li>🔹 Triển khai mô hình và đánh giá kết quả</li>
+                               
                             </ul>
                             <div class="text-center mt-2">
                                 <a href="#" class="btn btn-primary">Bắt đầu học</a>
@@ -161,7 +174,7 @@
                 <div class="card p-4 shadow-sm border-primary">
                     <div class="card-body">
                         <p class="lead text-justify">
-                            Trong khóa học <strong>Cơ Sở Dữ Liệu Nâng Cao</strong>, bạn sẽ được hướng dẫn thông qua các phương pháp học tập đa dạng, từ lý thuyết đến thực hành chuyên sâu.
+                            Trong khóa học <strong>Khoa Học Dữ Liệu</strong>, bạn sẽ được hướng dẫn thông qua các phương pháp học tập đa dạng, từ lý thuyết đến thực hành chuyên sâu.
                             Chúng tôi tập trung vào việc giúp bạn áp dụng thực tế các kỹ thuật tối ưu và quản lý dữ liệu. Dưới đây là các phương pháp bạn sẽ trải qua trong khóa học:
                         </p>
 
@@ -172,7 +185,7 @@
                                         <h5 class="fw-bold text-primary">Học qua bài giảng và tài liệu chuyên sâu</h5>
                                         <img src="#" class="img-fluid rounded my-2" alt="Hình minh họa">
                                         <p class="text-muted">
-                                            - Hệ thống bài giảng chuyên sâu giúp bạn nắm vững lý thuyết về cơ sở dữ liệu nâng cao.<br>
+                                            - Hệ thống bài giảng chuyên sâu giúp bạn nắm vững lý thuyết về khoa học dữ liệu.<br>
                                             - Cung cấp tài liệu tham khảo, slide bài giảng, và nghiên cứu tình huống thực tế.
                                         </p>
                                     </div>
@@ -181,10 +194,10 @@
                             <div class="col-md-4">
                                 <div class="card shadow-sm h-100">
                                     <div class="card-body">
-                                        <h5 class="fw-bold text-primary">Thực hành truy vấn và tối ưu CSDL</h5>
+                                        <h5 class="fw-bold text-primary">Thực hành phân tích dữ liệu</h5>
                                         <img src="#" class="img-fluid rounded my-2" alt="Hình minh họa">
                                         <p class="text-muted">
-                                            - Các bài tập thực hành giúp bạn tối ưu truy vấn SQL, thiết kế và quản lý cơ sở dữ liệu.<br>
+                                            - Các bài tập thực hành giúp bạn phân tích dữ liệu thực tế bằng Python.<br>
                                             - Có hệ thống bài tập từ cơ bản đến nâng cao để kiểm tra và củng cố kiến thức.
                                         </p>
                                     </div>
@@ -196,8 +209,8 @@
                                         <h5 class="fw-bold text-primary">Dự án thực tế và case study</h5>
                                         <img src="#" class="img-fluid rounded my-2" alt="Hình minh họa">
                                         <p class="text-muted">
-                                            - Xây dựng dự án thực tế với các kỹ thuật nâng cao như phân mảnh dữ liệu, nhân bản, và bảo mật CSDL.<br>
-                                            - Phân tích case study thực tế về tối ưu hệ thống quản lý dữ liệu lớn.
+                                            - Xây dựng dự án thực tế với các kỹ thuật khoa học dữ liệu tiên tiến.<br>
+                                            - Phân tích case study thực tế về xử lý dữ liệu lớn và mô hình AI.
                                         </p>
                                     </div>
                                 </div>
@@ -208,7 +221,9 @@
             </div>
         </section>
     </main>
-
+    <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+
 </body>
 </html>
