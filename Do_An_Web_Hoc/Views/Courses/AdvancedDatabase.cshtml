@@ -21,30 +21,7 @@
     <link href="~/css/AdvancedDatabase.css" rel="stylesheet" />
 </head>
 <body>
-    <header class="header">
-        <button class="btn-toggle" id="toggleSidebar">
-            <i class="fas fa-bars"></i>
-        </button>
-
-        <nav class="header-menu">
-            <div class="dropdown">
-                <a class="dropdown-toggle" href="#" id="courseMenu">
-                    <i class="fas fa-list"></i> @Localizer["Courses"]
-                </a>
-                <div class="dropdown-menu" id="courseDropdown">
-                    <a href="#" class="dropdown-item">Lập trình Web</a>
-                    <a href="#" class="dropdown-item">Phát triển Game</a>
-                    <a href="#" class="dropdown-item">Khoa học Dữ liệu</a>
-                    <a href="#" class="dropdown-item">AI & Machine Learning</a>
-                    <a href="#" class="dropdown-item">Cấu Trúc Dữ Liệu & Giải Thuật</a>
-                    <a href="#" class="dropdown-item">Cơ Sở Dữ Liệu Nâng Cao</a>
-                </div>
-            </div>
-            <a asp-controller="Product" asp-action="Add"><i class="fas fa-plus"></i>Ôn Tập</a>
-            <a asp-controller="Contact" asp-action="Index"><i class="fas fa-plus"></i>@Localizer["Contact"]</a>
-            <a asp-controller="Auth" asp-action="Login"><i class="fas fa-plus"></i> @Localizer["LoginRegister"]</a>
-        </nav>
-    </header>
+   
 
     <main class="container mt-5">
         <section class="mb-5 text-center">
