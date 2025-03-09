@@ -1,0 +1,3 @@
+﻿<Project>
+  <Import Project="..\build\Do_An_Web_Hoc.props" />
+</Project>
