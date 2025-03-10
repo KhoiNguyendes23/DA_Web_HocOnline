@@ -28,5 +28,9 @@ namespace Do_An_Web_Hoc.Controllers
         {
             return View();
         }
+        public IActionResult AdvancedDatabase()
+        {
+            return View();
+        }
     }
 }

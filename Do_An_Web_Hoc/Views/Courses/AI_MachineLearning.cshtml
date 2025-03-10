@@ -1,10 +1,10 @@
-﻿﻿@using Microsoft.AspNetCore.Localization
+﻿@using Microsoft.AspNetCore.Localization
 @using Microsoft.AspNetCore.Http
 @using Microsoft.AspNetCore.Mvc.Localization
 @inject IViewLocalizer Localizer
 @inject IHttpContextAccessor HttpContextAccessor
 @{
-    ViewData["Title"] = "Khóa Học Lập Trình Web";
+    ViewData["Title"] = "Khóa Học AI & Machine Learning";
 }
 
 <!DOCTYPE html>
@@ -18,16 +18,9 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- Custom CSS -->
-    <link href="~/css/webdevelopment.css" rel="stylesheet" />
+    <link href="~/css/AI_MachineLearning.css" rel="stylesheet" />
 </head>
 <body>
-
-    <!-- Header -->
-    @* <header class="bg-primary text-white text-center py-3"> *@
-    @*     
-    @* </header> *@
-  
-
 
     <!-- Main Content -->
     <main class="container mt-5">
@@ -35,20 +28,12 @@
             <h2 class="display-4 fw-bolder text-primary">@ViewData["Title"]</h2>
         </section>
 
-
-
-
         <section class="mb-5 container">
-
             <h3 class="text-primary text-start border-bottom pb-2">1. Giới Thiệu Về Khóa Học</h3>
             <p class="lead text-justify" style="max-width: 880px; text-align: justify;">
-                Khóa học <strong>Lập Trình Web</strong> giúp bạn nắm vững các công nghệ HTML, CSS, JavaScript, và các framework hiện đại như React, Vue, hoặc Angular. Đây là một khóa học toàn diện dành cho những ai muốn bắt đầu sự nghiệp trong lĩnh vực phát triển web hoặc muốn nâng cao kỹ năng frontend của mình.
+                Khóa học <strong>AI & Machine Learning</strong> giúp bạn hiểu rõ các nguyên tắc cơ bản của trí tuệ nhân tạo (AI) và học máy (ML). Bạn sẽ học cách xây dựng, huấn luyện và triển khai các mô hình AI/ML từ đầu, sử dụng các công nghệ như Python, TensorFlow, Scikit-learn, và nhiều công cụ khác. Đây là một khóa học lý tưởng cho những ai muốn khám phá AI hoặc nâng cao kỹ năng kỹ thuật của mình trong lĩnh vực này.
             </p>
         </section>
-
-
-
-
 
         <section class="mb-5">
             <h3 class="text-primary">2. Nội Dung Chương Trình</h3>
@@ -57,16 +42,15 @@
                 <div class="col-md-6">
                     <div class="card p-3 shadow-sm border-primary">
                         <div class="card-body">
-                            <h5 class="fw-bold text-primary">Chương 1: Cơ Bản Về Web & HTML</h5>
+                            <h5 class="fw-bold text-primary">Chương 1: Giới Thiệu AI & Machine Learning</h5>
                             <a href="#">
-                                <img src="#" class="img-fluid rounded my-2" alt="Hình minh họa HTML cơ bản">
+                                <img src="#" class="img-fluid rounded my-2" alt="Giới thiệu về AI">
                             </a>
                             <ul>
-                                <li>🔹 Web hoạt động như thế nào?</li>
-                                <li>🔹 Giới thiệu HTML và vai trò của nó</li>
-                                <li>🔹 Cấu trúc cơ bản của một trang HTML</li>
-                                <li>🔹 Các thẻ HTML quan trọng (tiêu đề, đoạn văn, hình ảnh,...)</li>
-                                <li>🔹 Cách tạo biểu mẫu (form) để thu thập dữ liệu từ người dùng</li>
+                                <li>🔹 Lịch sử và sự phát triển của AI</li>
+                                <li>🔹 Các nhánh chính của AI và ứng dụng</li>
+                                <li>🔹 Sự khác biệt giữa AI, ML và Deep Learning</li>
+                                <li>🔹 Các công cụ và môi trường lập trình AI</li>
                             </ul>
                             <div class="text-center mt-2">
                                 <a href="#" class="btn btn-primary">Bắt đầu học</a>
@@ -79,16 +63,15 @@
                 <div class="col-md-6">
                     <div class="card p-3 shadow-sm border-primary">
                         <div class="card-body">
-                            <h5 class="fw-bold text-primary">Chương 2: CSS - Thiết Kế Giao Diện Web</h5>
+                            <h5 class="fw-bold text-primary">Chương 2: Lập Trình Python Cho AI</h5>
                             <a href="#">
-                                <img src="#" class="img-fluid rounded my-2" alt="Hình minh họa HTML cơ bản">
+                                <img src="#" class="img-fluid rounded my-2" alt="Giới thiệu về AI">
                             </a>
                             <ul>
-                                <li>🔹 Giới thiệu về CSS và vai trò của nó</li>
-                                <li>🔹 Cách sử dụng CSS để tạo giao diện đẹp mắt</li>
-                                <li>🔹 Các thuộc tính quan trọng trong CSS (màu sắc, kích thước,...)</li>
-                                <li>🔹 Flexbox và Grid - Công cụ bố cục mạnh mẽ</li>
-                                <li>🔹 Tạo giao diện responsive (tương thích với mọi màn hình)</li>
+                                <li>🔹 Giới thiệu Python cho Machine Learning</li>
+                                <li>🔹 Thư viện NumPy và Pandas</li>
+                                <li>🔹 Vẽ biểu đồ với Matplotlib và Seaborn</li>
+                                <li>🔹 Xử lý dữ liệu thực tế</li>
                             </ul>
                             <div class="text-center mt-2">
                                 <a href="#" class="btn btn-primary">Bắt đầu học</a>
@@ -101,16 +84,15 @@
                 <div class="col-md-6">
                     <div class="card p-3 shadow-sm border-primary">
                         <div class="card-body">
-                            <h5 class="fw-bold text-primary">Chương 3: JavaScript Cơ Bản</h5>
+                            <h5 class="fw-bold text-primary">Chương 3: Học Máy Cơ Bản</h5>
                             <a href="#">
-                                <img src="#" class="img-fluid rounded my-2" alt="Hình minh họa HTML cơ bản">
+                                <img src="#" class="img-fluid rounded my-2" alt="Giới thiệu về AI">
                             </a>
                             <ul>
-                                <li>🔹 Giới thiệu về JavaScript và cách hoạt động</li>
-                                <li>🔹 Biến, kiểu dữ liệu và toán tử trong JavaScript</li>
-                                <li>🔹 Cấu trúc điều kiện và vòng lặp</li>
-                                <li>🔹 Hàm và cách sử dụng</li>
-                                <li>🔹 Xử lý sự kiện và tương tác với HTML bằng JavaScript</li>
+                                <li>🔹 Học có giám sát và không giám sát</li>
+                                <li>🔹 Hồi quy tuyến tính và logistic</li>
+                                <li>🔹 Cây quyết định và Random Forest</li>
+                                <li>🔹 Đánh giá mô hình AI</li>
                             </ul>
                             <div class="text-center mt-2">
                                 <a href="#" class="btn btn-primary">Bắt đầu học</a>
@@ -123,16 +105,15 @@
                 <div class="col-md-6">
                     <div class="card p-3 shadow-sm border-primary">
                         <div class="card-body">
-                            <h5 class="fw-bold text-primary">Chương 4: JavaScript Nâng Cao</h5>
+                            <h5 class="fw-bold text-primary">Chương 4: Deep Learning Với TensorFlow</h5>
                             <a href="#">
-                                <img src="#" class="img-fluid rounded my-2" alt="Hình minh họa HTML cơ bản">
+                                <img src="#" class="img-fluid rounded my-2" alt="Giới thiệu về AI">
                             </a>
                             <ul>
-                                <li>🔹 DOM Manipulation - Tương tác với trang web</li>
-                                <li>🔹 Async JavaScript - Promise, Callback, Async/Await</li>
-                                <li>🔹 Fetch API & Xử lý dữ liệu từ server</li>
-                                <li>🔹 Object-Oriented Programming (Lập trình hướng đối tượng)</li>
-                                <li>🔹 ES6+ và các tính năng hiện đại trong JavaScript</li>
+                                <li>🔹 Cấu trúc của Neural Network</li>
+                                <li>🔹 Mô hình Perceptron và MLP</li>
+                                <li>🔹 TensorFlow và Keras</li>
+                                <li>🔹 Xây dựng mô hình CNN</li>
                             </ul>
                             <div class="text-center mt-2">
                                 <a href="#" class="btn btn-primary">Bắt đầu học</a>
@@ -145,16 +126,15 @@
                 <div class="col-md-6">
                     <div class="card p-3 shadow-sm border-primary">
                         <div class="card-body">
-                            <h5 class="fw-bold text-primary">Chương 5: Framework Frontend - React</h5>
+                            <h5 class="fw-bold text-primary">Chương 5: Xử Lý Ngôn Ngữ Tự Nhiên (NLP)</h5>
                             <a href="#">
-                                <img src="#" class="img-fluid rounded my-2" alt="Hình minh họa HTML cơ bản">
+                                <img src="#" class="img-fluid rounded my-2" alt="Giới thiệu về AI">
                             </a>
                             <ul>
-                                <li>🔹 Giới thiệu về React và lý do sử dụng</li>
-                                <li>🔹 JSX - Cách viết HTML trong JavaScript</li>
-                                <li>🔹 Component & Props - Xây dựng UI theo từng phần</li>
-                                <li>🔹 State & Lifecycle - Quản lý trạng thái ứng dụng</li>
-                                <li>🔹 Kết nối API và quản lý dữ liệu với React</li>
+                                <li>🔹 Giới thiệu NLP</li>
+                                <li>🔹 Tiền xử lý văn bản</li>
+                                <li>🔹 Word Embeddings (Word2Vec, GloVe)</li>
+                                <li>🔹 Mô hình Transformer (BERT, GPT)</li>
                             </ul>
                             <div class="text-center mt-2">
                                 <a href="#" class="btn btn-primary">Bắt đầu học</a>
@@ -167,16 +147,15 @@
                 <div class="col-md-6">
                     <div class="card p-3 shadow-sm border-primary">
                         <div class="card-body">
-                            <h5 class="fw-bold text-primary">Chương 6: Dự án Cuối Khóa</h5>
+                            <h5 class="fw-bold text-primary">Chương 6: Dự án AI Ứng Dụng</h5>
                             <a href="#">
-                                <img src="#" class="img-fluid rounded my-2" alt="Hình minh họa HTML cơ bản">
+                                <img src="#" class="img-fluid rounded my-2" alt="Giới thiệu về AI">
                             </a>
                             <ul>
-                                <li>🔹 Lập kế hoạch và thiết kế giao diện</li>
-                                <li>🔹 Xây dựng trang web hoàn chỉnh với HTML, CSS, JavaScript</li>
-                                <li>🔹 Sử dụng React để tạo UI động</li>
-                                <li>🔹 Kết nối dữ liệu và xử lý sự kiện</li>
-                                <li>🔹 Triển khai sản phẩm lên môi trường thực tế</li>
+                                <li>🔹 Phân tích dữ liệu thực tế</li>
+                                <li>🔹 Xây dựng chatbot AI</li>
+                                <li>🔹 Nhận diện hình ảnh</li>
+                                <li>🔹 Triển khai mô hình AI lên đám mây</li>
                             </ul>
                             <div class="text-center mt-2">
                                 <a href="#" class="btn btn-primary">Bắt đầu học</a>
@@ -185,12 +164,7 @@
                     </div>
                 </div>
             </div>
-
-
         </section>
-
-
-
         <section class="mb-5">
             <h3 class="text-primary border-bottom pb-2">3. Cách Học</h3>
             <div class="container">
@@ -198,7 +172,7 @@
                     <div class="card-body">
 
                         <p class="lead text-justify">
-                            Trong khóa học <strong>Lập Trình Web</strong>, bạn sẽ được hướng dẫn từ cơ bản đến nâng cao thông qua nhiều phương pháp học tập khác nhau.
+                            Trong khóa học <strong>AI & Machine Learning</strong>, bạn sẽ được hướng dẫn từ cơ bản đến nâng cao thông qua nhiều phương pháp học tập khác nhau.
                             Chúng tôi tập trung vào việc giúp bạn học thực tế, làm thực tế để có thể áp dụng ngay vào công việc. Dưới đây là các phương pháp bạn sẽ trải qua trong khóa học:
                         </p>
 
@@ -211,10 +185,10 @@
                                         <h5 class="fw-bold text-primary">Học qua video và bài giảng tương tác</h5>
                                         <img src="#" class="img-fluid rounded my-2" alt="Hình minh họa">
                                         <p class="text-muted">
-                                            - Hệ thống video bài giảng từ cơ bản đến nâng cao, giúp bạn nắm chắc lý thuyết quan trọng.<br>
-                                            - Cung cấp tài liệu tham khảo, slide bài giảng, và ghi chú để dễ dàng ôn tập.
+                                            - Video bài giảng chi tiết từ giảng viên giúp bạn nắm vững lý thuyết về AI & Machine Learning.<br>
+                                            - Tài liệu tham khảo, bài giảng PDF, và ghi chú để dễ dàng ôn tập.<br>
+                                            - Bài tập trắc nghiệm giúp củng cố kiến thức.
                                         </p>
-
                                     </div>
                                 </div>
                             </div>
@@ -223,26 +197,27 @@
                             <div class="col-md-4">
                                 <div class="card shadow-sm h-100">
                                     <div class="card-body">
-                                        <h5 class="fw-bold text-primary">Thực hành coding trực tiếp</h5>
+                                        <h5 class="fw-bold text-primary">Thực hành lập trình AI/ML</h5>
                                         <img src="#" class="img-fluid rounded my-2" alt="Hình minh họa">
                                         <p class="text-muted">
-                                            - Mỗi bài học đều có code mẫu để bạn thử nghiệm ngay.<br>
-                                            - Có bài tập thực hành sau mỗi phần để đảm bảo bạn hiểu rõ trước khi tiếp tục.
+                                            - Các bài tập coding thực hành ngay trong Jupyter Notebook hoặc Google Colab.<br>
+                                            - Hướng dẫn từng bước để xây dựng và triển khai mô hình AI.<br>
+                                            - Dữ liệu thực tế để áp dụng vào các dự án AI.
                                         </p>
                                     </div>
                                 </div>
                             </div>
 
-                            <!-- Cột 3: Bài tập & Project tự do -->
+                            <!-- Cột 3: Bài tập & Project thực tế -->
                             <div class="col-md-4">
                                 <div class="card shadow-sm h-100">
                                     <div class="card-body">
-                                        <h5 class="fw-bold text-primary">Bài tập và project tự do</h5>
+                                        <h5 class="fw-bold text-primary">Bài tập và dự án AI thực tế</h5>
                                         <img src="#" class="img-fluid rounded my-2" alt="Hình minh họa">
                                         <p class="text-muted">
-                                            - Hệ thống bài tập phong phú từ đơn giản đến phức tạp giúp bạn nâng cao kỹ năng.<br>
-                                            - Các project thực tế giúp bạn làm quen với quy trình phát triển sản phẩm.<br>
-                                            - Hoàn thành project cuối khóa để xây dựng portfolio.
+                                            - Bài tập thực hành từ đơn giản đến nâng cao giúp bạn thành thạo kỹ năng lập trình AI.<br>
+                                            - Dự án cuối khóa giúp bạn xây dựng một sản phẩm AI hoàn chỉnh.<br>
+                                            - Triển khai mô hình AI lên cloud (Google Cloud, AWS, Azure) để sử dụng thực tế.
                                         </p>
                                     </div>
                                 </div>
@@ -253,17 +228,7 @@
             </div>
         </section>
 
-
-
-
     </main>
-
-
-
-
-    <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    
-
 </body>
 </html>
