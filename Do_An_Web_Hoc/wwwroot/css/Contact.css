@@ -1,4 +1,11 @@
-﻿.contact-info {
+﻿/* Container chính */
+.container {
+    max-width: 1100px;
+    margin: auto;
+}
+
+/* Kiểu cho phần thông tin liên hệ */
+.contact-info {
     display: flex;
     flex-direction: column;
     gap: 15px;
@@ -20,4 +27,19 @@
     justify-content: center;
     font-size: 20px;
     color: #0066cc;
+}
+
+/* Điều chỉnh kích thước bản đồ */
+.map-container {
+    width: 100%;
+    max-width: 1200px;
+    margin: auto;
+    text-align: center;
+}
+
+#map {
+    height: 450px;
+    width: 100%;
+    border-radius: 400px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
 }

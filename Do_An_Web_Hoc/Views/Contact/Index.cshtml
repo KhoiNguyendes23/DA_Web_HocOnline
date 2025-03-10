@@ -2,6 +2,9 @@
     ViewData["Title"] = "Liên hệ";
 }
 
+<!-- Import CSS -->
+<link rel="stylesheet" href="~/css/contact.css" />
+
 <div class="container mt-5">
     <h2 class="text-center text-primary">Liên hệ với chúng tôi</h2>
 
@@ -52,4 +55,30 @@
             </div>
         </div>
     </div>
+
+    <!-- Bản đồ kéo dài toàn bộ trang -->
+    <div class="map-container mt-4">
+        <h4 class="text-center text-secondary">Vị trí của chúng tôi</h4>
+        <div id="map"></div>
+    </div>
 </div>
+
+<!-- Import thư viện Leaflet.js -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        var map = L.map('map').setView([10.762622, 106.660172], 15); // Tọa độ TP.HCM
+
+        // Thêm bản đồ từ OpenStreetMap
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap contributors'
+        }).addTo(map);
+
+        // Thêm marker
+        L.marker([10.762622, 106.660172]).addTo(map)
+            .bindPopup('Chúng tôi ở đây!')
+            .openPopup();
+    });
+</script>
