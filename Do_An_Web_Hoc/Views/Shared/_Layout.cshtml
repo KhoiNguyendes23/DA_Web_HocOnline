@@ -10,7 +10,6 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - Do_An_Web_Hoc</title>
-
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/layout.css" asp-append-version="true" />
 
@@ -31,20 +30,23 @@
 
         <nav class="header-menu">
             <div class="dropdown">
-                <a class="dropdown-toggle" href="#" id="courseMenu">
+                <a class="dropdown-toggle" href="" id="courseMenu">
                     <i class="fas fa-list"></i> @Localizer["Courses"]
                 </a>
                 <div class="dropdown-menu" id="courseDropdown">
-                    <a href="#" class="dropdown-item">Lập trình Web</a>
-                    <a href="#" class="dropdown-item">Phát triển Game</a>
-                    <a href="#" class="dropdown-item">Khoa học Dữ liệu</a>
-                    <a href="#" class="dropdown-item">AI & Machine Learning</a>
-                    <a href="#" class="dropdown-item">Cấu Trúc Dữ Liệu & Giải Thuật</a>
-                    <a href="#" class="dropdown-item">Cơ Sở Dữ Liệu Nâng Cao</a>
+                    <a asp-controller="Courses" asp-action="WebDevelopment" class="dropdown-item">Lập trình Web</a>
+                    @* <a href="#" class="dropdown-item">Phát triển Game</a> *@
+                    @* <a href="#" class="dropdown-item">Khoa học Dữ liệu</a> *@
+                    <a asp-controller="Courses" asp-action="DataScience" class="dropdown-item">Khoa học dữ liệu</a>
+                    @* <a href="#" class="dropdown-item">AI & Machine Learning</a> *@
+                    <a asp-controller="Courses" asp-action="AI_MachineLearning" class="dropdown-item">AI & Machine Learning</a>
+                    @* <a href="#" class="dropdown-item">Cấu Trúc Dữ Liệu & Giải Thuật</a> *@
+                    @* <a href="#" class="dropdown-item">Cơ Sở Dữ Liệu Nâng Cao</a> *@
+                    <a asp-controller="Courses" asp-action="AdvancedDatabase" class="dropdown-item">Cơ Sở Dữ Liệu Nâng Cao</a>
                 </div>
             </div>
             <a asp-controller="Product" asp-action="Add"><i class="fas fa-plus"></i>Ôn Tập</a>
-            <a asp-controller="Product" asp-action="Add"><i class="fas fa-plus"></i>Về Chúng Tôi</a>
+            <a asp-controller="AboutMe" asp-action="AboutMe"><i class="fas fa-plus"></i>Về Chúng Tôi</a>
             <a asp-controller="Contact" asp-action="Index"><i class="fas fa-plus"></i>@Localizer["Contact"]</a>
             <a asp-controller="Auth" asp-action="Login"><i class="fas fa-plus"></i> @Localizer["LoginRegister"]</a>
         </nav>
