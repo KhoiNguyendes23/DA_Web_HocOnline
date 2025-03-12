@@ -1,9 +1,12 @@
 ﻿using Microsoft.AspNetCore.Localization;
 using System.Globalization;
 using Microsoft.Extensions.Options;
+using Do_An_Web_Hoc.Models;
 
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddScoped<IReview, ReviewService>();
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
