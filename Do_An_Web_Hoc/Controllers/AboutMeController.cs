@@ -4,7 +4,7 @@ namespace Do_An_Web_Hoc.Controllers
 {
     public class AboutMeController : Controller
     {
-        public IActionResult AboutMe()
+        public IActionResult Index()
         {
             return View();
         }

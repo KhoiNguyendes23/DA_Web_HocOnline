@@ -147,4 +147,34 @@
   <data name="WelcomeText" xml:space="preserve">
     <value>Bienvenue sur notre site web!</value>
   </data>
+  <data name="AboutMe" xml:space="preserve">
+    <value>Sur moi</value>
+  </data>
+  <data name="WebProgramming" xml:space="preserve">
+    <value>programmation Web</value>
+  </data>
+  <data name="DataScience" xml:space="preserve">
+    <value>science des données</value>
+  </data>
+  <data name="AI&amp;MachineLearning" xml:space="preserve">
+    <value>IA et apprentissage automatique</value>
+  </data>
+  <data name="AdvancedDatabase" xml:space="preserve">
+    <value>Base de données avancée</value>
+  </data>
+  <data name="Review" xml:space="preserve">
+    <value>revoir</value>
+  </data>
+  <data name="LoginRegister" xml:space="preserve">
+    <value>Connexion/Inscription</value>
+  </data>
+  <data name="DigitalLearningCenter" xml:space="preserve">
+    <value>Centre d'apprentissage numérique</value>
+  </data>
+  <data name="Address" xml:space="preserve">
+    <value>adresse</value>
+  </data>
+  <data name="siteCopyright" xml:space="preserve">
+    <value>siteCopyright</value>
+  </data>
 </root>

@@ -34,21 +34,21 @@
                     <i class="fas fa-list"></i> @Localizer["Courses"]
                 </a>
                 <div class="dropdown-menu" id="courseDropdown">
-                    <a asp-controller="Courses" asp-action="WebDevelopment" class="dropdown-item">Lập trình Web</a>
+                    <a asp-controller="Courses" asp-action="WebDevelopment" class="dropdown-item">@Localizer["WebProgramming"]</a>
                     @* <a href="#" class="dropdown-item">Phát triển Game</a> *@
                     @* <a href="#" class="dropdown-item">Khoa học Dữ liệu</a> *@
-                    <a asp-controller="Courses" asp-action="DataScience" class="dropdown-item">Khoa học dữ liệu</a>
+                    <a asp-controller="Courses" asp-action="DataScience" class="dropdown-item">@Localizer["DataScience"]</a>
                     @* <a href="#" class="dropdown-item">AI & Machine Learning</a> *@
-                    <a asp-controller="Courses" asp-action="AI_MachineLearning" class="dropdown-item">AI & Machine Learning</a>
+                    <a asp-controller="Courses" asp-action="AI_MachineLearning" class="dropdown-item">@Localizer["AI&MachineLearning"]</a>
                     @* <a href="#" class="dropdown-item">Cấu Trúc Dữ Liệu & Giải Thuật</a> *@
                     @* <a href="#" class="dropdown-item">Cơ Sở Dữ Liệu Nâng Cao</a> *@
-                    <a asp-controller="Courses" asp-action="AdvancedDatabase" class="dropdown-item">Cơ Sở Dữ Liệu Nâng Cao</a>
+                    <a asp-controller="Courses" asp-action="AdvancedDatabase" class="dropdown-item">@Localizer["AdvancedDatabase"]</a>
                 </div>
             </div>
-            <a asp-controller="Product" asp-action="Add"><i class="fas fa-plus"></i>Ôn Tập</a>
-            <a asp-controller="AboutMe" asp-action="AboutMe"><i class="fas fa-plus"></i>Về Chúng Tôi</a>
+            <a asp-controller="Product" asp-action="Add"><i class="fas fa-plus"></i>@Localizer["ReView"]</a>
+            <a asp-controller="AboutMe" asp-action="Index"><i class="fas fa-plus"></i>@Localizer["AboutMe"]</a>
             <a asp-controller="Contact" asp-action="Index"><i class="fas fa-plus"></i>@Localizer["Contact"]</a>
-            <a asp-controller="Auth" asp-action="Login"><i class="fas fa-plus"></i> @Localizer["LoginRegister"]</a>
+            <a asp-controller="#" asp-action="Login"><i class="fas fa-plus"></i> @Localizer["LoginRegister"]</a>
         </nav>
 
         <!-- Lấy ngôn ngữ hiện tại từ Cookie -->
@@ -94,8 +94,8 @@
                 <!-- Cột 1: Thông tin -->
                 <div class="col-md-6">
                     <h5>Thông tin</h5>
-                    <p><i class="fas fa-home"></i> TRUNG TÂM DẠY HỌC SỐ - HUTECH</p>
-                    <p><i class="fas fa-map-marker-alt"></i> 108 Hoàng Hoa Thám, P.24, Q.Thủ Đức, TP.HCM</p>
+                    <p><i class="fas fa-home"></i>@Localizer["DigitalLearningCenter"] </p>
+                    <p><i class="fas fa-map-marker-alt"></i>@Localizer["Address"]</p>
                     <p><i class="fas fa-phone"></i> +84 90 1235598</p>
                     <p><i class="fas fa-envelope"></i> anhtkng@gmail.com</p>
                 </div>
@@ -113,7 +113,7 @@
 
                 <!-- Cột 3: Bản quyền -->
                 <div class="col-md-3 text-end">
-                    <p>2025 (Tên đề tài), bản quyền website</p>
+                    <p>@Localizer["siteCopyright"]</p>
                 </div>
             </div>
         </div>

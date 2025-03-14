@@ -147,4 +147,34 @@
   <data name="WelcomeText" xml:space="preserve">
     <value>Welcome to our website!</value>
   </data>
+  <data name="AboutMe" xml:space="preserve">
+    <value>About Me</value>
+  </data>
+  <data name="WebProgramming" xml:space="preserve">
+    <value>Web Programming</value>
+  </data>
+  <data name="DataScience" xml:space="preserve">
+    <value>Data Science</value>
+  </data>
+  <data name="AI&amp;MachineLearning" xml:space="preserve">
+    <value>AI &amp; MachineLearning</value>
+  </data>
+  <data name="AdvancedDatabase" xml:space="preserve">
+    <value>Advanced Database</value>
+  </data>
+  <data name="Review" xml:space="preserve">
+    <value>Review</value>
+  </data>
+  <data name="LoginRegister" xml:space="preserve">
+    <value>Login/Register</value>
+  </data>
+  <data name="DigitalLearningCenter" xml:space="preserve">
+    <value>DigitalLearningCenter</value>
+  </data>
+  <data name="Address" xml:space="preserve">
+    <value>Address</value>
+  </data>
+  <data name="siteCopyright" xml:space="preserve">
+    <value>siteCopyright</value>
+  </data>
 </root>
