@@ -1,0 +1,15 @@
+﻿@model Do_An_Web_Hoc.Models.Categories
+
+<h2>Xóa danh mục</h2>
+
+<p><strong>Bạn có chắc chắn muốn xóa danh mục này không?</strong></p>
+
+<ul>
+    <li><strong>ID:</strong> @Model.CategoryId</li>
+    <li><strong>Tên danh mục:</strong> @Model.CategoryName</li>
+</ul>
+
+<form method="post" action="@Url.Action("ConfirmDelete", new { id = Model.CategoryId })">
+    <button type="submit" class="btn btn-danger">Xóa</button>
+    <a href="@Url.Action("Index")" class="btn btn-secondary">Hủy</a>
+</form>

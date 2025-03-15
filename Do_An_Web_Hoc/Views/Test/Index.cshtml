@@ -1,34 +1,83 @@
-﻿@model IEnumerable<Do_An_Web_Hoc.Models.UserAccount>
+﻿@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
 
-<form asp-action="Index" asp-controller="Test" method="post">
-    <label for="roleId">Nhập Role ID:</label>
-    <input type="number" id="roleId" name="roleId" required />
-    <button type="submit">Tìm kiếm</button>
+<h2>Danh sách danh mục</h2>
+
+<!-- Form lọc danh mục -->
+<form method="get" action="@Url.Action("Index")">
+    <input type="checkbox" name="showAll" @(ViewData["ShowAll"].Equals(true) ? "checked" : "") />
+    <label>Hiển thị danh mục ngừng hoạt động</label>
+    <button type="submit" class="btn btn-info">Lọc</button>
 </form>
 
-@if (Model != null)
-{
-    <table class="table">
-        <thead>
-            <tr>
-                <th>UserID</th>
-                <th>UserName</th>
-                <th>Email</th>
-                <th>FullName</th>
-                <th>Status</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var user in Model)
-            {
+<!-- Tab chuyển giữa danh mục hoạt động và ngừng hoạt động -->
+<ul class="nav nav-tabs">
+    <li class="nav-item">
+        <a class="nav-link @(!ViewData["ShowAll"].Equals(true) ? "active" : "")" href="@Url.Action("Index", new { showAll = false })">Danh mục hoạt động</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link @(ViewData["ShowAll"].Equals(true) ? "active" : "")" href="@Url.Action("Index", new { showAll = true })">Danh mục ngừng hoạt động</a>
+    </li>
+</ul>
+
+<!-- Hiển thị danh mục hoạt động -->
+<div class="tab-content">
+    <div class="tab-pane fade @(!ViewData["ShowAll"].Equals(true) ? "show active" : "")">
+        <table class="table">
+            <thead>
                 <tr>
-                    <td>@user.UserID</td>
-                    <td>@user.UserName</td>
-                    <td>@user.Email</td>
-                    <td>@user.FullName</td>
-                    <td>@user.Status</td>
+                    <th>ID</th>
+                    <th>Tên danh mục</th>
+                    <th>Trạng thái</th>
+                    <th>Hành động</th>
                 </tr>
-            }
-        </tbody>
-    </table>
-}
+            </thead>
+            <tbody>
+                @foreach (var category in Model)
+                {
+                    if (category.Status == 1) // Chỉ hiển thị danh mục hoạt động
+                    {
+                        <tr>
+                            <td>@category.CategoryId</td>
+                            <td>@category.CategoryName</td>
+                            <td>Hoạt động</td>
+                            <td>
+                                <a class="btn btn-warning" href="@Url.Action("Edit", new { id = category.CategoryId })">Chỉnh sửa</a>
+                                <a class="btn btn-danger" href="@Url.Action("Delete", new { id = category.CategoryId })">Xóa</a>
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Hiển thị danh mục ngừng hoạt động -->
+    <div class="tab-pane fade @(ViewData["ShowAll"].Equals(true) ? "show active" : "")">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Tên danh mục</th>
+                    <th>Trạng thái</th>
+                    <th>Hành động</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var category in Model)
+                {
+                    if (category.Status == 2) // Chỉ hiển thị danh mục ngừng hoạt động
+                    {
+                        <tr>
+                            <td>@category.CategoryId</td>
+                            <td>@category.CategoryName</td>
+                            <td>Ngừng hoạt động</td>
+                            <td>
+                                <a class="btn btn-success" href="@Url.Action("Restore", new { id = category.CategoryId })">Khôi phục</a>
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

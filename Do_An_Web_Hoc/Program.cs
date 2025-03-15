@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Do_An_Web_Hoc.Repositories.Interfaces;
 using Do_An_Web_Hoc.Repositories;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -27,9 +28,13 @@ builder.Services.AddSession(options =>
 
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
-// 💡 **Thêm Repository**
-builder.Services.AddScoped<IUserAccountRepository, EFUserAccountRepository>();
 
+// Thêm dịch vụ xác thực
+builder.Services.AddAuthorization();
+// 💡 **Thêm Repository**
+
+builder.Services.AddScoped<IUserAccountRepository, EFUserAccountRepository>();
+builder.Services.AddScoped<ICategoryRepository, EFCategoryRepository>();
 // 💡 **Cấu hình MVC & View Localization**
 builder.Services.AddControllersWithViews()
     .AddViewLocalization()
