@@ -18,7 +18,7 @@
                 <h1>ĐĂNG NHẬP</h1>
                 <div class="input-box">
                     @* <input type="email" placeholder="Tên tài khoản" required> *@
-                    <input type="email" name="email" class="form-control" placeholder="Tên tài khoản" required />
+                    <input type="email" name="email" class="form-control" placeholder="Email của bạn" required />
                     <i class='bx bxs-user'></i>
                 </div>
                 <div class="input-box">
@@ -41,18 +41,22 @@
         </div>
 
         <div class="form-box register">
-            <form action="#">
+            <form asp-action="Register" method="post">
                 <h1>ĐĂNG KÝ</h1>
                 <div class="input-box">
-                    <input type="text" placeholder="Tên tài khoản" required>
+                    <input type="text" name="UserName" placeholder="Tên tài khoản" required>
                     <i class='bx bxs-user'></i>
                 </div>
                 <div class="input-box">
-                    <input type="email" placeholder="Email" required>
+                    <input type="email" name="Email" placeholder="Email" required>
                     <i class='bx bxs-envelope'></i>
                 </div>
                 <div class="input-box">
-                    <input type="password" placeholder="Mật khẩu" required>
+                    <input type="text" name="FullName" placeholder="Họ và Tên" required>
+                    <i class='bx bxs-user'></i>
+                </div>
+                <div class="input-box">
+                    <input type="password" name="Password" placeholder="Mật khẩu" required>
                     <i class='bx bxs-lock-alt'></i>
                 </div>
                 <button type="submit" class="btn">ĐĂNG KÝ</button>

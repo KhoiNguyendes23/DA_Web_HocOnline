@@ -32,7 +32,7 @@ namespace Do_An_Web_Hoc.Controllers
             if (user == null)
             {
                 ViewBag.Error = "Sai email hoặc mật khẩu!";
-                return Index();
+                return View("Index");
             }
 
             // Lấy RoleID an toàn (nếu null thì gán = 0)
@@ -64,7 +64,7 @@ namespace Do_An_Web_Hoc.Controllers
             if (await _userAccountRepository.CheckUserExistsAsync(model.Email))
             {
                 ViewBag.Error = "Email đã tồn tại!";
-                return View(model);
+                return View("Index", model);
             }
 
             var newUser = await _userAccountRepository.RegisterAsync(model, model.Password); //Thêm mật khẩu
@@ -75,14 +75,15 @@ namespace Do_An_Web_Hoc.Controllers
                 return View(model);
             }
 
-            return RedirectToAction("Login");
+            //return RedirectToAction("Index");
+            return View("Index");
         }
 
         // Đăng xuất
         public IActionResult Logout()
         {
             HttpContext.Session.Clear();
-            return RedirectToAction("Login");
+            return RedirectToAction("Index");
         }
         // Trang yêu cầu gửi OTP
         public IActionResult ForgotPassword() => View();
@@ -139,7 +140,7 @@ namespace Do_An_Web_Hoc.Controllers
                 return View();
             }
 
-            return RedirectToAction("Login");
+            return RedirectToAction("Index");
         }
     }
 }
