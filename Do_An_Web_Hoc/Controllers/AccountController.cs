@@ -14,11 +14,12 @@ namespace Do_An_Web_Hoc.Controllers
             _userAccountRepository = userAccountRepository;
         }
 
-        // Trang đăng nhập
-        public IActionResult Login()
+        // Trang đăng nhập / đăng ký
+        public IActionResult Index()
         {
             return View();
         }
+
         // Xử lý đăng nhập
         [HttpPost]
         public async Task<IActionResult> Login(string email, string password)
@@ -27,7 +28,7 @@ namespace Do_An_Web_Hoc.Controllers
             if (user == null)
             {
                 ViewBag.Error = "Sai email hoặc mật khẩu!";
-                return View();
+                return Index();
             }
 
             // Lấy RoleID an toàn (nếu null thì gán = 0)
