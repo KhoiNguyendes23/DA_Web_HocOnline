@@ -1,34 +1,109 @@
-﻿@model IEnumerable<Do_An_Web_Hoc.Models.UserAccount>
+﻿@model Tuple<IEnumerable<Do_An_Web_Hoc.Models.UserAccount>, IEnumerable<Do_An_Web_Hoc.Models.Courses>>
 
-<form asp-action="Index" asp-controller="Test" method="post">
-    <label for="roleId">Nhập Role ID:</label>
-    <input type="number" id="roleId" name="roleId" required />
-    <button type="submit">Tìm kiếm</button>
+<h1>Quản lý Người dùng & Khóa học</h1>
+
+<!-- 🔍 Form tìm kiếm người dùng theo Role -->
+<form asp-action="Index" asp-controller="Test" method="post" class="mb-4">
+    <label for="roleId">🔍 Tìm kiếm người dùng theo Role ID:</label>
+    <input type="number" id="roleId" name="roleId" required class="form-control w-25 d-inline-block" />
+    <button type="submit" class="btn btn-primary">Tìm kiếm</button>
 </form>
 
-@if (Model != null)
+<h2>📌 Danh sách Người dùng</h2>
+@if (Model.Item1.Any())
 {
-    <table class="table">
-        <thead>
+    <table class="table table-bordered">
+        <thead class="thead-dark">
             <tr>
                 <th>UserID</th>
                 <th>UserName</th>
                 <th>Email</th>
                 <th>FullName</th>
-                <th>Status</th>
+                <th>Trạng thái</th>
             </tr>
         </thead>
         <tbody>
-            @foreach (var user in Model)
+            @foreach (var user in Model.Item1)
             {
                 <tr>
                     <td>@user.UserID</td>
                     <td>@user.UserName</td>
                     <td>@user.Email</td>
                     <td>@user.FullName</td>
-                    <td>@user.Status</td>
+                    <td>
+                        <span class="badge @(user.Status == 1 ? "badge-success" : "badge-secondary")">
+                            @(user.Status == 1 ? "Hoạt động" : "Ngừng hoạt động")
+                        </span>
+                    </td>
                 </tr>
             }
         </tbody>
     </table>
+}
+else
+{
+    <p class="text-danger">⚠ Không có người dùng nào!</p>
+}
+
+<hr />
+
+<!-- 🔍 Form tìm kiếm khóa học -->
+<form asp-action="Index" asp-controller="Test" method="post" class="mb-4">
+    <label for="courseKeyword">🔍 Tìm kiếm khóa học:</label>
+    <input type="text" id="courseKeyword" name="courseKeyword" class="form-control w-50 d-inline-block" />
+    <button type="submit" class="btn btn-primary">Tìm kiếm</button>
+</form>
+
+<h2>📚 Danh sách Khóa học</h2>
+@if (Model.Item2.Any())
+{
+    <table class="table table-bordered">
+        <thead class="thead-dark">
+            <tr>
+                <th>CourseID</th>
+                <th>Tên khóa học</th>
+                <th>Mô tả</th>
+                <th>Giá</th>
+                <th>Trạng thái</th>
+                <th>Hành động</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var course in Model.Item2)
+            {
+                <tr>
+                    <td>@course.CourseID</td>
+                    <td>@course.CourseName</td>
+                    <td>@course.Description</td>
+                    <td>@($"{course.Price:N0}") VNĐ</td>
+                    <td>
+                        <span class="badge @(course.Status == 1 ? "badge-success" : "badge-secondary")">
+                            @(course.Status == 1 ? "Hoạt động" : "Ngừng hoạt động")
+                        </span>
+                    </td>
+                    <td>
+                        <!-- 🖊 Sửa khóa học -->
+                        <a asp-action="EditCourse" asp-controller="Test" asp-route-id="@course.CourseID" class="btn btn-warning btn-sm">Sửa</a>
+
+                        <!-- 🗑 Xóa mềm khóa học -->
+                        @if (course.Status == 1)
+                        {
+                            <form asp-action="SoftDeleteCourse" asp-controller="Test" method="post" style="display:inline;">
+                                <input type="hidden" name="courseId" value="@course.CourseID" />
+                                <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Bạn có chắc chắn muốn xóa khóa học này không?')">Xóa</button>
+                            </form>
+                        }
+                        else
+                        {
+                            <span class="text-muted">Đã ngừng hoạt động</span>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p class="text-danger">⚠ Không có khóa học nào!</p>
 }

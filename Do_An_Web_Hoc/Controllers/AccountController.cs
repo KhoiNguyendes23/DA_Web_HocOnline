@@ -2,16 +2,20 @@
 using Do_An_Web_Hoc.Repositories.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Net.Mail;
+using System.Net;
+using Microsoft.Extensions.Configuration;
 
 namespace Do_An_Web_Hoc.Controllers
 {
     public class AccountController : Controller
     {
         private readonly IUserAccountRepository _userAccountRepository;
-
-        public AccountController(IUserAccountRepository userAccountRepository)
+        private readonly IConfiguration _configuration;
+        public AccountController(IUserAccountRepository userAccountRepository, IConfiguration configuration)
         {
             _userAccountRepository = userAccountRepository;
+            _configuration = configuration;
         }
 
         // Trang đăng nhập
@@ -79,5 +83,63 @@ namespace Do_An_Web_Hoc.Controllers
             HttpContext.Session.Clear();
             return RedirectToAction("Login");
         }
+        // Trang yêu cầu gửi OTP
+        public IActionResult ForgotPassword() => View();
+
+        [HttpPost]
+        public async Task<IActionResult> ForgotPassword(string email)
+        {
+            bool result = await _userAccountRepository.SendOTPAsync(email);
+            if (!result)
+            {
+                ViewBag.Error = "Email không tồn tại!";
+                return View();
+            }
+
+            TempData["EmailOTP"] = email;
+            return RedirectToAction("VerifyOTP");
+        }
+        // Trang nhập OTP
+        public IActionResult VerifyOTP() => View();
+
+        [HttpPost]
+        public async Task<IActionResult> VerifyOTP(string otp)
+        {
+            var email = TempData["EmailOTP"] as string;
+            if (email == null)
+                return RedirectToAction("ForgotPassword");
+
+            bool isOtpValid = await _userAccountRepository.VerifyOTPAsync(email, otp);
+            if (!isOtpValid)
+            {
+                ViewBag.Error = "Mã OTP không hợp lệ hoặc hết hạn!";
+                TempData["EmailOTP"] = email; // Giữ lại email để thử lại
+                return View();
+            }
+
+            TempData["EmailVerified"] = email;
+            return RedirectToAction("ResetPassword");
+        }
+        // Trang đặt mật khẩu mới
+        public IActionResult ResetPassword() => View();
+
+        [HttpPost]
+        public async Task<IActionResult> ResetPassword(string newPassword)
+        {
+            var email = TempData["EmailVerified"] as string;
+            if (email == null)
+                return RedirectToAction("ForgotPassword");
+
+            bool resetSuccess = await _userAccountRepository.ResetPasswordByOTPAsync(email, newPassword);
+
+            if (!resetSuccess)
+            {
+                ViewBag.Error = "Đặt lại mật khẩu thất bại!";
+                return View();
+            }
+
+            return RedirectToAction("Login");
+        }
     }
 }
+

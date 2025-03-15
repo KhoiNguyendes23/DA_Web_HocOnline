@@ -18,5 +18,9 @@ namespace Do_An_Web_Hoc.Repositories.Interfaces
 
         // Đăng nhập người dùng
         Task<UserAccount> LoginAsync(string email, string password);
+        // Thêm các phương thức sau cho OTP
+        Task<bool> SendOTPAsync(string email);
+        Task<bool> VerifyOTPAsync(string email, string otp);
+        Task<bool> ResetPasswordByOTPAsync(string email, string newPassword);
     }
 }

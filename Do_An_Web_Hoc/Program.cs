@@ -29,6 +29,14 @@ builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
 // 💡 **Thêm Repository**
 builder.Services.AddScoped<IUserAccountRepository, EFUserAccountRepository>();
+builder.Services.AddScoped<ICoursesRepository, EFCourseRepository>();
+
+
+
+
+
+
+
 
 // 💡 **Cấu hình MVC & View Localization**
 builder.Services.AddControllersWithViews()

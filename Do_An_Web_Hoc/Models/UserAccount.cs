@@ -16,5 +16,7 @@ namespace Do_An_Web_Hoc.Models
         public string FullName { get; set; }
         public DateTime? Birthday { get; set; }
         public int? Status { get; set; }
+        public string? ResetToken { get; set; }
+        public DateTime? ResetTokenExpiry { get; set; }
     }
 }
