@@ -116,12 +116,24 @@
                 </ul>
             </li>
             <li class="dropdown">
-                <a href="#settingsSubmenu" data-bs-toggle="collapse" class="dropdown-toggle"><i class="fas fa-wrench"></i> Cài đặt tài khoản</a>
+                <a href="#settingsSubmenu" data-bs-toggle="collapse" class="dropdown-toggle">
+                    <i class="fas fa-wrench"></i> Cài đặt tài khoản
+                </a>
                 <ul class="collapse list-unstyled" id="settingsSubmenu">
-                    <li><a href="PersonalPage">Thông tin cá nhân</a></li>
-                    <li><a href="Decentralization">Phân quyền người dùng</a></li>
+                    <li><a href="PersonalPage"><i class="fas fa-user"></i> Thông tin cá nhân</a></li>
+                    <li><a href="Decentralization"><i class="fas fa-users-cog"></i> Phân quyền người dùng</a></li>
+                    
+                    <li>
+                        <a href="Logout" class="text-danger"><i class="fas fa-sign-out-alt"></i> Đăng xuất</a>
+                    </li>
                 </ul>
             </li>
+            <li>
+                <a href="@Url.Action("Logout", "Account")" class="text-danger">
+                    <i class="fas fa-sign-out-alt"></i> Đăng xuất
+                </a>
+            </li>
+
         </ul>
     </div>
 
