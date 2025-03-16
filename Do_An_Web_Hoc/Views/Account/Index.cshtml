@@ -1,0 +1,90 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đăng Nhập/Đăng Ký</title>
+	<link href="~/css/form_log_reg.css" rel="stylesheet" />
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+</head>
+<body>
+    <div class="container">
+        <div class="form-box login">
+            <form asp-action="Login" method="post">
+                <h1>ĐĂNG NHẬP</h1>
+                <div class="input-box">
+                    @* <input type="email" placeholder="Tên tài khoản" required> *@
+                    <input type="email" name="email" class="form-control" placeholder="Email của bạn" required />
+                    <i class='bx bxs-user'></i>
+                </div>
+                <div class="input-box">
+                    @* <input type="password" placeholder="Mật khẩu" required> *@
+                    <input type="password" name="password" class="form-control" placeholder="Mật khẩu" required />
+                    <i class='bx bxs-lock-alt'></i>
+                </div>
+                <div class="forgot-link">
+                    <a asp-controller="Account" asp-action="ForgotPassword">Quên mật khẩu?</a>
+                </div>
+                <button type="submit" class="btn">ĐĂNG NHẬP</button>
+                <p>hoặc đăng nhập bằng các nền tảng khác</p>
+                <div class="social-icons">
+                    <a href="#"><i class='bx bxl-google'></i></a>
+                    <a href="#"><i class='bx bxl-facebook'></i></a>
+                    <a href="#"><i class='bx bxl-github'></i></a>
+                    <a href="#"><i class='bx bxl-linkedin'></i></a>
+                </div>
+            </form>
+        </div>
+
+        <div class="form-box register">
+            <form asp-action="Register" method="post">
+                <h1>ĐĂNG KÝ</h1>
+                <div class="input-box">
+                    <input type="text" name="UserName" placeholder="Tên tài khoản" required>
+                    <i class='bx bxs-user'></i>
+                </div>
+                <div class="input-box">
+                    <input type="email" name="Email" placeholder="Email" required>
+                    <i class='bx bxs-envelope'></i>
+                </div>
+                <div class="input-box">
+                    <input type="text" name="FullName" placeholder="Họ và Tên" required>
+                    <i class='bx bxs-user'></i>
+                </div>
+                <div class="input-box">
+                    <input type="password" name="Password" placeholder="Mật khẩu" required>
+                    <i class='bx bxs-lock-alt'></i>
+                </div>
+                <button type="submit" class="btn">ĐĂNG KÝ</button>
+                <p>hoặc đăng ký bằng các nền tảng khác</p>
+                <div class="social-icons">
+                    <a href="#"><i class='bx bxl-google'></i></a>
+                    <a href="#"><i class='bx bxl-facebook'></i></a>
+                    <a href="#"><i class='bx bxl-github'></i></a>
+                    <a href="#"><i class='bx bxl-linkedin'></i></a>
+                </div>
+            </form>
+        </div>
+
+        <div class="toggle-box">
+            <div class="toggle-panel toggle-left">
+                <h1>XIN CHÀO!</h1>
+                <p>Bạn chưa có tài khoản?</p>
+                <button class="btn register-btn">ĐĂNG KÝ</button>
+            </div>
+
+            <div class="toggle-panel toggle-right">
+                <h1>CHÀO MỪNG BẠN!</h1>
+                <p>Bạn đã có tài khoản?</p>
+                <button class="btn login-btn">ĐĂNG NHẬP</button>
+            </div>
+        </div>
+    </div>
+
+	<script src="~/js/form_log_reg.js"></script>
+</body>
+</html>

@@ -2,22 +2,38 @@
 using System.Globalization;
 using Microsoft.Extensions.Options;
 using Do_An_Web_Hoc.Models;
-
+using Microsoft.EntityFrameworkCore;
+using Do_An_Web_Hoc.Repositories.Interfaces;
+using Do_An_Web_Hoc.Repositories;
+using Microsoft.AspNetCore.Http;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddScoped<IReview, ReviewService>();
+// 💡 **Thêm cấu hình Database**
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-// Add services to the container.
-builder.Services.AddControllersWithViews();
 // 💡 **Thêm dịch vụ Localization**
 builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
+
+// 💡 **Thêm dịch vụ Session & Cache**
+builder.Services.AddDistributedMemoryCache(); // Cần thiết để Session hoạt động
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(30); // Session hết hạn sau 30 phút
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+});
+
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
-// 💡 **Thêm MVC và hỗ trợ ViewLocalizer**
+// 💡 **Thêm Repository**
+builder.Services.AddScoped<IUserAccountRepository, EFUserAccountRepository>();
+
+// 💡 **Cấu hình MVC & View Localization**
 builder.Services.AddControllersWithViews()
-    .AddViewLocalization()  // 🌟 Bổ sung hỗ trợ IViewLocalizer
-    .AddDataAnnotationsLocalization();  // Nếu bạn muốn hỗ trợ localization trong Validation Messages
+    .AddViewLocalization()
+    .AddDataAnnotationsLocalization();
 
 // 💡 **Cấu hình đa ngôn ngữ**
 builder.Services.Configure<RequestLocalizationOptions>(options =>
@@ -26,7 +42,7 @@ builder.Services.Configure<RequestLocalizationOptions>(options =>
     {
         new CultureInfo("vi-VN"),  // Tiếng Việt (mặc định)
         new CultureInfo("en-US"),  // Tiếng Anh
-        new CultureInfo("fr-FR")   // Tiếng Pháp (nếu cần)
+        new CultureInfo("fr-FR")   // Tiếng Pháp
     };
 
     options.DefaultRequestCulture = new RequestCulture("vi-VN");
@@ -35,27 +51,28 @@ builder.Services.Configure<RequestLocalizationOptions>(options =>
 });
 
 var app = builder.Build();
+
+// 💡 **Áp dụng cài đặt ngôn ngữ**
 var locOptions = app.Services.GetRequiredService<IOptions<RequestLocalizationOptions>>().Value;
 app.UseRequestLocalization(locOptions);
-// Configure the HTTP request pipeline.
+
+// 🔹 **Middleware xử lý lỗi**
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 
 app.UseHttpsRedirection();
-app.UseRouting();
+app.UseStaticFiles();
 
+// 💡 **Thêm Session vào pipeline**
+app.UseRouting();
+app.UseSession();  // 🛠 Bắt buộc phải gọi trước `UseAuthorization`
 app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
-
-
-
-app.UseStaticFiles();
 app.Run();

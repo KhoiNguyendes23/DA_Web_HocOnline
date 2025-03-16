@@ -1,0 +1,164 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Xóa Khóa Học</title>
+
+    <!-- Bootstrap & Font Awesome -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f8f9fa;
+        }
+
+        .container {
+            max-width: 500px;
+            background: white;
+            padding: 20px;
+            margin-top: 50px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .warning-icon {
+            font-size: 50px;
+            color: #dc3545;
+        }
+
+        .btn-group {
+            margin-top: 20px;
+        }
+
+        .btn-delete {
+            width: 48%;
+            font-size: 18px;
+        }
+
+        .btn-cancel {
+            width: 48%;
+            font-size: 18px;
+        }
+
+        .sidebar {
+            width: 250px;
+            background: #1e3a8a;
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            color: white;
+            padding-top: 20px;
+        }
+
+        .sidebar-menu li {
+            list-style: none;
+            padding: 10px;
+        }
+
+            .sidebar-menu li a {
+                text-decoration: none;
+                color: white;
+                display: block;
+                padding: 10px;
+            }
+
+                .sidebar-menu li a:hover {
+                    background: rgba(255,255,255,0.2);
+                    border-radius: 5px;
+                }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="text-center">
+            <i class="fas fa-user-circle fa-3x"></i>
+            <h5>Nguyễn Văn A</h5>
+            <p>Admin</p>
+        </div>
+        <ul class="sidebar-menu">
+            <li class="dropdown">
+                <a href="#courseSubmenu" data-bs-toggle="collapse" class="dropdown-toggle"><i class="fas fa-book-open"></i> Quản lý khóa học</a>
+                <ul class="collapse list-unstyled" id="courseSubmenu">
+                    <li><a href="ListCourse">Danh sách khóa học</a></li>
+                    <li><a href="AddCourse">Thêm khóa học</a></li>
+                </ul>
+            </li>
+            <li class="dropdown">
+                <a href="#studentSubmenu" data-bs-toggle="collapse" class="dropdown-toggle"><i class="fas fa-users"></i> Quản lý học viên</a>
+                <ul class="collapse list-unstyled" id="studentSubmenu">
+                    <li><a href="ListStudent">Danh sách học viên</a></li>
+                </ul>
+            </li>
+            <li class="dropdown">
+                <a href="#examSubmenu" data-bs-toggle="collapse" class="dropdown-toggle"><i class="fas fa-question-circle"></i> Quản lý bài kiểm tra</a>
+                <ul class="collapse list-unstyled" id="examSubmenu">
+                    <li><a href="ListExam">Danh sách bài kiểm tra</a></li>
+                    <li><a href="AddExam">Tạo bài kiểm tra</a></li>
+                    <li><a href="TestResult">Kết quả kiểm tra</a></li>
+                </ul>
+            </li>
+            <li class="dropdown">
+                <a href="#reportSubmenu" data-bs-toggle="collapse" class="dropdown-toggle"><i class="fas fa-file-alt"></i> Thống kê & Báo cáo</a>
+                <ul class="collapse list-unstyled" id="reportSubmenu">
+                    <li><a href="StatisticalCourse">Thống kê khóa học</a></li>
+                    <li><a href="StatisticalRevenue">Doanh thu</a></li>
+                </ul>
+            </li>
+            <li class="dropdown">
+                <a href="#settingsSubmenu" data-bs-toggle="collapse" class="dropdown-toggle"><i class="fas fa-wrench"></i> Cài đặt tài khoản</a>
+                <ul class="collapse list-unstyled" id="settingsSubmenu">
+                    <li><a href="PersonalPage">Thông tin cá nhân</a></li>
+                    <li><a href="Decentralization">Phân quyền người dùng</a></li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+    <div class="container mt-5">
+        <h2 class="text-danger text-center mb-4"><i class="fas fa-trash-alt"></i> Xóa Bài Kiểm Tra</h2>
+
+        <div class="card mx-auto" style="max-width: 600px;">
+            <div class="card-body">
+                <h5 class="card-title"><i class="fas fa-file-alt"></i> Bài Kiểm Tra: Python Cơ Bản</h5>
+                <p><strong>Ngày Kiểm Tra:</strong> 15/04/2025</p>
+                <p><strong>Khóa Học:</strong> Python Cơ Bản</p>
+                <p><strong>Thời Gian Làm Bài:</strong> 60 phút</p>
+                <p><strong>Số Câu Hỏi:</strong> 20 câu</p>
+                <p><strong>Trạng Thái:</strong> <span class="badge bg-success">Hoạt động</span></p>
+            </div>
+        </div>
+
+        <div class="alert alert-warning text-center mt-4">
+            <p><strong>Bạn có chắc chắn muốn xóa bài kiểm tra này không?</strong></p>
+            <p>Hành động này không thể hoàn tác!</p>
+        </div>
+
+        <div class="text-center">
+            <a href="ListExam" class="btn btn-secondary"><i class="fas fa-arrow-left"></i> Hủy</a>
+            <button class="btn btn-danger" onclick="confirmDelete()"><i class="fas fa-trash-alt"></i> Xóa</button>
+        </div>
+    </div>
+
+    <script>
+        function confirmDelete() {
+            if (confirm("Bạn có chắc chắn muốn xóa bài kiểm tra này không?")) {
+                alert("Bài kiểm tra đã được xóa thành công!");
+                window.location.href = "ListExam"; // Chuyển hướng về danh sách bài kiểm tra sau khi xóa
+            }
+        }
+    </script>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>

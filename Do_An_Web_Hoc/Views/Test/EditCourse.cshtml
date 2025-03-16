@@ -1,0 +1,57 @@
+﻿@model Do_An_Web_Hoc.Models.Courses
+
+@{
+    ViewData["Title"] = "Chỉnh sửa khóa học";
+}
+
+<h2 class="text-center">Chỉnh sửa khóa học</h2>
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
+}
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+}
+
+<form asp-action="UpdateCourse" asp-controller="Test" method="post">
+    <input type="hidden" asp-for="CourseID" />
+
+    <div class="mb-3">
+        <label asp-for="CourseName" class="form-label">Tên khóa học</label>
+        <input asp-for="CourseName" class="form-control" required />
+        <span asp-validation-for="CourseName" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Description" class="form-label">Mô tả</label>
+        <textarea asp-for="Description" class="form-control" required></textarea>
+        <span asp-validation-for="Description" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Price" class="form-label">Giá</label>
+        <input asp-for="Price" type="number" class="form-control" required />
+        <span asp-validation-for="Price" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Status" class="form-label">Trạng thái</label>
+        <select asp-for="Status" class="form-control">
+            <option value="1">Hoạt động</option>
+            <option value="2">Ngừng hoạt động</option>
+        </select>
+        <span asp-validation-for="Status" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-success">Cập nhật</button>
+    <a asp-action="Index" class="btn btn-secondary">Quay lại</a>
+</form>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
