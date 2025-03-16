@@ -1,10 +1,16 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Do_An_Web_Hoc.Repositories.Interfaces;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace Do_An_Web_Hoc.Controllers
 {
     public class AdminController : Controller
     {
+        private readonly IUserAccountRepository _userRepo;
+        public AdminController(IUserAccountRepository userRepo)
+        {
+            _userRepo = userRepo;
+        }
         public IActionResult Dashboard()
         {
             return View();
@@ -17,9 +23,11 @@ namespace Do_An_Web_Hoc.Controllers
         {
             return View();
         }
-        public IActionResult ListStudent()
+        public async Task<IActionResult> ListStudent()
         {
-            return View();
+            // lấy danh sách các user có roleID = 3 (sinh viên)
+            var students = await _userRepo.GetUsersByRoleAsync(3);
+            return View(students);
         }
         public IActionResult ListExam()
         {
