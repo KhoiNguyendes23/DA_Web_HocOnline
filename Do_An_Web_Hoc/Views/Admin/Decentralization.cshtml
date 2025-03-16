@@ -125,58 +125,65 @@
         </ul>
     </div>
 
-    <!-- Content -->
-    <div class="content">
-        <!-- Header -->
-        <div class="header">
-            <h3>Dashboard</h3>
-            <div class="header-menu">
-                <a href="#"><i class="fas fa-bell"></i></a>
-                <a href="#"><i class="fas fa-cog"></i></a>
+    <div class="container">
+        <h2 class="mb-4 text-primary">Phân quyền sử dụng theo loại tài khoản</h2>
+        <form action="#" method="POST">
+            <div class="table-responsive">
+                <table class="table table-bordered">
+                    <thead class="table-primary">
+                        <tr>
+                            <th>Phân quyền</th>
+                            <th>Admin</th>
+                            <th>Giáo viên</th>
+                            <th>Người dùng</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Tạo khóa học</td>
+                            <td><input type="checkbox" name="createTaskManager" checked></td>
+                            <td><input type="checkbox" name="createTaskMember" checked></td>
+                            <td><input type="checkbox" name="createTaskGuest"></td>
+                        </tr>
+                        <tr>
+                            <td>Tạo nhóm công việc mới</td>
+                            <td><input type="checkbox" name="createTaskGroupManager" checked></td>
+                            <td><input type="checkbox" name="createTaskGroupMember"></td>
+                            <td><input type="checkbox" name="createTaskGroupGuest"></td>
+                        </tr>
+                        <tr>
+                            <td>Xem công việc của người khác</td>
+                            <td><input type="checkbox" name="viewOtherTasksManager" checked></td>
+                            <td><input type="checkbox" name="viewOtherTasksMember" checked></td>
+                            <td><input type="checkbox" name="viewOtherTasksGuest"></td>
+                        </tr>
+                        <tr>
+                            <td>Quyền xem báo cáo công việc</td>
+                            <td><input type="checkbox" name="viewReportManager" checked></td>
+                            <td><input type="checkbox" name="viewReportMember"></td>
+                            <td><input type="checkbox" name="viewReportGuest"></td>
+                        </tr>
+                        <tr>
+                            <td>Quyền tạo cuộc thảo luận mới</td>
+                            <td><input type="checkbox" name="createDiscussionManager" checked></td>
+                            <td><input type="checkbox" name="createDiscussionMember" checked></td>
+                            <td><input type="checkbox" name="createDiscussionGuest"></td>
+                        </tr>
+                        <tr>
+                            <td>Quyền tải tài liệu mới</td>
+                            <td><input type="checkbox" name="uploadFileManager" checked></td>
+                            <td><input type="checkbox" name="uploadFileMember" checked></td>
+                            <td><input type="checkbox" name="uploadFileGuest"></td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
-        </div>
-
-        <!-- Cards Overview -->
-        <div class="row mt-3">
-            <div class="col-md-6">
-                <div class="card p-3">
-                    <h5>Biểu đồ Thống kê Học viên</h5>
-                    <canvas id="studentChart"></canvas>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="card p-3">
-                    <h5>Hoạt động gần đây</h5>
-                    <ul>
-                        <li>Học viên Nguyễn Văn B vừa hoàn thành khóa học Python.</li>
-                        <li>Admin đã tạo một bài kiểm tra mới.</li>
-                        <li>Thống kê doanh thu tháng 3 đã được cập nhật.</li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-
-        <!-- Footer -->
-        <div class="footer mt-3">
-            <p>&copy; 2025 Admin Dashboard | Bản quyền thuộc về bạn</p>
-        </div>
+            <button type="submit" class="btn btn-primary">Lưu thay đổi</button>
+        </form>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script>
-        var ctx = document.getElementById('studentChart').getContext('2d');
-        var studentChart = new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: ['Tháng 1', 'Tháng 2', 'Tháng 3', 'Tháng 4'],
-                datasets: [{
-                    label: 'Số học viên',
-                    data: [50, 70, 60, 90],
-                    backgroundColor: 'rgba(54, 162, 235, 0.6)'
-                }]
-            }
-        });
-    </script>
+
 </body>
 </html>

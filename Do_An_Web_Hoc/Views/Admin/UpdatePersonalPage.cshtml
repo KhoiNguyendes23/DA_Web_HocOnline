@@ -1,18 +1,22 @@
 ﻿@{
     Layout = null;
 }
-@using Microsoft.AspNetCore.Mvc.Razor
+
 <!DOCTYPE html>
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard</title>
+    <title>Chỉnh Sửa Thông Tin</title>
+
+    <!-- Bootstrap & Font Awesome -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
     <style>
         body {
             font-family: 'Arial', sans-serif;
+            background-color: #f8f9fa;
         }
 
         .sidebar {
@@ -43,42 +47,26 @@
                     border-radius: 5px;
                 }
 
-        .content {
-            margin-left: 260px;
+        .container {
+            max-width: 600px;
+            background: white;
             padding: 20px;
+            margin-top: 50px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
         }
 
-        .header {
-            background: #1e3a8a;
-            padding: 10px;
-            color: white;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
+        .form-group {
+            margin-bottom: 15px;
         }
 
-        .header-menu a {
-            color: white;
-            margin: 0 10px;
-            text-decoration: none;
-        }
-
-        .card {
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-            border: none;
-        }
-
-        .footer {
-            background: #1e3a8a;
-            color: white;
-            text-align: center;
-            padding: 10px;
-            margin-top: 20px;
+        .btn-save {
+            width: 100%;
+            font-size: 18px;
         }
     </style>
 </head>
 <body>
-
     <!-- Sidebar -->
     <div class="sidebar">
         <div class="text-center">
@@ -124,59 +112,56 @@
             </li>
         </ul>
     </div>
+    <div class="container">
+        <h2 class="text-primary text-center mb-4">Chỉnh Sửa Thông Tin Cá Nhân</h2>
 
-    <!-- Content -->
-    <div class="content">
-        <!-- Header -->
-        <div class="header">
-            <h3>Dashboard</h3>
-            <div class="header-menu">
-                <a href="#"><i class="fas fa-bell"></i></a>
-                <a href="#"><i class="fas fa-cog"></i></a>
+        <form action="SaveProfile" method="post">
+            <!-- Họ và tên -->
+            <div class="form-group">
+                <label for="fullName"><i class="fas fa-user"></i> Họ và tên</label>
+                <input type="text" class="form-control" id="fullName" name="fullName" value="Nguyễn Văn A" required>
             </div>
-        </div>
 
-        <!-- Cards Overview -->
-        <div class="row mt-3">
-            <div class="col-md-6">
-                <div class="card p-3">
-                    <h5>Biểu đồ Thống kê Học viên</h5>
-                    <canvas id="studentChart"></canvas>
-                </div>
+            <!-- Email -->
+            <div class="form-group">
+                <label for="email"><i class="fas fa-envelope"></i> Email</label>
+                <input type="email" class="form-control" id="email" name="email" value="nguyenvana@example.com" required>
             </div>
-            <div class="col-md-6">
-                <div class="card p-3">
-                    <h5>Hoạt động gần đây</h5>
-                    <ul>
-                        <li>Học viên Nguyễn Văn B vừa hoàn thành khóa học Python.</li>
-                        <li>Admin đã tạo một bài kiểm tra mới.</li>
-                        <li>Thống kê doanh thu tháng 3 đã được cập nhật.</li>
-                    </ul>
-                </div>
-            </div>
-        </div>
 
-        <!-- Footer -->
-        <div class="footer mt-3">
-            <p>&copy; 2025 Admin Dashboard | Bản quyền thuộc về bạn</p>
-        </div>
+            <!-- Số điện thoại -->
+            <div class="form-group">
+                <label for="phone"><i class="fas fa-phone"></i> Số điện thoại</label>
+                <input type="tel" class="form-control" id="phone" name="phone" value="0123-456-789" required>
+            </div>
+
+            <!-- Ngày sinh -->
+            <div class="form-group">
+                <label for="dob"><i class="fas fa-calendar"></i> Ngày sinh</label>
+                <input type="date" class="form-control" id="dob" name="dob" value="1995-01-01">
+            </div>
+
+            <!-- Địa chỉ -->
+            <div class="form-group">
+                <label for="address"><i class="fas fa-map-marker-alt"></i> Địa chỉ</label>
+                <input type="text" class="form-control" id="address" name="address" value="123 Đường ABC, Quận 1, TP.HCM">
+            </div>
+
+            <!-- Vai trò (Chỉ hiển thị, không chỉnh sửa) -->
+            <div class="form-group">
+                <label for="role"><i class="fas fa-user-shield"></i> Vai trò</label>
+                <input type="text" class="form-control" id="role" name="role" value="Admin" readonly>
+            </div>
+
+            <!-- Nút lưu -->
+            <button type="submit" class="btn btn-primary btn-save"><i class="fas fa-save"></i> Lưu Thay Đổi</button>
+
+            <!-- Nút quay lại -->
+            <a href="PersonalPage" class="btn btn-secondary mt-3 d-block text-center"><i class="fas fa-arrow-left"></i> Quay lại</a>
+        </form>
     </div>
 
+    <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script>
-        var ctx = document.getElementById('studentChart').getContext('2d');
-        var studentChart = new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: ['Tháng 1', 'Tháng 2', 'Tháng 3', 'Tháng 4'],
-                datasets: [{
-                    label: 'Số học viên',
-                    data: [50, 70, 60, 90],
-                    backgroundColor: 'rgba(54, 162, 235, 0.6)'
-                }]
-            }
-        });
-    </script>
+
 </body>
 </html>

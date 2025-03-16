@@ -1,0 +1,165 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ôn Tập Trắc Nghiệm - Review trong Lập Trình Web</title>
+    <!-- Thêm Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KyZXEJr+R7uLDK5r+SoC9X9K6fVrR1L92l1t0N5lRHeN5zZ9z0bDgVt4p0B7cZnV" crossorigin="anonymous">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+
+        h1 {
+            color: #495057;
+            margin-bottom: 30px;
+        }
+
+        .question {
+            background-color: #fff;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 5px;
+        }
+
+            .question label {
+                display: block;
+                margin-bottom: 5px;
+            }
+
+        .btn-submit {
+            text-align: center;
+            margin-top: 30px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container mt-5">
+        <h1 class="text-center">Ôn Tập Trắc Nghiệm - Review trong Lập Trình Web</h1>
+
+        <form id="quiz-form">
+            <!-- Question 1 -->
+            <div class="question p-3 border rounded">
+                <p><strong>Câu 1:</strong> Trong ASP.NET Core, đối tượng nào giúp ta lưu trữ thông tin về review?</p>
+                <div class="form-check">
+                    <input type="radio" class="form-check-input" name="q1" value="Model">
+                    <label class="form-check-label">Model</label>
+                </div>
+                <div class="form-check">
+                    <input type="radio" class="form-check-input" name="q1" value="Controller">
+                    <label class="form-check-label">Controller</label>
+                </div>
+                <div class="form-check">
+                    <input type="radio" class="form-check-input" name="q1" value="View">
+                    <label class="form-check-label">View</label>
+                </div>
+                <div class="form-check">
+                    <input type="radio" class="form-check-input" name="q1" value="Service">
+                    <label class="form-check-label">Service</label>
+                </div>
+            </div>
+
+            <!-- Question 2 -->
+            <div class="question p-3 border rounded">
+                <p><strong>Câu 2:</strong> Trong ASP.NET Core, phương thức nào trong controller xử lý việc gửi dữ liệu review từ form?</p>
+                <div class="form-check">
+                    <input type="radio" class="form-check-input" name="q2" value="GET">
+                    <label class="form-check-label">GET</label>
+                </div>
+                <div class="form-check">
+                    <input type="radio" class="form-check-input" name="q2" value="POST">
+                    <label class="form-check-label">POST</label>
+                </div>
+                <div class="form-check">
+                    <input type="radio" class="form-check-input" name="q2" value="PUT">
+                    <label class="form-check-label">PUT</label>
+                </div>
+                <div class="form-check">
+                    <input type="radio" class="form-check-input" name="q2" value="DELETE">
+                    <label class="form-check-label">DELETE</label>
+                </div>
+            </div>
+
+            <!-- Question 3 -->
+            <div class="question p-3 border rounded">
+                <p><strong>Câu 3:</strong> Khi người dùng gửi một đánh giá mới, ta sử dụng thuộc tính nào trong form để yêu cầu người dùng nhập dữ liệu?</p>
+                <div class="form-check">
+                    <input type="radio" class="form-check-input" name="q3" value="required">
+                    <label class="form-check-label">required</label>
+                </div>
+                <div class="form-check">
+                    <input type="radio" class="form-check-input" name="q3" value="optional">
+                    <label class="form-check-label">optional</label>
+                </div>
+                <div class="form-check">
+                    <input type="radio" class="form-check-input" name="q3" value="nullable">
+                    <label class="form-check-label">nullable</label>
+                </div>
+            </div>
+
+            <!-- Question 4 -->
+            <div class="question p-3 border rounded">
+                <p><strong>Câu 4:</strong> Trong ASP.NET Core, file nào thường được sử dụng để hiển thị danh sách các review?</p>
+                <div class="form-check">
+                    <input type="radio" class="form-check-input" name="q4" value="Home.cshtml">
+                    <label class="form-check-label">Home.cshtml</label>
+                </div>
+                <div class="form-check">
+                    <input type="radio" class="form-check-input" name="q4" value="Review.cshtml">
+                    <label class="form-check-label">Review.cshtml</label>
+                </div>
+                <div class="form-check">
+                    <input type="radio" class="form-check-input" name="q4" value="Index.cshtml">
+                    <label class="form-check-label">Index.cshtml</label>
+                </div>
+            </div>
+
+            <!-- Question 5 -->
+            <div class="question p-3 border rounded">
+                <p><strong>Câu 5:</strong> Để kiểm tra xem người dùng đã đăng nhập hay chưa trong ASP.NET Core, ta dùng thuộc tính nào?</p>
+                <div class="form-check">
+                    <input type="radio" class="form-check-input" name="q5" value="User.Identity.IsAuthenticated">
+                    <label class="form-check-label">User.Identity.IsAuthenticated</label>
+                </div>
+                <div class="form-check">
+                    <input type="radio" class="form-check-input" name="q5" value="User.IsLoggedIn">
+                    <label class="form-check-label">User.IsLoggedIn</label>
+                </div>
+                <div class="form-check">
+                    <input type="radio" class="form-check-input" name="q5" value="User.Status">
+                    <label class="form-check-label">User.Status</label>
+                </div>
+            </div>
+
+            <!-- Submit Button -->
+            <div class="btn-submit">
+                <button type="button" class="btn btn-primary" onclick="submitQuiz()">Gửi Bài</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Thêm Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        function submitQuiz() {
+            const form = document.getElementById('quiz-form');
+            const formData = new FormData(form);
+            let score = 0;
+
+            // Check answers
+            if (formData.get('q1') === 'Model') score++;
+            if (formData.get('q2') === 'POST') score++;
+            if (formData.get('q3') === 'required') score++;
+            if (formData.get('q4') === 'Review.cshtml') score++;
+            if (formData.get('q5') === 'User.Identity.IsAuthenticated') score++;
+
+            // Display score
+            alert("Điểm của bạn là: " + score + " / 5");
+        }
+    </script>
+
+</body>
+</html>

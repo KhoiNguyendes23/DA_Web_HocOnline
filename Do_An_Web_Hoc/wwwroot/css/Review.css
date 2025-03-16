@@ -1,0 +1,56 @@
+﻿.reviews-container {
+    margin: 20px;
+    font-family: Arial, sans-serif;
+}
+
+.review {
+    border: 1px solid #ddd;
+    padding: 10px;
+    margin-bottom: 15px;
+    background-color: #f9f9f9;
+}
+
+    .review h4 {
+        margin: 0;
+        color: #333;
+    }
+
+    .review p {
+        font-size: 14px;
+        color: #666;
+    }
+
+form {
+    margin-top: 20px;
+    border: 1px solid #ccc;
+    padding: 20px;
+    background-color: #fafafa;
+}
+
+    form div {
+        margin-bottom: 10px;
+    }
+
+    form label {
+        display: block;
+        font-weight: bold;
+    }
+
+    form input, form textarea {
+        width: 100%;
+        padding: 8px;
+        margin-top: 5px;
+        border: 1px solid #ddd;
+    }
+
+    form button {
+        padding: 10px 15px;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        cursor: pointer;
+    }
+
+        form button:hover {
+            background-color: #0056b3;
+        }
