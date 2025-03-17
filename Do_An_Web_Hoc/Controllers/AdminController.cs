@@ -23,12 +23,20 @@ namespace Do_An_Web_Hoc.Controllers
         {
             return View();
         }
-        public async Task<IActionResult> ListStudent()
+        public IActionResult ListStudent()
         {
-            // lấy danh sách các user có roleID = 3 (sinh viên)
-            var students = await _userRepo.GetUsersByRoleAsync(3);
-            return View(students);
+            return View();
         }
+        public IActionResult ListTeacher()
+        {
+            return View();
+        }
+        //public async Task<IActionResult> ListStudent()
+        //{
+        //    // lấy danh sách các user có roleID = 3 (sinh viên)
+        //    var students = await _userRepo.GetUsersByRoleAsync(3);
+        //    return View(students);
+        //}
         public IActionResult ListExam()
         {
             return View();
@@ -101,7 +109,21 @@ namespace Do_An_Web_Hoc.Controllers
         {
             return View();
         }
-
-
+        public IActionResult ViewTeacher()
+        {
+            return View();
+        }
+        public IActionResult AddTeacher()
+        {
+            return View();
+        }
+        public IActionResult UpdateTeacher()
+        {
+            return View();
+        }
+        public IActionResult DeleteTeacher()
+        {
+            return View();
+        }
     }
 }
