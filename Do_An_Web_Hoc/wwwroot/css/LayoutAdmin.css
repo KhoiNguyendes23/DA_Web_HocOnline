@@ -1,0 +1,40 @@
+﻿/* Ẩn checkbox */
+.sidebar-checkbox {
+    display: none;
+}
+
+/* Định dạng nút menu */
+.menu-toggle {
+    position: fixed;
+    top: 15px;
+    right: 15px; /* Đẩy ra góc phải */
+    background: #1e3a8a;
+    color: white;
+    padding: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: right 0.3s ease-in-out;
+}
+
+/* Định dạng sidebar */
+.sidebar {
+    width: 250px;
+    background: #1e3a8a;
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: -250px;
+    color: white;
+    padding-top: 20px;
+    transition: left 0.3s ease-in-out;
+}
+
+/* Khi checkbox được chọn, mở menu */
+.sidebar-checkbox:checked ~ .sidebar {
+    left: 0;
+}
+
+/* Khi menu mở, di chuyển nút */
+.sidebar-checkbox:checked ~ .menu-toggle {
+    right: 270px; /* Đẩy ra ngoài cùng với menu */
+}

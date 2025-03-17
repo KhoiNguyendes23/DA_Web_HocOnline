@@ -1,0 +1,135 @@
+﻿@* Views/Shared/_LayoutAdmin.cshtml *@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title >@ViewData["Title"] - Admin Dashboard</title>
+
+    <!-- Bootstrap & FontAwesome -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="~/css/Admin.css" />
+
+  
+</head>
+<body>
+
+    <!-- Nút mở menu -->
+    <button class="menu-toggle"><i class="fas fa-bars"></i></button>
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="text-center">
+            <i class="fas fa-user-circle fa-3x"></i>
+            <h5>Nguyễn Văn A</h5>
+            <p>Admin</p>
+        </div>
+        <ul class="sidebar-menu">
+            <li class="dropdown">
+                <a href="#courseSubmenu" data-bs-toggle="collapse" class="dropdown-toggle"><i class="fas fa-book-open"></i> Quản lý khóa học</a>
+                <ul class="collapse list-unstyled" id="courseSubmenu">
+                    <li><a href="ListCourse">Danh sách khóa học</a></li>
+                    <li><a href="AddCourse">Thêm khóa học</a></li>
+                </ul>
+            </li>
+            <li class="dropdown">
+                <a href="#studentSubmenu" data-bs-toggle="collapse" class="dropdown-toggle"><i class="fas fa-users"></i> Quản lý học viên</a>
+                <ul class="collapse list-unstyled" id="studentSubmenu">
+                    <li><a href="ListStudent">Danh sách học viên</a></li>
+                    <li><a href="ListTeacher">Danh sách giáo viên</a></li>
+                </ul>
+            </li>
+            <li class="dropdown">
+                <a href="#examSubmenu" data-bs-toggle="collapse" class="dropdown-toggle"><i class="fas fa-question-circle"></i> Quản lý bài kiểm tra</a>
+                <ul class="collapse list-unstyled" id="examSubmenu">
+                    <li><a href="ListExam">Danh sách bài kiểm tra</a></li>
+                    <li><a href="AddExam">Tạo bài kiểm tra</a></li>
+                    <li><a href="TestResult">Kết quả kiểm tra</a></li>
+                </ul>
+            </li>
+            <li class="dropdown">
+                <a href="#reportSubmenu" data-bs-toggle="collapse" class="dropdown-toggle"><i class="fas fa-file-alt"></i> Thống kê & Báo cáo</a>
+                <ul class="collapse list-unstyled" id="reportSubmenu">
+                    <li><a href="StatisticalCourse">Thống kê khóa học</a></li>
+                    <li><a href="StatisticalRevenue">Doanh thu</a></li>
+                </ul>
+            </li>
+            <li class="dropdown">
+                <a href="#settingsSubmenu" data-bs-toggle="collapse" class="dropdown-toggle"><i class="fas fa-wrench"></i> Cài đặt tài khoản</a>
+                <ul class="collapse list-unstyled" id="settingsSubmenu">
+                    <li><a href="PersonalPage">Thông tin cá nhân</a></li>
+                    <li><a href="Decentralization">Phân quyền người dùng</a></li>
+                </ul>
+            </li>
+            <li>
+                <a href="@Url.Action("Logout", "Account")" class="text-danger">
+                    <i class="fas fa-sign-out-alt"></i> Đăng xuất
+                </a>
+            </li>
+        </ul>
+    </div>
+
+    <!-- Nội dung chính -->
+    <div class="content">
+        @RenderBody()
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Script để mở/đóng Sidebar -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            let menuToggle = document.querySelector(".menu-toggle");
+            let sidebar = document.querySelector(".sidebar");
+            let content = document.querySelector(".content");
+            let dropdownToggles = document.querySelectorAll(".dropdown-toggle"); // Chọn tất cả menu chính
+
+            // Kiểm tra trạng thái của sidebar trong localStorage khi tải trang
+            if (localStorage.getItem("sidebarState") === "active") {
+                sidebar.classList.add("active");
+                content.classList.add("active");
+            }
+
+            // Sự kiện click để mở/tắt sidebar và lưu trạng thái
+            menuToggle.addEventListener("click", function () {
+                sidebar.classList.toggle("active");
+                content.classList.toggle("active");
+
+                // Lưu trạng thái vào localStorage
+                if (sidebar.classList.contains("active")) {
+                    localStorage.setItem("sidebarState", "active");
+                } else {
+                    localStorage.setItem("sidebarState", "inactive");
+                }
+            });
+
+            // Xử lý đóng mở submenu
+            dropdownToggles.forEach(toggle => {
+                toggle.addEventListener("click", function (e) {
+                    e.preventDefault(); // Ngăn chặn load lại trang
+
+                    let submenu = document.querySelector(this.getAttribute("href")); // Tìm menu con dựa vào href
+
+                    // Nếu submenu đang mở -> Đóng lại
+                    if (submenu.classList.contains("show")) {
+                        new bootstrap.Collapse(submenu, { toggle: true });
+                    } else {
+                        // Đóng tất cả submenu khác trước khi mở menu hiện tại
+                        document.querySelectorAll(".collapse.show").forEach(openSubmenu => {
+                            new bootstrap.Collapse(openSubmenu, { toggle: true });
+                        });
+
+                        // Mở menu hiện tại
+                        new bootstrap.Collapse(submenu, { toggle: true });
+                    }
+                });
+            });
+        });
+    </script>
+
+
+
+</body>
+</html>

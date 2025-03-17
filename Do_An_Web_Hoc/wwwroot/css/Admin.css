@@ -1,0 +1,122 @@
+﻿body {
+    font-family: 'Arial', sans-serif;
+}
+
+.container {
+    max-width: 800px;
+    margin-top: 30px;
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.btn-add {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.question-box {
+    background: #eef2ff;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    border-left: 5px solid #1e3a8a;
+}
+
+.btn-remove {
+    margin-top: 10px;
+}
+
+.sidebar {
+    position: fixed;
+    left: -250px; /* Ẩn sidebar ban đầu */
+    top: 0;
+    color: white;
+    width: 250px;
+    height: 100%;
+    background: #1e3a8a;
+    transition: left 0.3s ease-in-out;
+}
+
+    /* Khi mở menu */
+    .sidebar.active {
+        left: 0;
+    }
+
+.sidebar-menu li {
+    list-style: none;
+    padding: 10px;
+}
+
+    .sidebar-menu li a {
+        text-decoration: none;
+        color: white;
+        display: block;
+        padding: 10px;
+    }
+
+        .sidebar-menu li a:hover {
+            background: rgba(255,255,255,0.2);
+            border-radius: 5px;
+        }
+
+.content {
+    transition: margin-left 0.3s ease-in-out;
+    margin-left: 0;
+}
+
+    .content.active {
+        margin-left: 250px;
+    }
+
+.header {
+    background: #1e3a8a;
+    padding: 10px;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.header-menu a {
+    color: white;
+    margin: 0 10px;
+    text-decoration: none;
+}
+
+.card {
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    border: none;
+}
+.menu-toggle {
+    position: fixed;
+    top: 0px;
+    right: 0px; /* Ban đầu nằm góc trên bên trái */
+    z-index: 1001;
+    background: none;
+    color: #000000;
+    border: none;
+    padding: 10px 15px;
+    cursor: pointer;
+    font-size: 24px;
+    transition: left 0.3s ease-in-out;
+}
+.footer {
+    background: #1e3a8a;
+    color: white;
+    text-align: center;
+    padding: 10px;
+    margin-top: 20px;
+}
+.close-btn {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    font-size: 24px;
+    cursor: pointer;
+    color: white;
+}
+.sidebar.active + .menu-toggle {
+    left: 260px; /* Nằm sát mép phải sidebar */
+}
