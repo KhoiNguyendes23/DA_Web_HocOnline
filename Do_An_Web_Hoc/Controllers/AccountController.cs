@@ -36,7 +36,7 @@ namespace Do_An_Web_Hoc.Controllers
             }
 
             // Lấy RoleID an toàn (nếu null thì gán = 0)
-            int roleId = user.RoleID ?? 0;
+            int roleId = user.RoleID.HasValue ? user.RoleID.Value : 0;
 
             // Lưu thông tin đăng nhập vào Session
             HttpContext.Session.SetString("UserID", user.UserID.ToString());
@@ -91,6 +91,13 @@ namespace Do_An_Web_Hoc.Controllers
         [HttpPost]
         public async Task<IActionResult> ForgotPassword(string email)
         {
+            // Kiểm tra email có hợp lệ không
+            if (string.IsNullOrEmpty(email) || !email.Contains("@"))
+            {
+                ViewBag.Error = "Email không hợp lệ!";
+                return View();
+            }
+
             bool result = await _userAccountRepository.SendOTPAsync(email);
             if (!result)
             {
@@ -99,10 +106,16 @@ namespace Do_An_Web_Hoc.Controllers
             }
 
             TempData["EmailOTP"] = email;
-            return RedirectToAction("VerifyOTP");
+            return RedirectToAction("ForgotPassword");
         }
-        // Trang nhập OTP
-        public IActionResult VerifyOTP() => View();
+        // nhập OTP
+        public IActionResult VerifyOTP()
+        {
+            if (TempData["EmailOTP"] == null)
+                return RedirectToAction("ForgotPassword");
+
+            return View("ForgotPassword"); // Sử dụng lại ForgotPassword.cshtml
+        }
 
         [HttpPost]
         public async Task<IActionResult> VerifyOTP(string otp)
@@ -122,12 +135,16 @@ namespace Do_An_Web_Hoc.Controllers
             TempData["EmailVerified"] = email;
             return RedirectToAction("ResetPassword");
         }
-        // Trang đặt mật khẩu mới
-        public IActionResult ResetPassword() => View();
 
         [HttpPost]
-        public async Task<IActionResult> ResetPassword(string newPassword)
+        public async Task<IActionResult> ResetPassword(string newPassword, string confirmPassword)
         {
+            if (newPassword != confirmPassword)
+            {
+                ViewBag.Error = "Mật khẩu xác nhận không khớp!";
+                return View();
+            }
+
             var email = TempData["EmailVerified"] as string;
             if (email == null)
                 return RedirectToAction("ForgotPassword");
