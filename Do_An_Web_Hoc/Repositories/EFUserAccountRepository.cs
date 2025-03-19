@@ -116,17 +116,29 @@ namespace Do_An_Web_Hoc.Repositories
             var user = await _context.UserAccounts.FirstOrDefaultAsync(u =>
                 u.Email == email &&
                 u.ResetTokenExpiry > DateTime.UtcNow);
-
+            Console.WriteLine($"[SUCCESS] Mật khẩu của {email} đã được cập nhật.");
             if (user == null)
+            {
+                Console.WriteLine($"[ERROR] Không tìm thấy tài khoản hoặc OTP đã hết hạn cho email: {email}");
                 return false;
+            }
+            // Kiểm tra xem ResetToken có null không (nếu bạn có lưu ResetToken khi gửi OTP)
+            if (string.IsNullOrEmpty(user.ResetToken))
+            {
+                Console.WriteLine($"[ERROR] ResetToken không hợp lệ hoặc đã bị xóa.");
+                return false;
+            }
+            // Không dùng mã hóa mật khẩu nếu chưa cần
+            user.Password = newPassword;
 
-            user.Password = newPassword; // Khuyến nghị mã hóa mật khẩu khi lưu.
+            // Xóa thông tin OTP sau khi đổi mật khẩu thành công
             user.ResetToken = null;
             user.ResetTokenExpiry = null;
             await _context.SaveChangesAsync();
-
+            Console.WriteLine($"[SUCCESS] Mật khẩu của {email} đã được cập nhật.");
             return true;
         }
+
         // Hàm hỗ trợ gửi OTP bằng SMTP
         private async Task SendOTPEmailAsync(string email, string otp)
         {

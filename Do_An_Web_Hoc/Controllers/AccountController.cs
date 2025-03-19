@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Net.Mail;
 using System.Net;
 using Microsoft.Extensions.Configuration;
+using System.Text.Json;
 
 namespace Do_An_Web_Hoc.Controllers
 {
@@ -52,11 +53,6 @@ namespace Do_An_Web_Hoc.Controllers
             };
         }
 
-        // Trang đăng ký
-        public IActionResult Register()
-        {
-            return View();
-        }
         // Xử lý đăng ký
         [HttpPost]
         public async Task<IActionResult> Register(UserAccount model)
@@ -75,8 +71,7 @@ namespace Do_An_Web_Hoc.Controllers
                 return View(model);
             }
 
-            //return RedirectToAction("Index");
-            return View("Index");
+            return RedirectToAction("Index");
         }
 
         // Đăng xuất
@@ -91,73 +86,94 @@ namespace Do_An_Web_Hoc.Controllers
         [HttpPost]
         public async Task<IActionResult> ForgotPassword(string email)
         {
-            // Kiểm tra email có hợp lệ không
             if (string.IsNullOrEmpty(email) || !email.Contains("@"))
-            {
-                ViewBag.Error = "Email không hợp lệ!";
-                return View();
-            }
+                return Json(new { success = false, message = "Email không hợp lệ!" });
 
             bool result = await _userAccountRepository.SendOTPAsync(email);
             if (!result)
-            {
-                ViewBag.Error = "Email không tồn tại!";
-                return View();
-            }
+                return Json(new { success = false, message = "Email không tồn tại!" });
 
             TempData["EmailOTP"] = email;
-            return RedirectToAction("ForgotPassword");
+            return Json(new { success = true });
         }
+
         // nhập OTP
         public IActionResult VerifyOTP()
         {
             if (TempData["EmailOTP"] == null)
                 return RedirectToAction("ForgotPassword");
 
-            return View("ForgotPassword"); // Sử dụng lại ForgotPassword.cshtml
+            return View("ForgotPassword"); // Chỉ định rõ view
         }
 
         [HttpPost]
-        public async Task<IActionResult> VerifyOTP(string otp)
+        public async Task<IActionResult> VerifyOTP([FromForm] string otp)
         {
-            var email = TempData["EmailOTP"] as string;
-            if (email == null)
-                return RedirectToAction("ForgotPassword");
+            Console.WriteLine($"[DEBUG] OTP nhận được từ request: '{otp}'");
 
-            bool isOtpValid = await _userAccountRepository.VerifyOTPAsync(email, otp);
-            if (!isOtpValid)
+            if (string.IsNullOrEmpty(otp))
             {
-                ViewBag.Error = "Mã OTP không hợp lệ hoặc hết hạn!";
-                TempData["EmailOTP"] = email; // Giữ lại email để thử lại
-                return View();
+                return Json(new { success = false, message = "OTP không được để trống!" });
             }
 
-            TempData["EmailVerified"] = email;
-            return RedirectToAction("ResetPassword");
+            otp = otp.Trim();
+
+            var email = TempData["EmailOTP"] as string;
+            if (email == null)
+            {
+                return Json(new { success = false, message = "Phiên OTP đã hết hạn!" });
+            }
+
+            // Kiểm tra OTP trong database
+            bool isOtpValid = await _userAccountRepository.VerifyOTPAsync(email, otp);
+
+            if (!isOtpValid)
+            {
+                TempData["EmailOTP"] = email;
+                return Json(new { success = false, message = "Mã OTP không hợp lệ hoặc hết hạn!" });
+            }
+
+            //TempData["EmailVerified"] = email;
+            HttpContext.Session.SetString("EmailVerified", email);
+            return Json(new { success = true });
         }
 
+        // Reset mật khẩu
         [HttpPost]
         public async Task<IActionResult> ResetPassword(string newPassword, string confirmPassword)
         {
-            if (newPassword != confirmPassword)
+            try
             {
-                ViewBag.Error = "Mật khẩu xác nhận không khớp!";
-                return View();
+                if (newPassword != confirmPassword)
+                {
+                    return Json(new { success = false, message = "Mật khẩu xác nhận không khớp!" });
+                }
+                var email = HttpContext.Session.GetString("EmailVerified");
+                if (string.IsNullOrEmpty(email))
+                {
+                    return Json(new { success = false, message = "Phiên đặt lại mật khẩu đã hết hạn! Vui lòng thực hiện lại từ đầu." });
+                }
+                // Kiểm tra độ mạnh mật khẩu
+                if (newPassword.Length < 8 || !newPassword.Any(char.IsUpper) ||
+                    !newPassword.Any(char.IsDigit) || !newPassword.Any(ch => !char.IsLetterOrDigit(ch)))
+                {
+                    return Json(new { success = false, message = "Mật khẩu không đủ mạnh! Yêu cầu: ít nhất 8 ký tự, 1 chữ hoa, 1 số, 1 ký tự đặc biệt." });
+                }
+                // Thực hiện đặt lại mật khẩu
+                bool resetSuccess = await _userAccountRepository.ResetPasswordByOTPAsync(email, newPassword);
+                if (!resetSuccess)
+                {
+                    return Json(new { success = false, message = "Đặt lại mật khẩu thất bại! Vui lòng thử lại." });
+                }
+                // Xóa session sau khi đặt lại mật khẩu thành công
+                HttpContext.Session.Remove("EmailVerified");
+                return Json(new { success = true, redirectUrl = Url.Action("Index", "Account") });
             }
-
-            var email = TempData["EmailVerified"] as string;
-            if (email == null)
-                return RedirectToAction("ForgotPassword");
-
-            bool resetSuccess = await _userAccountRepository.ResetPasswordByOTPAsync(email, newPassword);
-
-            if (!resetSuccess)
+            catch (Exception ex)
             {
-                ViewBag.Error = "Đặt lại mật khẩu thất bại!";
-                return View();
+                Console.WriteLine($"[ERROR] Lỗi khi đặt lại mật khẩu: {ex.Message}");
+                return Json(new { success = false, message = "Đã xảy ra lỗi hệ thống. Vui lòng thử lại sau." });
             }
-
-            return RedirectToAction("Index");
         }
     }
 }
