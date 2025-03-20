@@ -1,9 +1,11 @@
 ﻿using Do_An_Web_Hoc.Repositories.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace Do_An_Web_Hoc.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class AdminController : Controller
     {
         private readonly IUserAccountRepository _userRepo;

@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Do_An_Web_Hoc.Repositories.Interfaces;
 using Do_An_Web_Hoc.Repositories;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,6 +14,15 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+// 💡 **Thêm dịch vụ Authentication & Authorization**
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(options =>
+    {
+        options.LoginPath = "/Account/Index"; // Chuyển hướng khi chưa đăng nhập
+        options.AccessDeniedPath = "/Home/AccessDenied"; // Chuyển hướng khi không có quyền
+    });
+
+builder.Services.AddAuthorization();
 // 💡 **Thêm dịch vụ Localization**
 builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
 
@@ -23,6 +33,7 @@ builder.Services.AddSession(options =>
     options.IdleTimeout = TimeSpan.FromMinutes(30); // Session hết hạn sau 30 phút
     options.Cookie.HttpOnly = true;
     options.Cookie.IsEssential = true;
+    options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
 });
 
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
@@ -68,8 +79,11 @@ app.UseStaticFiles();
 
 // 💡 **Thêm Session vào pipeline**
 app.UseRouting();
-app.UseSession();  // 🛠 Bắt buộc phải gọi trước `UseAuthorization`
+app.UseSession();  //Bắt buộc phải gọi trước `UseAuthorization`
+app.UseAuthentication(); //  BẮT BUỘC: Xác thực người dùng
 app.UseAuthorization();
+
+
 
 app.MapControllerRoute(
     name: "default",

@@ -6,6 +6,9 @@ using System.Net.Mail;
 using System.Net;
 using Microsoft.Extensions.Configuration;
 using System.Text.Json;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication;
+using System.Security.Claims;
 
 namespace Do_An_Web_Hoc.Controllers
 {
@@ -35,23 +38,34 @@ namespace Do_An_Web_Hoc.Controllers
                 ViewBag.Error = "Sai email hoặc mật khẩu!";
                 return View("Index");
             }
-
-            // Lấy RoleID an toàn (nếu null thì gán = 0)
-            int roleId = user.RoleID.HasValue ? user.RoleID.Value : 0;
-
-            // Lưu thông tin đăng nhập vào Session
-            HttpContext.Session.SetString("UserID", user.UserID.ToString());
-            HttpContext.Session.SetString("UserName", user.UserName);
-            HttpContext.Session.SetInt32("RoleID", roleId);
-
-            // Điều hướng theo RoleID
+            int roleId = user.RoleID ?? 0;
+            string roleName = roleId switch
+            {
+                1 => "Admin",
+                2 => "Lecturer",
+                _ => "User" // Nếu không có RoleID, mặc định là "User"
+            };
+            // Gán Role vào Claims để `[Authorize(Roles="User")]` nhận diện được
+            var claims = new List<Claim>
+    {
+        new Claim(ClaimTypes.Name, user.UserName),
+        new Claim(ClaimTypes.Email, user.Email),
+        new Claim(ClaimTypes.Role, roleName) //Đây là Role mà `[Authorize]` sử dụng
+    };
+            var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+            var authProperties = new AuthenticationProperties { IsPersistent = true };
+            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,
+                new ClaimsPrincipal(claimsIdentity), authProperties);
+            Console.WriteLine($"[DEBUG] Đăng nhập thành công: {user.UserName} - Role: {roleName}");
+            // Chuyển hướng theo Role
             return roleId switch
             {
-                1 => RedirectToAction("Dashboard", "Admin"),    // Admin
-                2 => RedirectToAction("Dashboard", "Lecturer"), // Giảng viên
-                _ => RedirectToAction("Dashboard", "User")      // Người dùng thông thường
+                1 => RedirectToAction("Dashboard", "Admin"),
+                2 => RedirectToAction("Dashboard", "Lecturer"),
+                _ => RedirectToAction("Dashboard", "User")
             };
         }
+
 
         // Xử lý đăng ký
         [HttpPost]
@@ -136,6 +150,12 @@ namespace Do_An_Web_Hoc.Controllers
             //TempData["EmailVerified"] = email;
             HttpContext.Session.SetString("EmailVerified", email);
             return Json(new { success = true });
+        }
+
+        [HttpGet]
+        public IActionResult Login()
+        {
+            return RedirectToAction("Index"); // Chuyển hướng đến trang Index (chứa cả đăng nhập & đăng ký)
         }
 
         // Reset mật khẩu

@@ -73,11 +73,24 @@ namespace Do_An_Web_Hoc.Repositories
         // Đăng nhập người dùng (KIỂM TRA MẬT KHẨU TRỰC TIẾP)
         public async Task<UserAccount> LoginAsync(string email, string password)
         {
-            var user = await GetByEmailAsync(email);
-            if (user == null || user.Password != password) // So sánh mật khẩu trực tiếp
+            var user = await _context.UserAccounts
+                .Where(u => u.Email == email && u.Password == password)
+                .Select(u => new UserAccount
+                {
+                    UserID = u.UserID,
+                    UserName = u.UserName,
+                    Email = u.Email,
+                    RoleID = u.RoleID
+                })
+                .FirstOrDefaultAsync();
+
+            if (user == null)
             {
-                return null; // Sai email hoặc mật khẩu
+                Console.WriteLine($"[ERROR] Đăng nhập thất bại: Email {email} không tồn tại hoặc mật khẩu sai.");
+                return null;
             }
+
+            Console.WriteLine($"[DEBUG] Đăng nhập thành công: {user.Email} - RoleID: {user.RoleID}");
             return user;
         }
         // (1) Gửi mã OTP đến email người dùng
