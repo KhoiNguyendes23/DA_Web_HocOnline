@@ -176,8 +176,20 @@ namespace Do_An_Web_Hoc.Repositories
 
             await smtpClient.SendMailAsync(mailMessage);
         }
+        public async Task UpdateUserAsync(UserAccount user)
+        {
+            var existingUser = await _context.UserAccounts.FindAsync(user.UserID);
+            if (existingUser != null)
+            {
+                existingUser.FullName = user.FullName;
+                existingUser.Email = user.Email;
+                existingUser.PhoneNumber = user.PhoneNumber;
+                existingUser.Birthday = user.Birthday;
+                existingUser.Status = user.Status;
 
-        // Giữ nguyên các hàm còn lại...
+                await _context.SaveChangesAsync();
+            }
+        }     // Giữ nguyên các hàm còn lại...
     }
 }
 

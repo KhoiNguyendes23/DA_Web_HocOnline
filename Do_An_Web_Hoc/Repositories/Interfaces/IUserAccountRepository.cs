@@ -12,7 +12,8 @@ namespace Do_An_Web_Hoc.Repositories.Interfaces
         Task<bool> CheckUserExistsAsync(string email);
         // Cập nhật trạng thái người dùng
         Task UpdateUserStatusAsync(int userId, int status);
-
+        //Sửa người dùng
+        Task UpdateUserAsync(UserAccount user);
         // Đăng ký người dùng mới
         Task<UserAccount> RegisterAsync(UserAccount user, string password);
 
