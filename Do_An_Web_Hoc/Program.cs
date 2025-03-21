@@ -22,6 +22,15 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
         options.AccessDeniedPath = "/Home/AccessDenied"; // Chuyển hướng khi không có quyền
     });
 
+
+// 💡 **Cấu hình Cookies**
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.Cookie.SecurePolicy = CookieSecurePolicy.Always;  // Only send cookies over HTTPS
+    options.Cookie.HttpOnly = true;  // Prevent access to cookies via JavaScript
+    options.Cookie.SameSite = SameSiteMode.Strict;  // Only send cookies on same-site requests
+});
+
 builder.Services.AddAuthorization();
 // 💡 **Thêm dịch vụ Localization**
 builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
@@ -40,7 +49,11 @@ builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
 // 💡 **Thêm Repository**
 builder.Services.AddScoped<IUserAccountRepository, EFUserAccountRepository>();
-
+builder.Services.AddScoped<ICoursesRepository, EFCourseRepository>();
+builder.Services.AddScoped<IExamsRepository, EFExamsRepository>();
+builder.Services.AddScoped<ICatogoriesRepository, EFCatogoriesRepository> ();
+builder.Services.AddScoped<ILecturesRepository, EFLecturesRepository>();
+builder.Services.AddScoped<IQuestionsRepository, EFQuestionsRepository>();
 // 💡 **Cấu hình MVC & View Localization**
 builder.Services.AddControllersWithViews()
     .AddViewLocalization()
@@ -79,6 +92,8 @@ app.UseStaticFiles();
 
 // 💡 **Thêm Session vào pipeline**
 app.UseRouting();
+
+
 app.UseSession();  //Bắt buộc phải gọi trước `UseAuthorization`
 app.UseAuthentication(); //  BẮT BUỘC: Xác thực người dùng
 app.UseAuthorization();

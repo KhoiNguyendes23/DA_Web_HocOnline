@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
 namespace Do_An_Web_Hoc.Controllers
 {
@@ -9,36 +10,39 @@ namespace Do_An_Web_Hoc.Controllers
     public class AdminController : Controller
     {
         private readonly IUserAccountRepository _userRepo;
-        public AdminController(IUserAccountRepository userRepo)
+        private readonly ICoursesRepository _coursesRepo;
+        public AdminController(IUserAccountRepository userRepo, ICoursesRepository coursesRepo)
         {
             _userRepo = userRepo;
+            _coursesRepo = coursesRepo;
         }
         public IActionResult Dashboard()
         {
+            var fullName = User.FindFirstValue(ClaimTypes.Name);
+            var roleName = User.FindFirstValue(ClaimTypes.Role);
+            ViewData["FullName"] = fullName;
+            ViewData["RoleName"] = roleName;
             return View();
         }
-        public IActionResult ListCourse()
+        public async Task<IActionResult> ListCourse()
         {
-            return View();
+            var courses = await _coursesRepo.GetAllCoursesAsync();
+            return View(courses);
         }
         public IActionResult AddCourse()
         {
             return View();
         }
-        public IActionResult ListStudent()
+        public async Task<IActionResult> ListStudent()
         {
-            return View();
+            var students = await _userRepo.GetUsersByRoleAsync(3);
+            return View(students);
         }
-        public IActionResult ListTeacher()
+        public async  Task<IActionResult> ListTeacher()
         {
-            return View();
+            var lecturers = await _userRepo.GetUsersByRoleAsync(2);
+            return View(lecturers);
         }
-        //public async Task<IActionResult> ListStudent()
-        //{
-        //    // lấy danh sách các user có roleID = 3 (sinh viên)
-        //    var students = await _userRepo.GetUsersByRoleAsync(3);
-        //    return View(students);
-        //}
         public IActionResult ListExam()
         {
             return View();

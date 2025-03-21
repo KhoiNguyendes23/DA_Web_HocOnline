@@ -51,6 +51,7 @@ namespace Do_An_Web_Hoc.Controllers
         new Claim(ClaimTypes.Name, user.UserName),
         new Claim(ClaimTypes.Email, user.Email),
         new Claim(ClaimTypes.Role, roleName) //Đây là Role mà `[Authorize]` sử dụng
+        //new Claim("FullName", user.FullName)
     };
             var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
             var authProperties = new AuthenticationProperties { IsPersistent = true };
