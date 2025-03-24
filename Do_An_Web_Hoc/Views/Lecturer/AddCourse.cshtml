@@ -1,0 +1,26 @@
+﻿@{
+    Layout = "~/Views/Shared/_LayoutLecturer.cshtml";
+}
+
+<div class="container mt-4">
+    <h2 class="mb-4 text-primary">Thêm khóa học</h2>
+    <form method="post" enctype="multipart/form-data">
+        <div class="mb-3">
+            <label class="form-label text-primary">Tên khóa học</label>
+            <input type="text" class="form-control" placeholder="Nhập tên khóa học" name="CourseName" required>
+        </div>
+        <div class="mb-3">
+            <label class="form-label text-primary">Giảng viên</label>
+            <input type="text" class="form-control" placeholder="Nhập tên giảng viên" name="Instructor" required>
+        </div>
+        <div class="mb-3">
+            <label class="form-label text-primary">Mô tả khóa học</label>
+            <textarea class="form-control" rows="4" placeholder="Mô tả chi tiết về khóa học" name="Description" required></textarea>
+        </div>
+        <div class="mb-3">
+            <label class="form-label text-primary">Hình minh họa</label>
+            <input type="file" class="form-control" name="ImageFile" accept="image/*" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Thêm khóa học</button>
+    </form>
+</div>

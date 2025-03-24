@@ -276,7 +276,6 @@ namespace Do_An_Web_Hoc.Repositories
                 throw; // Ném lại lỗi nếu cần thiết
             }
         }
-
         public async Task UpdateAsync(UserAccount user)
         {
             _context.UserAccounts.Update(user);

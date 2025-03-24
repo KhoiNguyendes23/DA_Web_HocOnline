@@ -1,0 +1,100 @@
+﻿@{
+    Layout = "~/Views/Shared/_LayoutLecturer.cshtml";
+}
+
+<div class="container mt-5">
+    <h2 class="text-primary text-center mb-4">Chỉnh Sửa Bài Kiểm Tra</h2>
+    <form action="#" method="POST">
+        <div class="mb-3">
+            <label for="examTitle" class="form-label">Tiêu đề bài kiểm tra</label>
+            <input type="text" class="form-control" id="examTitle" name="examTitle" value="Bài kiểm tra Python cơ bản" required>
+        </div>
+        <div class="mb-3">
+            <label for="examDuration" class="form-label">Thời gian làm bài (phút)</label>
+            <input type="number" class="form-control" id="examDuration" name="examDuration" value="60" required>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Danh sách câu hỏi</label>
+            <div class="btn-add mb-2">
+                <button type="button" class="btn btn-success" onclick="addQuestion()"><i class="fas fa-plus"></i> Thêm câu hỏi</button>
+            </div>
+            <div id="questionList">
+                <!-- Câu hỏi mẫu -->
+                <div class="question-box border rounded p-3 mb-3">
+                    <label class="form-label">Câu hỏi</label>
+                    <input type="text" class="form-control mb-2" name="questions[]" value="Python là gì?" required>
+
+                    <label class="form-label">Lựa chọn A</label>
+                    <input type="text" class="form-control mb-2" name="optionA[]" value="Ngôn ngữ lập trình" required>
+
+                    <label class="form-label">Lựa chọn B</label>
+                    <input type="text" class="form-control mb-2" name="optionB[]" value="Một loại rắn" required>
+
+                    <label class="form-label">Lựa chọn C</label>
+                    <input type="text" class="form-control mb-2" name="optionC[]" value="Hệ điều hành" required>
+
+                    <label class="form-label">Lựa chọn D</label>
+                    <input type="text" class="form-control mb-2" name="optionD[]" value="Trình duyệt web" required>
+
+                    <label class="form-label">Đáp án đúng</label>
+                    <select class="form-select mb-2" name="correctAnswer[]" required>
+                        <option value="A" selected>A</option>
+                        <option value="B">B</option>
+                        <option value="C">C</option>
+                        <option value="D">D</option>
+                    </select>
+
+                    <button type="button" class="btn btn-danger btn-remove" onclick="removeQuestion(this)">
+                        <i class="fas fa-trash-alt"></i> Xóa
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="text-center">
+            <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Lưu Chỉnh Sửa</button>
+            <a href="ListExam" class="btn btn-secondary"><i class="fas fa-times"></i> Hủy</a>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <script>
+        function addQuestion() {
+            let questionContainer = document.createElement("div");
+            questionContainer.classList.add("question-box", "border", "rounded", "p-3", "mb-3");
+            questionContainer.innerHTML = `
+                <label class="form-label">Câu hỏi</label>
+                <input type="text" class="form-control mb-2" name="questions[]" placeholder="Nhập câu hỏi" required>
+
+                <label class="form-label">Lựa chọn A</label>
+                <input type="text" class="form-control mb-2" name="optionA[]" placeholder="Nhập lựa chọn A" required>
+
+                <label class="form-label">Lựa chọn B</label>
+                <input type="text" class="form-control mb-2" name="optionB[]" placeholder="Nhập lựa chọn B" required>
+
+                <label class="form-label">Lựa chọn C</label>
+                <input type="text" class="form-control mb-2" name="optionC[]" placeholder="Nhập lựa chọn C" required>
+
+                <label class="form-label">Lựa chọn D</label>
+                <input type="text" class="form-control mb-2" name="optionD[]" placeholder="Nhập lựa chọn D" required>
+
+                <label class="form-label">Đáp án đúng</label>
+                <select class="form-select mb-2" name="correctAnswer[]" required>
+                    <option value="A">A</option>
+                    <option value="B">B</option>
+                    <option value="C">C</option>
+                    <option value="D">D</option>
+                </select>
+
+                <button type="button" class="btn btn-danger btn-remove mt-2" onclick="removeQuestion(this)">
+                    <i class="fas fa-trash-alt"></i> Xóa
+                </button>
+            `;
+            document.getElementById("questionList").appendChild(questionContainer);
+        }
+
+        function removeQuestion(button) {
+            button.parentElement.remove();
+        }
+    </script>
+}
