@@ -38,6 +38,7 @@ namespace Do_An_Web_Hoc.Controllers
                 ViewBag.Error = "Sai email hoặc mật khẩu!";
                 return View("Index");
             }
+
             int roleId = user.RoleID ?? 0;
             string roleName = roleId switch
             {
@@ -55,6 +56,9 @@ namespace Do_An_Web_Hoc.Controllers
     };
             var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
             var authProperties = new AuthenticationProperties { IsPersistent = true };
+
+            // Lưu email vào Session sau khi đăng nhập thành công
+            HttpContext.Session.SetString("UserEmail", user.Email);  // Lưu email vào session
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,
                 new ClaimsPrincipal(claimsIdentity), authProperties);
             Console.WriteLine($"[DEBUG] Đăng nhập thành công: {user.UserName} - Role: {roleName}");

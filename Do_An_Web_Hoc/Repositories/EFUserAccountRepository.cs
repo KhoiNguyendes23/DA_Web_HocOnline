@@ -6,17 +6,21 @@ using System.Text;
 using System.Security.Cryptography;
 using System.Net.Mail;
 using System.Net;
+using Microsoft.Data.SqlClient;
+using System.Data;
 namespace Do_An_Web_Hoc.Repositories
 {
     public class EFUserAccountRepository :  IUserAccountRepository
     {
         private readonly ApplicationDbContext _context;
         private readonly IConfiguration _configuration;
+        private readonly ILogger<EFUserAccountRepository> _logger;
 
-        public EFUserAccountRepository(ApplicationDbContext context , IConfiguration configuration)
+        public EFUserAccountRepository(ApplicationDbContext context , IConfiguration configuration, ILogger<EFUserAccountRepository> logger)
         {
             _context = context;
             _configuration = configuration;
+            _logger = logger;
         }
 
         // Tìm người dùng theo email.
@@ -25,7 +29,11 @@ namespace Do_An_Web_Hoc.Repositories
             return await _context.UserAccounts
                 .FirstOrDefaultAsync(u => u.Email == email);
         }
-
+        public async Task UpdateAsync(UserStatus user)
+        {
+            _context.UserStatus.Update(user);
+            await _context.SaveChangesAsync();
+        }
         // Lấy danh sách người dùng theo RoleID (vai trò).
         public async Task<IEnumerable<UserAccount>> GetUsersByRoleAsync(int roleId)
         {
@@ -176,8 +184,103 @@ namespace Do_An_Web_Hoc.Repositories
 
             await smtpClient.SendMailAsync(mailMessage);
         }
+        public async Task UpdateUserAsync(UserAccount user)
+        {
+            var existingUser = await _context.UserAccounts.FindAsync(user.UserID);
+            if (existingUser != null)
+            {
+                existingUser.FullName = user.FullName;
+                existingUser.Email = user.Email;
+                existingUser.PhoneNumber = user.PhoneNumber;
+                existingUser.Birthday = user.Birthday;
+                existingUser.Status = user.Status;
+                existingUser.Address = user.Address;
+                existingUser.Image = user.Image;
+                await _context.SaveChangesAsync();
+            }
+        }
+        // Phương thức cập nhật thông tin người dùng với ghi log và bắt lỗi
+        //public async Task UpdateUserInfoAsync(UserAccount updatedUser)
+        //{
+        //    try
+        //    {
+        //        var existingUser = await _context.UserAccounts.FindAsync(updatedUser.UserID);
+        //        if (existingUser != null)
+        //        {
+        //            existingUser.FullName = updatedUser.FullName;
+        //            existingUser.Email = updatedUser.Email;
+        //            existingUser.PhoneNumber = updatedUser.PhoneNumber;
+        //            existingUser.Birthday = updatedUser.Birthday;
+        //            existingUser.Address = updatedUser.Address;
 
-       
+        //            if (updatedUser.Image != null)
+        //            {
+        //                existingUser.Image = updatedUser.Image;  // Nếu có ảnh, cập nhật ảnh
+        //            }
+        //            else
+        //            {
+        //                // Nếu không có ảnh, có thể sử dụng ảnh mặc định
+        //                existingUser.Image = "/images/default-avatar.png";
+        //            }
+
+        //            // Lưu thay đổi
+        //            await _context.SaveChangesAsync();
+        //        }
+        //        else
+        //        {
+        //            _logger.LogWarning($"User with ID {updatedUser.UserID} not found.");
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        _logger.LogError($"Error updating user {updatedUser.UserID}: {ex.Message}");
+        //        throw;  // Ném lại lỗi nếu cần thiết
+        //    }
+        //}
+        public async Task UpdateUserInfoAsync(UserAccount updatedUser)
+        {
+            try
+            {
+                // Tạo câu lệnh SQL để cập nhật thông tin người dùng
+                string sqlQuery = @"
+            UPDATE [dbo].[UserAccounts]
+            SET 
+                FullName = @FullName,
+                Email = @Email,
+                PhoneNumber = @PhoneNumber,
+                Birthday = @Birthday,
+                Address = @Address,
+                Image = @Image
+            WHERE UserID = @UserID";
+
+                // Tạo các tham số để thay thế trong câu lệnh SQL
+                var parameters = new[]
+                {
+            new SqlParameter("@FullName", SqlDbType.NVarChar) { Value = updatedUser.FullName },
+            new SqlParameter("@Email", SqlDbType.NVarChar) { Value = updatedUser.Email },
+            new SqlParameter("@PhoneNumber", SqlDbType.NVarChar) { Value = updatedUser.PhoneNumber },
+            new SqlParameter("@Birthday", SqlDbType.DateTime) { Value = updatedUser.Birthday },
+            new SqlParameter("@Address", SqlDbType.NVarChar) { Value = updatedUser.Address },
+            new SqlParameter("@Image", SqlDbType.NVarChar) { Value = updatedUser.Image ?? "/images/default-avatar.png" }, // Default image if null
+            new SqlParameter("@UserID", SqlDbType.Int) { Value = updatedUser.UserID }
+        };
+
+                // Thực thi câu lệnh SQL
+                await _context.Database.ExecuteSqlRawAsync(sqlQuery, parameters);
+
+                _logger.LogInformation($"User {updatedUser.UserID} updated successfully.");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error updating user {updatedUser.UserID}: {ex.Message}");
+                throw; // Ném lại lỗi nếu cần thiết
+            }
+        }
+        public async Task UpdateAsync(UserAccount user)
+        {
+            _context.UserAccounts.Update(user);
+            await _context.SaveChangesAsync();
+        }
     }
 }
 

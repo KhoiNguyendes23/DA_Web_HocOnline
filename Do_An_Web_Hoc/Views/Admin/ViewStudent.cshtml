@@ -7,40 +7,36 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chi tiết khóa học</title>
+    <title>Chi tiết học viên</title>
 
     <!-- Bootstrap & Font Awesome -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-
     <link href="~/css/Admin.css" rel="stylesheet" />
 </head>
 <body>
-   
     <div class="container mt-5">
         <h2 class="text-center text-primary">Thông Tin Học Viên</h2>
 
         <div class="card mx-auto" style="max-width: 500px;">
             <div class="card-body">
-                <h5 class="card-title"><i class="fas fa-user"></i> Nguyễn Văn A</h5>
-                <p><strong>Email:</strong> nguyenvana@example.com</p>
-                <p><strong>Số Điện Thoại:</strong> 0123-456-789</p>
-                <p><strong>Ngày Sinh:</strong> 01/01/1995</p>
-                <p><strong>Địa Chỉ:</strong> 123 Đường ABC, Quận 1, TP.HCM</p>
-                <p><strong>Khóa Học:</strong> Python Cơ Bản</p>
-                <p><strong>Trạng Thái:</strong> <span class="badge bg-success">Đang học</span></p>
+                <!-- Hiển thị thông tin sinh viên -->
+                <h5 class="card-title"><i class="fas fa-user"></i> @Model.FullName</h5>
+                <p><strong>Email:</strong> @Model.Email</p>
+                <p><strong>Số Điện Thoại:</strong> @Model.PhoneNumber</p>
+                <p><strong>Ngày Sinh:</strong> @Model.Birthday?.ToString("dd/MM/yyyy")</p>
+                <p><strong>Trạng Thái:</strong> @((Model.Status == 1) ? "Đang học" : "Ngừng học")</p>
             </div>
         </div>
 
         <div class="text-center mt-4">
-            <a href="ListStudent" class="btn btn-secondary"><i class="fas fa-arrow-left"></i> Quay Lại</a>
-            <a href="UpdateStudent" class="btn btn-primary"><i class="fas fa-edit"></i> Chỉnh Sửa</a>
+            <!-- Thêm các nút điều hướng -->
+            <a href="@Url.Action("ListStudent")" class="btn btn-secondary"><i class="fas fa-arrow-left"></i> Quay Lại</a>
+            <a href="@Url.Action("UpdateStudent", new { id = Model.UserID })" class="btn btn-primary"><i class="fas fa-edit"></i> Chỉnh Sửa</a>
         </div>
     </div>
 
-
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
 </body>
 </html>

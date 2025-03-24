@@ -46,7 +46,7 @@ builder.Services.AddSession(options =>
 });
 
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-
+builder.Services.AddLogging();
 // 💡 **Thêm Repository**
 builder.Services.AddScoped<IUserAccountRepository, EFUserAccountRepository>();
 builder.Services.AddScoped<ICoursesRepository, EFCourseRepository>();
