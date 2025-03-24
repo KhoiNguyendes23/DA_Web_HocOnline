@@ -1,0 +1,24 @@
+﻿@{
+    Layout = "~/Views/Shared/_LayoutLecturer.cshtml";
+}
+
+<div class="container mt-5">
+    <div class="text-center">
+        <i class="fas fa-exclamation-triangle fa-3x text-warning mb-3"></i>
+        <h2 class="text-danger">Xác Nhận Xóa</h2>
+        <p>Bạn có chắc chắn muốn xóa khóa học <strong>"Python Cơ Bản"</strong> không?</p>
+    </div>
+
+    <form action="ConfirmDeleteCourse" method="post" class="text-center">
+        <input type="hidden" name="courseId" value="1" />
+
+        <div class="btn-group mt-3">
+            <button type="submit" class="btn btn-danger btn-delete">
+                <i class="fas fa-trash"></i> Xóa
+            </button>
+            <a href="ListCourse" class="btn btn-secondary btn-cancel">
+                <i class="fas fa-times"></i> Hủy
+            </a>
+        </div>
+    </form>
+</div>
