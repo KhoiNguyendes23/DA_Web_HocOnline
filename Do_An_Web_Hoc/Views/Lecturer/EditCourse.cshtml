@@ -1,0 +1,54 @@
+﻿@{
+    Layout = "~/Views/Shared/_LayoutLecturer.cshtml";
+}
+
+<div class="container mt-5">
+    <h2 class="text-primary text-center mb-4">Cập Nhật Khóa Học</h2>
+
+    <form action="SaveUpdatedCourse" method="post">
+        <!-- Tên khóa học -->
+        <div class="form-group mb-3">
+            <label for="courseName"><i class="fas fa-book"></i> Tên khóa học</label>
+            <input type="text" class="form-control" id="courseName" name="courseName" value="Python cơ bản" required>
+        </div>
+
+        <!-- Giảng viên -->
+        <div class="form-group mb-3">
+            <label for="instructor"><i class="fas fa-chalkboard-teacher"></i> Giảng viên</label>
+            <input type="text" class="form-control" id="instructor" name="instructor" value="Nguyễn Văn B" required>
+        </div>
+
+        <!-- Số học viên -->
+        <div class="form-group mb-3">
+            <label for="students"><i class="fas fa-users"></i> Số học viên</label>
+            <input type="number" class="form-control" id="students" name="students" value="30" required>
+        </div>
+
+        <!-- Mô tả khóa học -->
+        <div class="form-group mb-3">
+            <label for="description"><i class="fas fa-info-circle"></i> Mô tả khóa học</label>
+            <textarea class="form-control" id="description" name="description" rows="3">Khóa học Python cơ bản giúp học viên làm quen với cú pháp, thư viện và ứng dụng của Python trong thực tế.</textarea>
+        </div>
+
+        <!-- Thời gian học -->
+        <div class="form-group mb-3">
+            <label for="duration"><i class="fas fa-clock"></i> Thời gian học</label>
+            <input type="text" class="form-control" id="duration" name="duration" value="20 buổi (10 tuần)" required>
+        </div>
+
+        <!-- Trạng thái khóa học -->
+        <div class="form-group mb-4">
+            <label for="status"><i class="fas fa-toggle-on"></i> Trạng thái</label>
+            <select class="form-select" id="status" name="status">
+                <option value="open" selected>Mở</option>
+                <option value="closed">Đóng</option>
+            </select>
+        </div>
+
+        <!-- Nút lưu và quay lại -->
+        <div class="d-flex justify-content-center gap-3">
+            <button type="submit" class="btn btn-primary btn-save"><i class="fas fa-save"></i> Lưu Thay Đổi</button>
+            <a href="ListCourse" class="btn btn-secondary btn-back"><i class="fas fa-arrow-left"></i> Quay lại</a>
+        </div>
+    </form>
+</div>

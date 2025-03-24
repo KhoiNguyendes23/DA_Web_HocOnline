@@ -177,7 +177,7 @@ namespace Do_An_Web_Hoc.Repositories
             await smtpClient.SendMailAsync(mailMessage);
         }
 
-        // Giữ nguyên các hàm còn lại...
+       
     }
 }
 
