@@ -1,10 +1,13 @@
 ﻿using Do_An_Web_Hoc.Models;
+using Do_An_Web_Hoc.Repositories;
 using Do_An_Web_Hoc.Repositories.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Net.WebSockets;
 using System.Security.Claims;
+using Microsoft.Extensions.Logging;
+
 
 namespace Do_An_Web_Hoc.Controllers
 {
@@ -14,11 +17,13 @@ namespace Do_An_Web_Hoc.Controllers
         private readonly IUserAccountRepository _userRepo;
         private readonly ICoursesRepository _coursesRepo;
         private readonly IExamsRepository _examsRepo;
-        public AdminController(IUserAccountRepository userRepo, ICoursesRepository coursesRepo, IExamsRepository examsRepo)
+        private readonly ILogger<AdminController> _logger;
+        public AdminController(IUserAccountRepository userRepo, ICoursesRepository coursesRepo, IExamsRepository examsRepo, ILogger<AdminController> logger)
         {
             _userRepo = userRepo;
             _coursesRepo = coursesRepo;
             _examsRepo = examsRepo;
+            _logger = logger;
         }
         public IActionResult Dashboard()
         {
@@ -42,7 +47,7 @@ namespace Do_An_Web_Hoc.Controllers
             var students = await _userRepo.GetUsersByRoleAsync(3);
             return View(students);
         }
-        public async  Task<IActionResult> ListTeacher()
+        public async Task<IActionResult> ListTeacher()
         {
             var lecturers = await _userRepo.GetUsersByRoleAsync(2);
             return View(lecturers);
@@ -79,18 +84,141 @@ namespace Do_An_Web_Hoc.Controllers
         {
             return View();
         }
-        public IActionResult PersonalPage()
+        public async Task<IActionResult> PersonalPage()
         {
-            return View();
+            // Lấy email từ Claims
+            var currentUserEmail = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value;
+
+            if (string.IsNullOrEmpty(currentUserEmail))
+            {
+                return RedirectToAction("Login", "Account");
+            }
+            var userAccount = await _userRepo.GetByEmailAsync(currentUserEmail);
+
+            if (userAccount == null)
+            {
+                return View("Error");
+            }
+
+            return View(userAccount);
         }
         public IActionResult Decentralization()
         {
             return View();
         }
-        public IActionResult UpdatePersonalPage()
+
+        [HttpGet]
+        public async Task<IActionResult> UpdatePersonalPage()
         {
-            return View();
+            // Lấy email từ Claims
+            
+            var currentUserEmail = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value;
+            if (string.IsNullOrEmpty(currentUserEmail))
+            {
+                _logger.LogWarning("User is not logged in.");
+                return RedirectToAction("Login", "Account");
+            }
+
+            var userAccount = await _userRepo.GetByEmailAsync(currentUserEmail);
+            if (userAccount == null)
+            {
+                _logger.LogWarning($"User with email {currentUserEmail} not found.");
+                return View("Error");
+            }
+
+            return View(userAccount);
         }
+
+
+        [HttpPost]
+        public async Task<IActionResult> UpdatePersonalPage(UserAccount updatedUser, IFormFile image)
+        {
+            //if (!ModelState.IsValid)
+            //{
+            //    _logger.LogWarning("Model state is invalid.");
+            //    return View(updatedUser); // Return the same view with validation errors
+            //}
+
+            var currentUserEmail = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value;
+            if (string.IsNullOrEmpty(currentUserEmail))
+            {
+                _logger.LogWarning("User is not logged in.");
+                return RedirectToAction("Login", "Account");
+            }
+
+            try
+            {
+                var userAccount = await _userRepo.GetByEmailAsync(currentUserEmail);
+                if (userAccount == null)
+                {
+                    _logger.LogWarning($"User with email {currentUserEmail} not found.");
+                    return View("Error");
+                }
+
+                // Không cho phép cập nhật email
+                // userAccount.Email = updatedUser.Email;  // => Bỏ dòng này
+
+                // Cập nhật thông tin người dùng
+                userAccount.FullName = updatedUser.FullName;
+                userAccount.PhoneNumber = updatedUser.PhoneNumber;
+                userAccount.Birthday = updatedUser.Birthday;
+                userAccount.Address = updatedUser.Address;
+
+                // Kiểm tra và xử lý upload ảnh
+                if (image != null && image.Length > 0)
+                {
+                    var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".gif" };
+                    var fileExtension = Path.GetExtension(image.FileName).ToLower();
+
+                    if (!allowedExtensions.Contains(fileExtension))
+                    {
+                        ModelState.AddModelError("", "Only image files (.jpg, .jpeg, .png, .gif) are allowed.");
+                        return View(updatedUser);
+                    }
+
+                    // Xóa ảnh cũ nếu không phải ảnh mặc định
+                    if (!string.IsNullOrEmpty(userAccount.Image) && userAccount.Image != "/images/default-avatar.png")
+                    {
+                        var oldImagePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", userAccount.Image.TrimStart('/'));
+                        if (System.IO.File.Exists(oldImagePath))
+                        {
+                            System.IO.File.Delete(oldImagePath);
+                        }
+                    }
+
+                    // Lưu ảnh mới
+                    var uniqueFileName = Guid.NewGuid().ToString() + fileExtension;
+                    var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", uniqueFileName);
+
+                    using (var stream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await image.CopyToAsync(stream);
+                    }
+
+                    userAccount.Image = "/images/" + uniqueFileName;
+                    _logger.LogInformation("Updated user image.");
+                }
+
+                // Nếu không có ảnh thì giữ nguyên ảnh cũ hoặc đặt ảnh mặc định
+                if (string.IsNullOrEmpty(userAccount.Image))
+                {
+                    userAccount.Image = "/images/default-avatar.png";
+                }
+
+                // Lưu vào database
+                await _userRepo.UpdateAsync(userAccount);
+                _logger.LogInformation($"User {currentUserEmail} updated successfully.");
+
+                return RedirectToAction("PersonalPage");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error updating user {currentUserEmail}: {ex.Message}");
+                return StatusCode(500, "An error occurred while updating the user");
+            }
+        }
+
+
         public IActionResult ViewCourse()
         {
             return View();
