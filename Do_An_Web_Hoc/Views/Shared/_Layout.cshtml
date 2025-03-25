@@ -4,81 +4,104 @@
 @inject IViewLocalizer Localizer
 @inject IHttpContextAccessor HttpContextAccessor
 
+<!-- Lấy ngôn ngữ hiện tại từ Cookie -->
+@{
+    var cultureFeature = HttpContextAccessor.HttpContext?.Features.Get<IRequestCultureFeature>();
+    var currentCulture = cultureFeature?.RequestCulture.Culture.Name ?? "vi-VN"; // Mặc định là tiếng Việt
+}
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - Do_An_Web_Hoc</title>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/layout.css" asp-append-version="true" />
-
-    @if (ViewData["CssFile"] != null)
-    {
-        <link rel="stylesheet" href="~/css/@ViewData["CssFile"]" asp-append-version="true" />
-    }
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+
+    <!-- Bootstrap trước -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+
+    <!-- CSS của bạn sau để override -->
+    <link rel="stylesheet" href="~/css/layout.css" asp-append-version="true" />
+
+
 </head>
 <body>
-
     <!-- Header -->
     <header class="header">
-        <button class="btn-toggle" id="toggleSidebar">
-            <i class="fas fa-bars"></i>
-        </button>
-
-        <nav class="header-menu">
-            <div class="dropdown">
-                <a class="dropdown-toggle" href="" id="courseMenu">
-                    <i class="fas fa-list"></i> @Localizer["Courses"]
-                </a>
-                <div class="dropdown-menu" id="courseDropdown">
-                    <a asp-controller="Courses" asp-action="WebDevelopment" class="dropdown-item">Lập trình Web</a>
-                    @* <a href="#" class="dropdown-item">Phát triển Game</a> *@
-                    @* <a href="#" class="dropdown-item">Khoa học Dữ liệu</a> *@
-                    <a asp-controller="Courses" asp-action="DataScience" class="dropdown-item">Khoa học dữ liệu</a>
-                    @* <a href="#" class="dropdown-item">AI & Machine Learning</a> *@
-                    <a asp-controller="Courses" asp-action="AI_MachineLearning" class="dropdown-item">AI & Machine Learning</a>
-                    @* <a href="#" class="dropdown-item">Cấu Trúc Dữ Liệu & Giải Thuật</a> *@
-                    @* <a href="#" class="dropdown-item">Cơ Sở Dữ Liệu Nâng Cao</a> *@
-                    <a asp-controller="Courses" asp-action="AdvancedDatabase" class="dropdown-item">Cơ Sở Dữ Liệu Nâng Cao</a>
-                </div>
+        <div class="nav-container">
+            <div class="nav-logo">
+                <a asp-controller="Home" asp-action="Index"> <img src="~/images/Home_index_images/GitHub_Logo.png" alt=""></a>
             </div>
-            <a asp-controller="Account" asp-action="Index"><i class="fas fa-plus"></i>Ôn Tập</a>
-            <a asp-controller="AboutMe" asp-action="AboutMe"><i class="fas fa-plus"></i>Về Chúng Tôi</a>
-            <a asp-controller="Contact" asp-action="Index"><i class="fas fa-plus"></i>@Localizer["Contact"]</a>
-            <a asp-controller="Account" asp-action="Index"><i class="fas fa-plus"></i> @Localizer["LoginRegister"]</a>
-        </nav>
 
-        <!-- Lấy ngôn ngữ hiện tại từ Cookie -->
-        @{
-            var cultureFeature = HttpContextAccessor.HttpContext?.Features.Get<IRequestCultureFeature>();
-            var currentCulture = cultureFeature?.RequestCulture.Culture.Name ?? "vi-VN"; // Mặc định là tiếng Việt
-        }
+            <div class="background"></div>
 
-        <!-- Dropdown chọn ngôn ngữ -->
-        <div class="language-selector">
-            <form asp-controller="Language" asp-action="SetLanguage" method="post">
-                <select name="culture" onchange="this.form.submit();">
-                    <option value="vi-VN" selected="@(currentCulture == "vi-VN" ? "selected" : null)">🇻🇳 @Localizer["Vietnamese"]</option>
-                    <option value="en-US" selected="@(currentCulture == "en-US" ? "selected" : null)">🇺🇸 @Localizer["English"]</option>
-                    <option value="fr-FR" selected="@(currentCulture == "fr-FR" ? "selected" : null)">🇫🇷 @Localizer["French"]</option>
-                </select>
-                <input type="hidden" name="returnUrl" value="@Context.Request.Path" />
-            </form>
-        </div>
+            <i class="fa-solid fa-bars open-menu"></i>
+
+            <div class="nav-links-container">
+                <i class="fa-solid fa-xmark close-menu"></i>
+
+                <ul class="nav-links">
+                    <li class="nav-link-item"><a asp-controller="Home" asp-action="Index">@Localizer["Home"]</a></li>
+                    <li class="nav-link-item dropdown-menu-branch">
+                        <a href="#" data-toggle="dropdown-menu">@Localizer["Courses"]<i class="fa-solid fa-chevron-down"></i></a>
+                        <ul class="custom-dropdown-menu">
+                            <li class="dropdown-menu-item"><a asp-controller="Courses" asp-action="WebDevelopment">Lập trình Web</a></li>
+                            <li class="dropdown-menu-item"><a asp-controller="Courses" asp-action="DataScience">Khoa học dữ liệu</a></li>
+                            <li class="dropdown-menu-item"><a asp-controller="Courses" asp-action="AI_MachineLearning">AI & Machine Learning</a></li>
+                            <li class="dropdown-menu-item"><a asp-controller="Courses" asp-action="AdvancedDatabase">Cơ Sở Dữ Liệu Nâng Cao</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-link-item"><a asp-controller="AboutMe" asp-action="AboutMe">@Localizer["AboutUs"]</a></li>
+                    <li class="nav-link-item"><a asp-controller="Contact" asp-action="Index">@Localizer["Contact"]</a></li>
+                    <li class="nav-link-item"><a asp-controller="Contact" asp-action="Index">@Localizer["Login"]</a></li>
+
+                    <!-- Dropdown chọn ngôn ngữ -->
+                    <li class="nav-link-item custom-lang-container">
+                        <div class="custom-lang-wrapper">
+                            <form asp-controller="Language" asp-action="SetLanguage" method="post" id="langForm">
+                                <div class="custom-lang-select">
+                                    <div class="selected-lang" id="langTrigger">
+                                        <img src="https://flagcdn.com/w20/@(currentCulture.Split('-')[1].ToLower()).png"
+                                             class="lang-flag"
+                                             alt="@currentCulture" />
+                                        <span>@Localizer[currentCulture.Split('-')[1]]</span>
+                                        <i class="fa-solid fa-chevron-down"></i>
+                                    </div>
+                                    <select name="culture" class="original-select" id="langSelect">
+                                        <option value="vi-VN" selected="@(currentCulture == "vi-VN" ? "selected" : null)">@Localizer["Vietnamese"]</option>
+                                        <option value="en-US" selected="@(currentCulture == "en-US" ? "selected" : null)">@Localizer["English"]</option>
+                                        <option value="fr-FR" selected="@(currentCulture == "fr-FR" ? "selected" : null)">@Localizer["French"]</option>
+                                    </select>
+                                    <input type="hidden" name="returnUrl" value="@Context.Request.Path" />
+
+                                    <!-- Custom dropdown -->
+                                    <div class="custom-lang-dropdown">
+                                        <div class="lang-option" data-value="vi-VN">
+                                            <img src="https://flagcdn.com/w20/vn.png" class="lang-flag">
+                                            <span>@Localizer["Vietnamese"]</span>
+                                        </div>
+                                        <div class="lang-option" data-value="en-US">
+                                            <img src="https://flagcdn.com/w20/us.png" class="lang-flag">
+                                            <span>@Localizer["English"]</span>
+                                        </div>
+                                        <div class="lang-option" data-value="fr-FR">
+                                            <img src="https://flagcdn.com/w20/fr.png" class="lang-flag">
+                                            <span>@Localizer["French"]</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>     
 
     </header>
-
-    <!-- Sidebar -->
-    <div class="sidebar" id="sidebar">
-        <ul class="sidebar-menu">
-            <li><a asp-controller="Home" asp-action="Index"><i class="fas fa-home"></i> @Localizer["Home"]</a></li>
-            <li><a asp-controller="Product" asp-action="Index"><i class="fas fa-list"></i> @Localizer["ViewProducts"]</a></li>
-            <li><a asp-controller="Product" asp-action="Add"><i class="fas fa-plus"></i> @Localizer["AddProduct"]</a></li>
-        </ul>
-    </div>
 
     <!-- Nội dung chính -->
     <div class="content">
@@ -88,46 +111,40 @@
     </div>
 
     <!-- Footer -->
-    <footer class="footer-custom">
+    <footer class="footer">
         <div class="container">
-            <div class="row">
-                <!-- Cột 1: Thông tin -->
+            <div class="row align-items-center">
                 <div class="col-md-6">
-                    <h5>Thông tin</h5>
-                    <p><i class="fas fa-home"></i> TRUNG TÂM DẠY HỌC SỐ - HUTECH</p>
-                    <p><i class="fas fa-map-marker-alt"></i> 108 Hoàng Hoa Thám, P.24, Q.Thủ Đức, TP.HCM</p>
-                    <p><i class="fas fa-phone"></i> +84 90 1235598</p>
-                    <p><i class="fas fa-envelope"></i> anhtkng@gmail.com</p>
-                </div>
-
-                <!-- Cột 2: Kết nối mạng xã hội -->
-                <div class="col-md-3">
-                    <h5>Kết nối</h5>
-                    <p>
-                        <i class="fab fa-facebook"></i>
-                        <a href="https://www.facebook.com/dungnoway/" target="_blank">Facebook</a>
+                    <div class="footer-brand">KTDAH</div>
+                    <p class="footer-text">
+                        Website học tập trực tuyến với những khóa học chất lượng và tốt nhất.
                     </p>
-                    <p><i class="fab fa-youtube"></i> <a href="#">Youtube</a></p>
-                    <p><i class="fab fa-instagram"></i> <a href="#">Instagram</a></p>
+                    <div class="social-links">
+						<a href="#" class="social-link"><i class="fab fa-facebook"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
+                    </div>
                 </div>
 
-                <!-- Cột 3: Bản quyền -->
-                <div class="col-md-3 text-end">
-                    <p>2025 (Tên đề tài), bản quyền website</p>
+                <div class="col-md-6 text-md-end">
+                    <ul class="footer-links">
+                        <li><a asp-controller="Home" asp-action="Index">@Localizer["Home"]</a></li>
+                        <li><a asp-controller="AboutMe" asp-action="AboutMe">@Localizer["AboutUs"]</a></li>
+                        <li><a asp-controller="Contact" asp-action="Index">@Localizer["Contact"]</a></li>
+                    </ul>
                 </div>
+            </div>
+
+            <div class="copyright text-center">
+                © 2025 KTDAH Team. All rights reserved.
             </div>
         </div>
     </footer>
 
-    <!-- Nút Liên Hệ nổi -->
-    <a href="https://zalo.me/yourzaloid" target="_blank" class="contact-button">
-        <i class="fas fa-comments"></i>
-        <span>Liên hệ</span>
-    </a>
+	<script src="~/js/dropdown-menu.js"></script>
+	<script src="~/js/language-selector.js"></script>
+	<script src="~/js/switch-language.js"></script>
 
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/sidebar-toggle.js"></script>
     @await RenderSectionAsync("Scripts", required: false)
 
 </body>
