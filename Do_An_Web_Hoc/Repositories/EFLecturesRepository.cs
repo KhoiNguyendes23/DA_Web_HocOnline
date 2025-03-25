@@ -109,5 +109,11 @@ namespace Do_An_Web_Hoc.Repositories
 
             return Task.FromResult(paged);
         }
+
+      
+        public Task UpdateLecturerProfileAsync(Lectures lecturer)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
