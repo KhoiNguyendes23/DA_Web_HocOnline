@@ -1,65 +1,113 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
 using Do_An_Web_Hoc.Models;
 using Do_An_Web_Hoc.Repositories.Interfaces;
-using System;
 
 namespace Do_An_Web_Hoc.Repositories
 {
     public class EFLecturesRepository : ILecturesRepository
     {
-        private readonly ApplicationDbContext _context;
-
-        public EFLecturesRepository(ApplicationDbContext context)
+        // ✅ Constructor không cần context khi test view
+        public EFLecturesRepository()
         {
-            _context = context;
         }
 
-        // Lấy danh sách tất cả các bài giảng
-        public async Task<IEnumerable<Lectures>> GetAllLecturesAsync()
+        public Task<IEnumerable<Lectures>> GetAllLecturesAsync()
         {
-            return await _context.Lectures.ToListAsync();
-        }
-
-        // Lấy thông tin chi tiết của một bài giảng theo ID
-        public async Task<Lectures> GetLectureByIdAsync(int lectureId)
-        {
-            return await _context.Lectures.FindAsync(lectureId);
-        }
-
-        // Thêm một bài giảng mới
-        public async Task AddLectureAsync(Lectures lecture)
-        {
-            await _context.Lectures.AddAsync(lecture);
-            await _context.SaveChangesAsync();
-        }
-
-        // Cập nhật thông tin bài giảng
-        public async Task UpdateLectureAsync(Lectures lecture)
-        {
-            _context.Lectures.Update(lecture);
-            await _context.SaveChangesAsync();
-        }
-
-        // Xóa một bài giảng theo ID
-        public async Task DeleteLectureAsync(int lectureId)
-        {
-            var lecture = await _context.Lectures.FindAsync(lectureId);
-            if (lecture != null)
+            // ✅ Mock danh sách bài giảng
+            var lectures = new List<Lectures>
             {
-                _context.Lectures.Remove(lecture);
-                await _context.SaveChangesAsync();
-            }
+                new Lectures { LectureID = 1, Title = "Bài giảng C#", Content = "Nội dung chi tiết", CourseID = 1, CreateAt = DateTime.Now },
+                new Lectures { LectureID = 2, Title = "Bài giảng ASP.NET", Content = "Nội dung web", CourseID = 2, CreateAt = DateTime.Now }
+            };
+
+            return Task.FromResult(lectures.AsEnumerable());
         }
 
-        // Tìm kiếm bài giảng theo tiêu đề (tên)
-        public async Task<IEnumerable<Lectures>> SearchLecturesByTitleAsync(string title)
+        public Task<Lectures> GetLectureByIdAsync(int lectureId)
         {
-            return await _context.Lectures
-                .Where(l => l.Title.Contains(title))
-                .ToListAsync();
+            var lecture = new Lectures
+            {
+                LectureID = lectureId,
+                Title = "Bài giảng mẫu",
+                Content = "Demo Content",
+                CourseID = 1,
+                CreateAt = DateTime.Now
+            };
+
+            return Task.FromResult(lecture);
+        }
+
+        public Task AddLectureAsync(Lectures lecture)
+        {
+            // ❌ Không làm gì khi test view
+            return Task.CompletedTask;
+        }
+
+        public Task UpdateLectureAsync(Lectures lecture)
+        {
+            // ❌ Không làm gì khi test view
+            return Task.CompletedTask;
+        }
+
+        public Task DeleteLectureAsync(int lectureId)
+        {
+            // ❌ Không làm gì khi test view
+            return Task.CompletedTask;
+        }
+
+        public Task<IEnumerable<Lectures>> SearchLecturesByTitleAsync(string title)
+        {
+            var filtered = new List<Lectures>
+            {
+                new Lectures { LectureID = 3, Title = $"Tìm kiếm: {title}", Content = "Kết quả demo", CourseID = 1 }
+            };
+
+            return Task.FromResult(filtered.AsEnumerable());
+        }
+
+        public Task<IEnumerable<Lectures>> GetLecturesByCourseIdAsync(int courseId)
+        {
+            var byCourse = new List<Lectures>
+            {
+                new Lectures { LectureID = 4, Title = "Course Specific Lecture", CourseID = courseId }
+            };
+
+            return Task.FromResult(byCourse.AsEnumerable());
+        }
+
+        public Task<IEnumerable<Lectures>> GetRecentLecturesAsync(int count)
+        {
+            var recent = Enumerable.Range(1, count).Select(i => new Lectures
+            {
+                LectureID = i,
+                Title = $"Bài giảng mới {i}",
+                CreateAt = DateTime.Now.AddDays(-i)
+            });
+
+            return Task.FromResult(recent);
+        }
+
+        public Task<bool> LectureExistsAsync(int lectureId)
+        {
+            return Task.FromResult(true); // ✅ Luôn "tồn tại"
+        }
+
+        public Task<int> CountLecturesAsync()
+        {
+            return Task.FromResult(5); // ✅ Mặc định 5 bài giảng
+        }
+
+        public Task<IEnumerable<Lectures>> GetLecturesPagedAsync(int pageIndex, int pageSize)
+        {
+            var paged = Enumerable.Range(1, pageSize).Select(i => new Lectures
+            {
+                LectureID = (pageIndex - 1) * pageSize + i,
+                Title = $"Bài giảng phân trang {i}"
+            });
+
+            return Task.FromResult(paged);
         }
     }
 }
