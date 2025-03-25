@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Net.WebSockets;
 using System.Security.Claims;
 using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 
 namespace Do_An_Web_Hoc.Controllers
@@ -18,12 +19,14 @@ namespace Do_An_Web_Hoc.Controllers
         private readonly ICoursesRepository _coursesRepo;
         private readonly IExamsRepository _examsRepo;
         private readonly ILogger<AdminController> _logger;
-        public AdminController(IUserAccountRepository userRepo, ICoursesRepository coursesRepo, IExamsRepository examsRepo, ILogger<AdminController> logger)
+        private readonly ICatogoriesRepository _catogoriesRepository;
+        public AdminController(IUserAccountRepository userRepo, ICoursesRepository coursesRepo, IExamsRepository examsRepo, ILogger<AdminController> logger, ICatogoriesRepository catogoriesRepository)
         {
             _userRepo = userRepo;
             _coursesRepo = coursesRepo;
             _examsRepo = examsRepo;
             _logger = logger;
+            _catogoriesRepository = catogoriesRepository;
         }
         public IActionResult Dashboard()
         {
@@ -38,10 +41,72 @@ namespace Do_An_Web_Hoc.Controllers
             var courses = await _coursesRepo.GetAllCoursesAsync();
             return View(courses);
         }
-        public IActionResult AddCourse()
+        [HttpGet]
+        public async Task<IActionResult> AddCourse()
         {
+            var categories = await _catogoriesRepository.GetAllCategoriesAsync();
+
+            ViewBag.Categories = categories.Select(c => new SelectListItem
+            {
+                Value = c.CategoryId.ToString(),
+                Text = c.CategoryName
+            }).ToList();
+
+            ViewBag.StatusOptions = new List<SelectListItem>
+         {
+            new SelectListItem { Value = "1", Text = "Hoạt động" },
+            new SelectListItem { Value = "0", Text = "Không hoạt động" }
+         };
+
             return View();
         }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AddCourse(Courses course)
+        {
+            if (!ModelState.IsValid)
+            {
+                // Load lại dropdown nếu có lỗi
+                var categories = await _catogoriesRepository.GetAllCategoriesAsync();
+
+                ViewBag.Categories = categories.Select(c => new SelectListItem
+                {
+                    Value = c.CategoryId.ToString(),
+                    Text = c.CategoryName
+                }).ToList();
+
+                ViewBag.StatusOptions = new List<SelectListItem>
+        {
+            new SelectListItem { Value = "1", Text = "Hoạt động" },
+            new SelectListItem { Value = "0", Text = "Không hoạt động" }
+        };
+
+                return View(course);
+            }
+
+            await _coursesRepo.AddCourseAsync(course);
+            return RedirectToAction("ListCourse");
+        }
+        // thêm danh mục
+        [HttpPost]
+        public async Task<IActionResult> AddCategory(string CategoryName, int Status)
+        {
+            if (string.IsNullOrWhiteSpace(CategoryName)) return RedirectToAction("AddCourse");
+
+            var newCategory = new Categories
+            {
+                CategoryName = CategoryName.Trim(),
+                Status = Status
+            };
+
+            await _catogoriesRepository.AddCategoryAsync(newCategory);
+
+            // Chuyển về lại trang thêm khóa học
+            return RedirectToAction("AddCourse");
+        }
+
+
         public async Task<IActionResult> ListStudent()
         {
             var students = await _userRepo.GetUsersByRoleAsync(3);

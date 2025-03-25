@@ -1,40 +1,79 @@
-﻿@{
+﻿@model Do_An_Web_Hoc.Models.Courses
+
+@{
     Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
-}}
-<!DOCTYPE html>
-<html lang="vi">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Thêm khóa học</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link href="~/css/Admin.css" rel="stylesheet" />
-</head>
-<body>
-   
-    <div class="content">
-        <h2 class="mb-4 text-primary">Thêm khóa học</h2>
-        <form>
-            <div class="mb-3">
-                <label class="form-label text-primary">Tên khóa học</label>
-                <input type="text" class="form-control" placeholder="Nhập tên khóa học" required>
+    ViewData["Title"] = "Thêm Khóa Học";
+}
+
+<div class="container mt-4">
+    <h3 class="mb-4 text-primary">Thêm Khóa Học</h3>
+
+    <form asp-action="AddCourse" method="post" class="needs-validation" novalidate>
+        <div class="row g-3">
+
+            <div class="col-md-6">
+                <label asp-for="CourseName" class="form-label"></label>
+                <input asp-for="CourseName" class="form-control" />
+                <span asp-validation-for="CourseName" class="text-danger"></span>
             </div>
-            <div class="mb-3">
-                <label class="form-label text-primary">Giảng viên</label>
-                <input type="text" class="form-control" placeholder="Nhập tên giảng viên" required>
+
+            <div class="col-md-6">
+                <label asp-for="Price" class="form-label"></label>
+                <input asp-for="Price" class="form-control" />
             </div>
-            <div class="mb-3">
-                <label class="form-label text-primary">Mô tả khóa học</label>
-                <textarea class="form-control" rows="4" placeholder="Mô tả chi tiết về khóa học" required></textarea>
+
+            <div class="col-md-12">
+                <label asp-for="Description" class="form-label"></label>
+                <textarea asp-for="Description" class="form-control" rows="3"></textarea>
             </div>
-            <div class="mb-3">
-                <label class="form-label text-primary">Hình minh họa</label>
-                <input type="file" class="form-control" accept="image/*" required>
+
+            <div class="col-md-6">
+                <label asp-for="CategoryID" class="form-label"></label>
+                <select asp-for="CategoryID" class="form-select" asp-items="@(new SelectList(ViewBag.Categories, "Value", "Text"))">
+                    <option value="">-- Chọn danh mục --</option>
+                </select>
             </div>
-            <button type="submit" class="btn btn-primary">Thêm khóa học</button>
-        </form>
+
+            <div class="col-md-6">
+                <label asp-for="Status" class="form-label"></label>
+                <select asp-for="Status" class="form-select" asp-items="@(new SelectList(ViewBag.StatusOptions, "Value", "Text"))">
+                    <option value="">-- Chọn trạng thái --</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="mt-4">
+            <button type="submit" class="btn btn-success"><i class="fas fa-plus"></i> Thêm</button>
+            <a asp-action="ListCourse" class="btn btn-secondary"><i class="fas fa-arrow-left"></i> Quay lại</a>
+        </div>
+    </form>
+</div>
+
+<hr class="my-4" />
+
+<h5 class="text-secondary"><i class="fas fa-folder-plus"></i> Thêm Danh Mục Mới</h5>
+
+<form asp-action="AddCategory" method="post" class="row g-3 mt-2">
+    <div class="col-md-6">
+        <label for="CategoryName" class="form-label">Tên danh mục</label>
+        <input type="text" name="CategoryName" id="CategoryName" class="form-control" required placeholder="Nhập tên danh mục mới" />
     </div>
 
-</body>
-</html>
+    <div class="col-md-4">
+        <label for="Status" class="form-label">Trạng thái</label>
+        <select name="Status" class="form-select" required>
+            <option value="">-- Chọn trạng thái --</option>
+            <option value="1">Hoạt Động</option>
+            <option value="2">Ngừng Hoạt Động</option>
+        </select>
+    </div>
+
+    <div class="col-md-2 align-self-end">
+        <button type="submit" class="btn btn-outline-primary w-100"><i class="fas fa-plus"></i> Thêm danh mục</button>
+    </div>
+</form>
+
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -24,6 +24,8 @@
 
   <ItemGroup>
     <Folder Include="Views\Account\" />
+    <Folder Include="wwwroot\documents\" />
+    <Folder Include="wwwroot\videos\" />
   </ItemGroup>
 
 </Project>
