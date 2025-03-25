@@ -1,0 +1,143 @@
+﻿@model IEnumerable<Do_An_Web_Hoc.Models.Lectures>
+
+@{
+    Layout = "~/Views/Shared/_LayoutLecturer.cshtml";
+    ViewData["Title"] = "Danh sách bài giảng";
+}
+
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css" />
+
+<div class="container mt-4">
+    <h3 class="text-primary text-center mb-4">Danh sách bài giảng</h3>
+
+    <table id="lectureTable" class="table table-bordered table-hover">
+        <thead class="table-primary text-white">
+            <tr>
+                <th>ID</th>
+                <th>Tiêu đề</th>
+                <th>Mô tả</th>
+                <th>Video</th>
+                <th>Tài liệu</th>
+                <th>Khóa học</th>
+                <th>Ngày tạo</th>
+                <th>Hành động</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model != null && Model.Any())
+            {
+                foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@item.LectureID</td>
+                        <td>@item.Title</td>
+                        <td>@(string.IsNullOrEmpty(item.Content) ? "<span class='text-muted'>Không có</span>" : item.Content)</td>
+
+                        <!-- VIDEO -->
+                        <td>
+                            @if (!string.IsNullOrEmpty(item.VideoUrl))
+                            {
+                                var embedUrl = item.VideoUrl.Contains("watch?v=")
+                                ? item.VideoUrl.Replace("watch?v=", "embed/")
+                                : item.VideoUrl.Replace("youtu.be/", "www.youtube.com/embed/");
+
+                                if (embedUrl.Contains("youtube.com"))
+                                {
+                                    <iframe width="120" height="70" src="@embedUrl" frameborder="0" allowfullscreen></iframe>
+                                }
+                                else
+                                {
+                                    <video width="120" height="70" controls muted>
+                                        <source src="@item.VideoUrl" type="video/mp4" />
+                                        Trình duyệt không hỗ trợ video.
+                                    </video>
+                                }
+                            }
+                            else
+                            {
+                                <span class="text-muted">Không có</span>
+                            }
+                        </td>
+
+                        <!-- TÀI LIỆU -->
+                        <td>
+                            @if (!string.IsNullOrEmpty(item.DocumentURL))
+                            {
+                                <a href="@item.DocumentURL" class="btn btn-sm btn-outline-secondary" target="_blank">
+                                    <i class="fas fa-file-alt"></i> Tài liệu
+                                </a>
+                            }
+                            else
+                            {
+                                <span class="text-muted">Không có</span>
+                            }
+                        </td>
+
+                        <td>@item.CourseID</td>
+
+                        <!-- NGÀY TẠO -->
+                        <td>
+                            @if (item.CreateAt.HasValue)
+                            {
+                                @item.CreateAt.Value.ToString("dd/MM/yyyy")
+                            }
+                            else
+                            {
+                                <span class="text-muted">Không có</span>
+                            }
+                        </td>
+
+                        <!-- ACTION -->
+                        <td>
+                            <a class="btn btn-sm btn-warning" href="@Url.Action("EditLecture", "Lecturer", new { id = item.LectureID })">
+                                <i class="fas fa-edit"></i>
+                            </a>
+                            <a class="btn btn-sm btn-danger" href="@Url.Action("DeleteLecture", "Lecturer", new { id = item.LectureID })">
+                                <i class="fas fa-trash"></i>
+                            </a>
+                        </td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr>
+                    <td colspan="8" class="text-center text-danger">Không có dữ liệu bài giảng</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <div class="text-center mt-3">
+        <a class="btn btn-success" href="@Url.Action("AddLecture", "Lecturer")"><i class="fas fa-plus"></i> Thêm bài giảng</a>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#lectureTable').DataTable({
+                paging: true,
+                searching: true,
+                ordering: true,
+                info: true,
+                lengthMenu: [5, 10, 25, 50],
+                language: {
+                    search: "Tìm kiếm:",
+                    lengthMenu: "Hiển thị _MENU_ bài giảng",
+                    info: "Hiển thị _START_ đến _END_ của _TOTAL_ bài giảng",
+                    infoEmpty: "Không có dữ liệu",
+                    paginate: {
+                        first: "Đầu",
+                        last: "Cuối",
+                        next: "Tiếp",
+                        previous: "Trước"
+                    },
+                    zeroRecords: "Không tìm thấy kết quả phù hợp"
+                }
+            });
+        });
+    </script>
+}

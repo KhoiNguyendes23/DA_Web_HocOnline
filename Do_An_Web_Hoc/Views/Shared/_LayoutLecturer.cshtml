@@ -34,66 +34,70 @@
 
             <!-- Menu -->
             <div class="nav flex-column">
-               <!-- Quản lý bài giảng -->
-<a href="#" class="sidebar-link text-decoration-none p-3" onclick="toggleMenu('lecture-menu')">
-    <i class="fas fa-chalkboard-teacher"></i>
-    <span class="hide-on-collapse">Quản lý bài giảng</span>
-    <i class="fas fa-chevron-down dropdown-icon"></i>
-</a>
-<div id="lecture-menu" class="submenu">
-    <a href="@Url.Action("ListExam", "Lecturer")" class="submenu-link">Danh sách bài giảng</a>
-    <a href="@Url.Action("AddExam", "Lecturer")" class="submenu-link">Thêm bài giảng</a>
-</div>
+                <!-- Quản lý bài giảng -->
+                <a href="#" class="sidebar-link text-decoration-none p-3" onclick="toggleMenu('lecture-menu')">
+                    <i class="fas fa-chalkboard-teacher"></i>
+                    <span class="hide-on-collapse">Quản lý bài giảng</span>
+                    <i class="fas fa-chevron-down dropdown-icon"></i>
+                </a>
+                <div id="lecture-menu" class="submenu">
+                    <a href="@Url.Action("ListLecture", "Lecturer")" class="submenu-link">Danh sách bài giảng</a>
+                    <a href="@Url.Action("AddLecture", "Lecturer")" class="submenu-link">Thêm bài giảng</a>
+                </div>
 
-<!-- Quản lý khóa học -->
-<a href="#" class="sidebar-link text-decoration-none p-3" onclick="toggleMenu('course-menu')">
-    <i class="fas fa-book"></i>
-    <span class="hide-on-collapse">Quản lý khóa học</span>
-    <i class="fas fa-chevron-down dropdown-icon"></i>
-</a>
-<div id="course-menu" class="submenu">
-    <a href="@Url.Action("ListCourse", "Lecturer")" class="submenu-link">Danh sách khóa học</a>
-    <a href="@Url.Action("AddCourse", "Lecturer")" class="submenu-link">Thêm khóa học</a>
-</div>
+                <!-- Quản lý khóa học -->
+                <a href="#" class="sidebar-link text-decoration-none p-3" onclick="toggleMenu('course-menu')">
+                    <i class="fas fa-book"></i>
+                    <span class="hide-on-collapse">Quản lý khóa học</span>
+                    <i class="fas fa-chevron-down dropdown-icon"></i>
+                </a>
+                <div id="course-menu" class="submenu">
+                    <a href="@Url.Action("ListCourse", "Lecturer")" class="submenu-link">Danh sách khóa học</a>
+                    <a href="@Url.Action("AddCourse", "Lecturer")" class="submenu-link">Thêm khóa học</a>
+                </div>
 
-<!-- Quản lý học viên -->
-<a href="#" class="sidebar-link text-decoration-none p-3" onclick="toggleMenu('student-menu')">
-    <i class="fas fa-users"></i>
-    <span class="hide-on-collapse">Quản lý học viên</span>
-    <i class="fas fa-chevron-down dropdown-icon"></i>
-</a>
-<div id="student-menu" class="submenu">
-    <a href="@Url.Action("ListStudent", "Lecturer")" class="submenu-link">Danh sách học viên</a>
-</div>
+                <!-- Quản lý học viên -->
+                <a href="#" class="sidebar-link text-decoration-none p-3" onclick="toggleMenu('student-menu')">
+                    <i class="fas fa-users"></i>
+                    <span class="hide-on-collapse">Quản lý học viên</span>
+                    <i class="fas fa-chevron-down dropdown-icon"></i>
+                </a>
+                <div id="student-menu" class="submenu">
+                    <a href="@Url.Action("ListStudent", "Lecturer")" class="submenu-link">Danh sách học viên</a>
+                </div>
 
-<!-- Quản lý bài kiểm tra -->
-<a href="#" class="sidebar-link text-decoration-none p-3" onclick="toggleMenu('exam-menu')">
-    <i class="fas fa-question-circle"></i>
-    <span class="hide-on-collapse">Quản lý bài kiểm tra</span>
-    <i class="fas fa-chevron-down dropdown-icon"></i>
-</a>
-<div id="exam-menu" class="submenu">
-    <a href="@Url.Action("ListExam", "Lecturer")" class="submenu-link">Danh sách bài kiểm tra</a>
-    <a href="@Url.Action("AddExam", "Lecturer")" class="submenu-link">Tạo bài kiểm tra</a>
-    <a href="@Url.Action("ResultExam", "Lecturer")" class="submenu-link">Kết quả bài kiểm tra</a>
-</div>
+                <!-- Quản lý bài kiểm tra -->
+                <a href="#" class="sidebar-link text-decoration-none p-3" onclick="toggleMenu('exam-menu')">
+                    <i class="fas fa-question-circle"></i>
+                    <span class="hide-on-collapse">Quản lý bài kiểm tra</span>
+                    <i class="fas fa-chevron-down dropdown-icon"></i>
+                </a>
+                <div id="exam-menu" class="submenu">
+                    <a href="@Url.Action("ListExam", "Lecturer")" class="submenu-link">Danh sách bài kiểm tra</a>
+                    <a href="@Url.Action("AddExam", "Lecturer")" class="submenu-link">Tạo bài kiểm tra</a>
+                    <a href="@Url.Action("ResultExam", "Lecturer")" class="submenu-link">Kết quả bài kiểm tra</a>
+                </div>
 
-                <!-- Các phần còn lại nếu không cần test, có thể giữ nguyên -->
+                <!-- Diễn đàn -->
                 <a href="#" class="sidebar-link text-decoration-none p-3">
                     <i class="fas fa-comments"></i>
                     <span class="hide-on-collapse">Diễn đàn khóa học</span>
                 </a>
-                <a href="#" class="sidebar-link text-decoration-none p-3">
+
+                <!-- Hồ sơ -->
+                <a href="@Url.Action("Profile", "Lecturer")" class="sidebar-link text-decoration-none p-3">
                     <i class="fas fa-user-circle"></i>
                     <span class="hide-on-collapse">Hồ sơ cá nhân</span>
                 </a>
-                <a href="#" class="sidebar-link logout-btn text-decoration-none p-3">
+
+                <!-- Đăng xuất -->
+                <a href="@Url.Action("Logout", "Account")" class="sidebar-link logout-btn text-decoration-none p-3">
                     <i class="fas fa-sign-out-alt me-3"></i>
                     <span class="hide-on-collapse">Đăng xuất</span>
                 </a>
-
             </div>
 
+            <!-- Logo -->
             <div class="mt-auto p-4">
                 <h4 class="logo-text fw-bold mb-0">NexusFlow</h4>
             </div>
@@ -105,11 +109,9 @@
         </div>
     </div>
 
-    <!-- JS -->
+    <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/script.js"></script>
-
-    @RenderSection("Scripts", required: false) <!-- THÊM DÒNG NÀY -->
+    @RenderSection("Scripts", required: false)
 </body>
 </html>
-

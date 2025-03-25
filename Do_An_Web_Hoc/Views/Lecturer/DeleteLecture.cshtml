@@ -1,0 +1,30 @@
+﻿@model Do_An_Web_Hoc.Models.Lectures
+@{
+    Layout = "~/Views/Shared/_LayoutLecturer.cshtml";
+    ViewData["Title"] = "Xóa bài giảng";
+}
+
+<div class="container mt-5">
+    <h3 class="text-danger text-center mb-4"><i class="fas fa-trash-alt"></i> Xác nhận xóa bài giảng</h3>
+
+    <div class="card mx-auto" style="max-width: 600px;">
+        <div class="card-body">
+            <h5 class="card-title">@Model.Title</h5>
+            <p><strong>Khóa học:</strong> @Model.CourseID</p>
+            <p><strong>Ngày tạo:</strong> @Model.CreateAt?.ToString("dd/MM/yyyy")</p>
+            <p><strong>Nội dung:</strong> @Model.Content</p>
+        </div>
+    </div>
+
+    <div class="alert alert-warning text-center mt-4">
+        Bạn có chắc chắn muốn xóa bài giảng này không? <strong>Thao tác không thể hoàn tác.</strong>
+    </div>
+
+    <form asp-action="DeleteLecture" method="post">
+        <input type="hidden" asp-for="LectureID" />
+        <div class="text-center">
+            <button type="submit" class="btn btn-danger"><i class="fas fa-trash"></i> Xóa</button>
+            <a href="@Url.Action("ListLecture", "Lecturer")" class="btn btn-secondary"><i class="fas fa-times"></i> Hủy</a>
+        </div>
+    </form>
+</div>
