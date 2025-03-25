@@ -11,10 +11,11 @@
     <h3 class="text-primary text-center mb-4">Danh sách bài giảng</h3>
 
     <table id="lectureTable" class="table table-bordered table-hover">
-        <thead class="table-light">
+        <thead class="table-primary text-white">
             <tr>
-                <th>#</th>
+                <th>ID</th>
                 <th>Tiêu đề</th>
+                <th>Mô tả</th>
                 <th>Video</th>
                 <th>Tài liệu</th>
                 <th>Khóa học</th>
@@ -25,21 +26,32 @@
         <tbody>
             @if (Model != null && Model.Any())
             {
-                int index = 1;
                 foreach (var item in Model)
                 {
                     <tr>
-                        <td>@index++</td>
+                        <td>@item.LectureID</td>
                         <td>@item.Title</td>
+                        <td>@(string.IsNullOrEmpty(item.Content) ? "<span class='text-muted'>Không có</span>" : item.Content)</td>
 
-                        <!-- Hiển thị thumbnail video nếu có -->
+                        <!-- VIDEO -->
                         <td>
                             @if (!string.IsNullOrEmpty(item.VideoUrl))
                             {
-                                <video width="120" height="70" controls muted>
-                                    <source src="@item.VideoUrl" type="video/mp4" />
-                                    Trình duyệt không hỗ trợ video.
-                                </video>
+                                var embedUrl = item.VideoUrl.Contains("watch?v=")
+                                ? item.VideoUrl.Replace("watch?v=", "embed/")
+                                : item.VideoUrl.Replace("youtu.be/", "www.youtube.com/embed/");
+
+                                if (embedUrl.Contains("youtube.com"))
+                                {
+                                    <iframe width="120" height="70" src="@embedUrl" frameborder="0" allowfullscreen></iframe>
+                                }
+                                else
+                                {
+                                    <video width="120" height="70" controls muted>
+                                        <source src="@item.VideoUrl" type="video/mp4" />
+                                        Trình duyệt không hỗ trợ video.
+                                    </video>
+                                }
                             }
                             else
                             {
@@ -47,7 +59,7 @@
                             }
                         </td>
 
-                        <!-- Hiển thị link tài liệu nếu có -->
+                        <!-- TÀI LIỆU -->
                         <td>
                             @if (!string.IsNullOrEmpty(item.DocumentURL))
                             {
@@ -62,10 +74,27 @@
                         </td>
 
                         <td>@item.CourseID</td>
-                        <td>@item.CreateAt?.ToString("dd/MM/yyyy")</td>
+
+                        <!-- NGÀY TẠO -->
                         <td>
-                            <a class="btn btn-sm btn-warning" href="@Url.Action("EditLecture", "Lecturer", new { id = item.LectureID })"><i class="fas fa-edit"></i></a>
-                            <a class="btn btn-sm btn-danger" href="@Url.Action("DeleteLecture", "Lecturer", new { id = item.LectureID })"><i class="fas fa-trash"></i></a>
+                            @if (item.CreateAt.HasValue)
+                            {
+                                @item.CreateAt.Value.ToString("dd/MM/yyyy")
+                            }
+                            else
+                            {
+                                <span class="text-muted">Không có</span>
+                            }
+                        </td>
+
+                        <!-- ACTION -->
+                        <td>
+                            <a class="btn btn-sm btn-warning" href="@Url.Action("EditLecture", "Lecturer", new { id = item.LectureID })">
+                                <i class="fas fa-edit"></i>
+                            </a>
+                            <a class="btn btn-sm btn-danger" href="@Url.Action("DeleteLecture", "Lecturer", new { id = item.LectureID })">
+                                <i class="fas fa-trash"></i>
+                            </a>
                         </td>
                     </tr>
                 }
@@ -73,7 +102,7 @@
             else
             {
                 <tr>
-                    <td colspan="7" class="text-center text-danger">Không có dữ liệu bài giảng</td>
+                    <td colspan="8" class="text-center text-danger">Không có dữ liệu bài giảng</td>
                 </tr>
             }
         </tbody>

@@ -1,0 +1,41 @@
+﻿@model Do_An_Web_Hoc.Models.Lectures
+@{
+    Layout = "~/Views/Shared/_LayoutLecturer.cshtml";
+    ViewData["Title"] = "Thêm bài giảng";
+}
+
+<div class="container mt-5">
+    <h3 class="text-primary text-center mb-4">Thêm bài giảng</h3>
+
+    <form asp-action="AddLecture" method="post">
+        <div class="mb-3">
+            <label class="form-label">Tiêu đề bài giảng</label>
+            <input asp-for="Title" class="form-control" required />
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Nội dung bài giảng</label>
+            <textarea asp-for="Content" class="form-control" rows="4" required></textarea>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Link Video (YouTube, MP4...)</label>
+            <input asp-for="VideoUrl" class="form-control" />
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Tài liệu tham khảo (PDF, Word...)</label>
+            <input asp-for="DocumentURL" class="form-control" />
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Mã khóa học</label>
+            <input asp-for="CourseID" class="form-control" required />
+        </div>
+
+        <div class="text-center">
+            <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Thêm bài giảng</button>
+            <a href="@Url.Action("ListLecture", "Lecturer")" class="btn btn-secondary"><i class="fas fa-arrow-left"></i> Quay lại</a>
+        </div>
+    </form>
+</div>
