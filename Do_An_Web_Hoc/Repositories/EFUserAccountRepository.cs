@@ -281,6 +281,11 @@ namespace Do_An_Web_Hoc.Repositories
             _context.UserAccounts.Update(user);
             await _context.SaveChangesAsync();
         }
+        public async Task<UserAccount> GetByIdAsync(int id)
+        {
+            return await _context.UserAccounts.FirstOrDefaultAsync(u => u.UserID == id);
+        }
+
     }
 }
 

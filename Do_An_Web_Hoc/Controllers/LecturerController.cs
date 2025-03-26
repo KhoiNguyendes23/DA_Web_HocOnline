@@ -3,9 +3,13 @@ using Do_An_Web_Hoc.Models;
 using Do_An_Web_Hoc.Repositories.Interfaces;
 using Microsoft.AspNetCore.Http;
 using System.Threading.Tasks;
-
+using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
+using Microsoft.Extensions.Logging;
 namespace Do_An_Web_Hoc.Controllers
 {
+    [Authorize(Roles = "Lecturer")]
+
     public class LecturerController : Controller
     {
         private readonly ILecturesRepository _lecturesRepository;
@@ -13,25 +17,46 @@ namespace Do_An_Web_Hoc.Controllers
         private readonly IExamsRepository _examsRepository;
         private readonly IResultsRepository _resultsRepository;
         private readonly IUserAccountRepository _userAccountRepository;
-
+        private readonly ILogger<LecturerController> _logger;
         public LecturerController(
             ILecturesRepository lecturesRepository,
             ICoursesRepository coursesRepository,
             IExamsRepository examsRepository,
             IResultsRepository resultsRepository,
-            IUserAccountRepository userAccountRepository)
+            IUserAccountRepository userAccountRepository,
+             ILogger<LecturerController> logger)
         {
             _lecturesRepository = lecturesRepository;
             _coursesRepository = coursesRepository;
             _examsRepository = examsRepository;
             _resultsRepository = resultsRepository;
             _userAccountRepository = userAccountRepository;
+            _logger = logger;
         }
 
         private void SetLecturerViewData()
         {
-            ViewData["FullName"] = HttpContext.Session.GetString("FullName") ?? "Giảng viên";
-            ViewData["RoleName"] = "Giảng viên";
+            var email = HttpContext.Session.GetString("UserEmail");
+
+            if (!string.IsNullOrEmpty(email))
+            {
+                var user = _userAccountRepository.GetByEmailAsync(email).Result;
+                if (user != null)
+                {
+                    ViewData["FullName"] = user.FullName;
+                    ViewData["RoleName"] = "Giảng viên";
+                    ViewData["ImagePath"] = string.IsNullOrEmpty(user.Image)
+                        ? "~/images/default-avatar.png"
+                        : "~/images/" + user.Image;
+                    HttpContext.Session.SetInt32("LecturerID", user.UserID);
+                }
+            }
+            else
+            {
+                ViewData["FullName"] = "Giảng viên";
+                ViewData["RoleName"] = "Giảng viên";
+                ViewData["ImagePath"] = "~/images/default-avatar.png";
+            }
         }
 
         public IActionResult Dashboard()
@@ -39,6 +64,84 @@ namespace Do_An_Web_Hoc.Controllers
             SetLecturerViewData();
             ViewData["Title"] = "Giảng viên";
             return View();
+        }
+
+        public async Task<IActionResult> Profile ()
+        {
+            // Lấy email từ Claims
+            var currentUserEmail = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value;
+
+            if (string.IsNullOrEmpty(currentUserEmail))
+            {
+                return RedirectToAction("Login", "Account");
+            }
+            var userAccount = await _userAccountRepository.GetByEmailAsync(currentUserEmail);
+
+            if (userAccount == null)
+            {
+                return View("Error");
+            }
+
+            return View(userAccount);
+        }
+
+
+
+        [HttpGet]
+        public async Task<IActionResult> EditProfile()
+        {
+            var currentUserEmail = User.FindFirstValue(ClaimTypes.Email);
+            if (string.IsNullOrEmpty(currentUserEmail)) return RedirectToAction("Login", "Account");
+
+            var userAccount = await _userAccountRepository.GetByEmailAsync(currentUserEmail);
+            if (userAccount == null) return View("Error");
+
+            return View(userAccount);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> EditProfile(UserAccount updatedUser, IFormFile image)
+        {
+            var currentUserEmail = User.FindFirstValue(ClaimTypes.Email);
+            if (string.IsNullOrEmpty(currentUserEmail)) return RedirectToAction("Login", "Account");
+
+            var userAccount = await _userAccountRepository.GetByEmailAsync(currentUserEmail);
+            if (userAccount == null) return View("Error");
+
+            userAccount.FullName = updatedUser.FullName;
+            userAccount.PhoneNumber = updatedUser.PhoneNumber;
+            userAccount.Birthday = updatedUser.Birthday;
+            userAccount.Address = updatedUser.Address;
+
+            if (image != null && image.Length > 0)
+            {
+                var extension = Path.GetExtension(image.FileName).ToLower();
+                var allowed = new[] { ".jpg", ".jpeg", ".png", ".gif" };
+                if (!allowed.Contains(extension))
+                {
+                    ModelState.AddModelError("", "Chỉ chấp nhận ảnh .jpg, .jpeg, .png, .gif");
+                    return View(userAccount);
+                }
+
+                var oldPath = Path.Combine("wwwroot", userAccount.Image?.TrimStart('/') ?? "");
+                if (!string.IsNullOrEmpty(userAccount.Image) && System.IO.File.Exists(oldPath))
+                {
+                    System.IO.File.Delete(oldPath);
+                }
+
+                var fileName = Guid.NewGuid().ToString() + extension;
+                var path = Path.Combine("wwwroot/images", fileName);
+                using var stream = new FileStream(path, FileMode.Create);
+                await image.CopyToAsync(stream);
+
+                userAccount.Image = "/images/" + fileName;
+            }
+
+            if (string.IsNullOrEmpty(userAccount.Image))
+                userAccount.Image = "/images/default-avatar.png";
+
+            await _userAccountRepository.UpdateAsync(userAccount);
+            return RedirectToAction("Profile");
         }
 
         public async Task<IActionResult> ListCourse()
@@ -102,62 +205,20 @@ namespace Do_An_Web_Hoc.Controllers
             return View(exam);
         }
 
-        public async Task<IActionResult> ListStudent()
-        {
-            SetLecturerViewData();
-            var students = await _userAccountRepository.GetUsersByRoleAsync(3); // 3: Học viên
-            return View(students);
-        }
-
         public async Task<IActionResult> ResultExam()
         {
             SetLecturerViewData();
-            var results = await _examsRepository.GetAllExamsAsync(); // Hoặc gọi từ ResultRepo nếu cần
+            var results = await _examsRepository.GetAllExamsAsync();
             return View(results);
         }
 
-        public async Task<IActionResult> Profile()
+        public async Task<IActionResult> ListStudent()
         {
             SetLecturerViewData();
-            var lecturerId = HttpContext.Session.GetInt32("LecturerID");
-
-            if (lecturerId == null)
-                return RedirectToAction("Login", "Account");
-
-            var lecturer = await _lecturesRepository.GetLectureByIdAsync(lecturerId.Value);
-
-            if (lecturer == null)
-                return NotFound();
-
-            return View(lecturer);
+            var students = await _userAccountRepository.GetUsersByRoleAsync(3);
+            return View(students);
         }
 
-        [HttpGet]
-        public async Task<IActionResult> EditProfile()
-        {
-            SetLecturerViewData();
-            var lecturerId = HttpContext.Session.GetInt32("LecturerID");
-            if (lecturerId == null)
-                return RedirectToAction("Login", "Account");
-
-            var lecturer = await _lecturesRepository.GetLectureByIdAsync(lecturerId.Value);
-            return View(lecturer);
-        }
-
-
-        [HttpPost]
-        public async Task<IActionResult> EditProfile(Lectures lecturer)
-        {
-            SetLecturerViewData();
-            if (ModelState.IsValid)
-            {
-                await _lecturesRepository.UpdateLecturerProfileAsync(lecturer);
-                TempData["Success"] = "Cập nhật thành công!";
-                return RedirectToAction("Profile");
-            }
-
-            return View(lecturer);
-        }
         public async Task<IActionResult> ListLecture()
         {
             SetLecturerViewData();
