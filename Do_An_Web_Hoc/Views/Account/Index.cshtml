@@ -16,6 +16,10 @@
         <div class="form-box login">
             <form asp-action="Login" method="post">
                 <h1>ĐĂNG NHẬP</h1>
+                @if (!string.IsNullOrEmpty(ViewBag.Error))
+                {
+                    <div class="custom-error-alert text-center mt-3">@ViewBag.Error</div>
+                }
                 <div class="input-box">
                     @* <input type="email" placeholder="Tên tài khoản" required> *@
                     <input type="email" name="email" class="form-control" placeholder="Email của bạn" required />

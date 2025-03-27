@@ -8,6 +8,7 @@ using System.Net.WebSockets;
 using System.Security.Claims;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Identity;
 
 
 namespace Do_An_Web_Hoc.Controllers
@@ -32,8 +33,10 @@ namespace Do_An_Web_Hoc.Controllers
         {
             var fullName = User.FindFirstValue(ClaimTypes.Name);
             var roleName = User.FindFirstValue(ClaimTypes.Role);
+            var email = User.FindFirstValue(ClaimTypes.Email);
             ViewData["FullName"] = fullName;
             ViewData["RoleName"] = roleName;
+            ViewData["Email"] = email;
             return View();
         }
         public async Task<IActionResult> ListCourse()
@@ -117,30 +120,30 @@ namespace Do_An_Web_Hoc.Controllers
             var lecturers = await _userRepo.GetUsersByRoleAsync(2);
             return View(lecturers);
         }
-        public IActionResult ListExam()
-        {
-            return View();
-        }
-        public IActionResult AddExam()
-        {
-            return View();
-        }
-        public IActionResult ViewExam()
-        {
-            return View();
-        }
-        public IActionResult UpdateExam()
-        {
-            return View();
-        }
-        public IActionResult DeleteExam()
-        {
-            return View();
-        }
-        public IActionResult TestResult()
-        {
-            return View();
-        }
+        //public IActionResult ListExam()
+        //{
+        //    return View();
+        //}
+        //public IActionResult AddExam()
+        //{
+        //    return View();
+        //}
+        //public IActionResult ViewExam()
+        //{
+        //    return View();
+        //}
+        //public IActionResult UpdateExam()
+        //{
+        //    return View();
+        //}
+        //public IActionResult DeleteExam()
+        //{
+        //    return View();
+        //}
+        //public IActionResult TestResult()
+        //{
+        //    return View();
+        //}
         public IActionResult StatisticalCourse()
         {
             return View();
@@ -253,14 +256,14 @@ namespace Do_An_Web_Hoc.Controllers
 
                     // Lưu ảnh mới
                     var uniqueFileName = Guid.NewGuid().ToString() + fileExtension;
-                    var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", uniqueFileName);
+                    var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", "Avatar_images", uniqueFileName);
 
                     using (var stream = new FileStream(filePath, FileMode.Create))
                     {
                         await image.CopyToAsync(stream);
                     }
 
-                    userAccount.Image = "/images/" + uniqueFileName;
+                    userAccount.Image = "/images/Avatar_images/" + uniqueFileName;
                     _logger.LogInformation("Updated user image.");
                 }
 
@@ -288,22 +291,117 @@ namespace Do_An_Web_Hoc.Controllers
         {
             return View();
         }
-        public IActionResult UpdateCourse()
+        [HttpGet]
+        public async Task<IActionResult> UpdateCourse(int id)
         {
-            return View();
+            var course = await _coursesRepo.GetCourseByIdAsync(id);
+            if (course == null) return NotFound();
+
+            // Load danh mục
+            var categories = await _catogoriesRepository.GetAllCategoriesAsync();
+            ViewBag.Categories = categories.Select(c => new SelectListItem
+            {
+                Value = c.CategoryId.ToString(),
+                Text = c.CategoryName
+            }).ToList();
+
+            //Load trạng thái
+            ViewBag.StatusOptions = new List<SelectListItem>
+    {
+        new SelectListItem { Value = "1", Text = "Hoạt động" },
+        new SelectListItem { Value = "2", Text = "Ngừng hoạt động" }
+    };
+
+            return View(course);
         }
-        public IActionResult DeleteCourse()
+
+        [HttpPost]
+        public async Task<IActionResult> UpdateCourse(Courses updatedCourse)
         {
-            return View();
-        }
-        public IActionResult AddStudent()
+            if (!ModelState.IsValid)
+            {
+                // Load lại dữ liệu dropdown nếu có lỗi form
+                var categories = await _catogoriesRepository.GetAllCategoriesAsync();
+                ViewBag.Categories = categories.Select(c => new SelectListItem
+                {
+                    Value = c.CategoryId.ToString(),
+                    Text = c.CategoryName
+                }).ToList();
+
+                ViewBag.StatusOptions = new List<SelectListItem>
         {
-            return View();
+            new SelectListItem { Value = "1", Text = "Hoạt động" },
+            new SelectListItem { Value = "2", Text = "Ngừng hoạt động" }
+        };
+
+                return View(updatedCourse); // Trả về form có lỗi
+            }
+
+            var course = await _coursesRepo.GetCourseByIdAsync(updatedCourse.CourseID);
+            if (course == null) return NotFound();
+
+            // Cập nhật các trường
+            course.CourseName = updatedCourse.CourseName;
+            course.Description = updatedCourse.Description;
+            course.Price = updatedCourse.Price;
+            course.CategoryID = updatedCourse.CategoryID;
+            course.Status = updatedCourse.Status;
+
+            await _coursesRepo.UpdateCourseAsync(course);
+
+            return RedirectToAction("ListCourse");
         }
-        public IActionResult DeleteStudent()
+
+
+
+        [HttpGet]
+        public async Task<IActionResult> DeleteCourse(int id)
         {
-            return View();
+            var course = await _coursesRepo.GetCourseByIdAsync(id);
+            if (course == null)
+            {
+                return NotFound();
+            }
+            return View(course);
         }
+        [HttpPost, ActionName("DeleteCourse")]
+        public async Task<IActionResult> DeleteCourseConfirmed(int id)
+        {
+            var course = await _coursesRepo.GetCourseByIdAsync(id);
+            if (course == null) return NotFound();
+
+            course.Status = 2; // Ngừng hoạt động
+            await _coursesRepo.UpdateCourseAsync(course);
+            return RedirectToAction("ListCourse");
+        }
+
+
+        [HttpGet]
+        public async Task<IActionResult> DeleteStudent(int id)
+        {
+            var students = await _userRepo.GetUsersByRoleAsync(3); // role = 3 = học viên
+            var student = students.FirstOrDefault(s => s.UserID == id);
+
+            if (student == null)
+            {
+                return NotFound();
+            }
+
+            return View(student);
+        }
+        [HttpPost]
+        public async Task<IActionResult> DeleteStudent(int id, int statusId)
+        {
+            if (statusId != 2 && statusId != 3)
+            {
+                return BadRequest("Trạng thái không hợp lệ.");
+            }
+
+            await _userRepo.UpdateUserStatusAsync(id, statusId);
+            return RedirectToAction("ListStudent");
+        }
+
+
         [HttpPost]
         public async Task<IActionResult> UpdateStudent(int id, UserAccount updatedStudent)
         {
@@ -410,11 +508,48 @@ namespace Do_An_Web_Hoc.Controllers
 
             return View(teacher);
         }
-
-
-        public IActionResult DeleteTeacher()
+        [HttpGet]
+        public async Task<IActionResult> DeleteTeacher(int id)
         {
-            return View();
+            var teachers = await _userRepo.GetUsersByRoleAsync(2); // 2 = giáo viên
+            var teacher = teachers.FirstOrDefault(t => t.UserID == id);
+
+            if (teacher == null)
+            {
+                return NotFound();
+            }
+
+            return View(teacher);
         }
+        [HttpPost]
+        public async Task<IActionResult> DeleteTeacher(int id, int statusId)
+        {
+            if (statusId != 2 && statusId != 3)
+            {
+                return BadRequest("Trạng thái không hợp lệ.");
+            }
+
+            await _userRepo.UpdateUserStatusAsync(id, statusId);
+            return RedirectToAction("ListTeacher");
+        }
+        //[HttpPost]
+        //public async Task<IActionResult> EncryptOldPasswords()
+        //{
+        //    var users = await _userRepo.GetAllUsersAsync();
+        //    var hasher = new PasswordHasher<UserAccount>();
+
+        //    foreach (var user in users)
+        //    {
+        //        // Nếu mật khẩu chưa được mã hóa (ví dụ: độ dài nhỏ hơn 30)
+        //        if (!string.IsNullOrEmpty(user.Password) && user.Password.Length < 30)
+        //        {
+        //            user.Password = hasher.HashPassword(user, user.Password);
+        //        }
+        //    }
+
+        //    await _userRepo.SaveAllUsersAsync(users);
+        //    return Content("Đã mã hóa mật khẩu thành công!");
+        //}
+
     }
 }
