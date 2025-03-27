@@ -19,7 +19,7 @@ body {
     justify-content: space-between;
     background-color: #F2F2F2;
     align-items: center;
-    padding: 0 3rem;
+    padding: 0px 3rem;
 }
 
 
@@ -33,7 +33,7 @@ body {
 
 .nav-logo {
     width: 120px;
-    padding: 1rem 0;
+    padding: 4px 0;
 }
 
     .nav-logo img {
@@ -42,7 +42,7 @@ body {
     }
 
 .nav-links-container {
-    padding: 9px 0;
+    padding: 19px 0;
     border: none;
 }
 
@@ -59,7 +59,7 @@ body {
         .nav-links > .nav-link-item > a {
             text-decoration: none;
             display: flex;
-            padding: 16px 0;
+            padding: 1px 0;
             color: #1f1f1f;
             font-weight: 600;
             transition: 0.3s ease;
