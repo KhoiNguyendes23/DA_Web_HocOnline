@@ -17,6 +17,21 @@
 <body>
     <div class="container mt-4">
         <h3 class="text-primary">Danh sách giáo viên</h3>
+        <div class="mb-3">
+            <label class="form-label fw-bold me-2">Lọc trạng thái:</label>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input status-filter" type="checkbox" value="Đang dạy" id="statusTeaching" checked>
+                <label class="form-check-label" for="statusTeaching">Đang dạy</label>
+            </div>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input status-filter" type="checkbox" value="Ngừng dạy" id="statusStopped" checked>
+                <label class="form-check-label" for="statusStopped">Ngừng dạy</label>
+            </div>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input status-filter" type="checkbox" value="Bị cấm" id="statusBanned" checked>
+                <label class="form-check-label" for="statusBanned">Bị cấm</label>
+            </div>
+        </div>
         <table id="teacherTable" class="table table-bordered table-striped">
             <thead class="table-primary">
                 <tr>
@@ -46,8 +61,13 @@
                             }
                             else if (teacher.Status == 2)
                             {
-                                <span class="badge bg-danger">Ngừng dạy</span>
+                                <span class="badge bg-secondary">Ngừng dạy</span>
                             }
+                            else if (teacher.Status == 3)
+                            {
+                                <span class="badge bg-dark">Bị cấm</span>
+                            }
+
                         </td>
                     </tr>
                 }
@@ -62,7 +82,8 @@
 
     <script>
         $(document).ready(function () {
-            $('#teacherTable').DataTable({
+            // Khởi tạo DataTable và lưu lại biến table
+            var table = $('#teacherTable').DataTable({
                 "paging": true,
                 "searching": true,
                 "ordering": true,
@@ -81,7 +102,20 @@
                     }
                 }
             });
+
+            // Lọc theo trạng thái giáo viên bằng checkbox
+            $('.status-filter').on('change', function () {
+                var selected = [];
+
+                $('.status-filter:checked').each(function () {
+                    selected.push($(this).val());
+                });
+
+                var regex = selected.join("|"); // VD: "Đang dạy|Ngừng dạy"
+                table.column(4).search(regex, true, false).draw(); // Cột 4 là "Trạng thái"
+            });
         });
     </script>
+
 </body>
 </html>

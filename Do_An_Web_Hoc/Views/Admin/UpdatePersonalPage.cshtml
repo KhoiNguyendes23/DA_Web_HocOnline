@@ -21,10 +21,12 @@
         <h2 class="text-primary text-center mb-4">Chỉnh Sửa Thông Tin Cá Nhân</h2>
 
         <!-- Hiển thị ảnh đại diện -->
-        <div class="text-center mb-4">
-            <!-- Hiển thị ảnh đại diện của người dùng hoặc ảnh mặc định nếu không có -->
-            <img src="@Url.Content(Model.Image ?? "/images/default-avatar.png")" alt="Profile Picture" class="img-fluid rounded-circle" />
-        </div>
+        @if (!string.IsNullOrEmpty(Model.Image) && Model.Image != "/images/default-avatar.png")
+        {
+            <div class="text-center mb-4">
+                <img src="@Url.Content(Model.Image)" alt="Profile Picture" class="img-fluid rounded-circle" />
+            </div>
+        }
 
         <!-- Form chỉnh sửa thông tin cá nhân -->
         <form asp-action="UpdatePersonalPage" method="post" enctype="multipart/form-data">

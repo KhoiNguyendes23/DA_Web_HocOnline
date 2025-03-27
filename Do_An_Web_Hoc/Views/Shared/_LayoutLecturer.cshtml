@@ -1,4 +1,9 @@
-﻿@* Views/Shared/_LayoutLecturer.cshtml *@
+﻿@{
+    var fullName = ViewData["FullName"]?.ToString() ?? User.Identity?.Name ?? "Giảng viên";
+    var role = ViewData["RoleName"]?.ToString() ?? User.FindFirst(System.Security.Claims.ClaimTypes.Role)?.Value ?? "Giảng viên";
+    var imagePath = Url.Content(ViewData["ImagePath"]?.ToString() ?? "~/images/default-avatar.png");
+}
+
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -24,10 +29,10 @@
             <!-- Thông tin người dùng -->
             <div class="profile-section">
                 <div class="d-flex align-items-center">
-                    <img src="https://randomuser.me/api/portraits/men/75.jpg" style="height:60px" class="rounded-circle" alt="Profile">
+                    <img src="@imagePath" style="height:60px" class="rounded-circle" alt="Profile">
                     <div class="ms-3 profile-info">
-                        <h6 class="text-white mb-0">@ViewData["FullName"]</h6>
-                        <small class="text-muted">@ViewData["RoleName"]</small>
+                        <h6 class="text-white mb-0">@fullName</h6>
+                        <small class="text-muted">@role</small>
                     </div>
                 </div>
             </div>
@@ -53,7 +58,6 @@
                 </a>
                 <div id="course-menu" class="submenu">
                     <a href="@Url.Action("ListCourse", "Lecturer")" class="submenu-link">Danh sách khóa học</a>
-                    <a href="@Url.Action("AddCourse", "Lecturer")" class="submenu-link">Thêm khóa học</a>
                 </div>
 
                 <!-- Quản lý học viên -->

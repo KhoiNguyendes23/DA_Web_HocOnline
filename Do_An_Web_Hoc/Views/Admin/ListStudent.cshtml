@@ -17,6 +17,22 @@
 <body>
     <div class="container mt-4">
         <h3 class="text-primary">Danh sách sinh viên</h3>
+        <div class="mb-3">
+            <label class="form-label fw-bold me-2">Lọc trạng thái:</label>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input status-filter" type="checkbox" value="Đang học" id="statusActive" checked>
+                <label class="form-check-label" for="statusActive">Đang học</label>
+            </div>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input status-filter" type="checkbox" value="Ngừng học" id="statusStopped" checked>
+                <label class="form-check-label" for="statusStopped">Ngừng học</label>
+            </div>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input status-filter" type="checkbox" value="Bị cấm" id="statusBanned" checked>
+                <label class="form-check-label" for="statusBanned">Bị cấm</label>
+            </div>
+        </div>
+
         <table id="studentTable" class="table table-bordered table-striped">
             <thead class="table-primary">
                 <tr>
@@ -46,8 +62,13 @@
                             }
                             else if (student.Status == 2)
                             {
-                                <span class="badge bg-danger">Ngừng học</span>
+                                <span class="badge bg-secondary">Ngừng học</span>
                             }
+                            else if (student.Status == 3)
+                            {
+                                <span class="badge bg-dark">Bị cấm</span>
+                            }
+
                         </td>
                     </tr>
                 }
@@ -62,7 +83,8 @@
 
     <script>
         $(document).ready(function () {
-            $('#studentTable').DataTable({
+            // Khởi tạo bảng và gán vào biến table
+            var table = $('#studentTable').DataTable({
                 "paging": true,
                 "searching": true,
                 "ordering": true,
@@ -80,6 +102,18 @@
                         "previous": "Trước"
                     }
                 }
+            });
+
+            // Lọc trạng thái theo checkbox
+            $('.status-filter').on('change', function () {
+                var selected = [];
+
+                $('.status-filter:checked').each(function () {
+                    selected.push($(this).val());
+                });
+
+                var regex = selected.join("|"); // "Đang học|Ngừng học|Bị cấm"
+                table.column(4).search(regex, true, false).draw(); // Cột 4 là "Trạng thái"
             });
         });
     </script>

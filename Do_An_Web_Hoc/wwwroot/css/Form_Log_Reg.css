@@ -267,3 +267,27 @@ form {
         font-size: 30px;
     }
 }
+
+/*Dũng Sửa*/
+.custom-error-alert {
+    background-color: #f8d7da;
+    color: #721c24;
+    border-radius: 6px;
+    padding: 10px;
+    font-size: 14px;
+    margin-top: 10px;
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+

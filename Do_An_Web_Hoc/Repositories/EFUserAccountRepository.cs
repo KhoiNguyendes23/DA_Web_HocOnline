@@ -8,6 +8,7 @@ using System.Net.Mail;
 using System.Net;
 using Microsoft.Data.SqlClient;
 using System.Data;
+using Microsoft.AspNetCore.Identity;
 namespace Do_An_Web_Hoc.Repositories
 {
     public class EFUserAccountRepository :  IUserAccountRepository
@@ -15,8 +16,10 @@ namespace Do_An_Web_Hoc.Repositories
         private readonly ApplicationDbContext _context;
         private readonly IConfiguration _configuration;
         private readonly ILogger<EFUserAccountRepository> _logger;
+        private readonly PasswordHasher<UserAccount> _passwordHasher = new PasswordHasher<UserAccount>();
 
-        public EFUserAccountRepository(ApplicationDbContext context , IConfiguration configuration, ILogger<EFUserAccountRepository> logger)
+
+        public EFUserAccountRepository(ApplicationDbContext context , IConfiguration configuration, ILogger<EFUserAccountRepository> logger )
         {
             _context = context;
             _configuration = configuration;
@@ -66,8 +69,9 @@ namespace Do_An_Web_Hoc.Repositories
             if (await CheckUserExistsAsync(user.Email))
                 return null;
 
-            // Lưu mật khẩu trực tiếp (KHÔNG mã hóa)
-            user.Password = password;
+            // Lưu mật khẩu trực tiếp mã hóa
+            user.Password = _passwordHasher.HashPassword(user, password);
+
 
             // Mặc định trạng thái là kích hoạt
             user.Status = 1;
@@ -82,25 +86,35 @@ namespace Do_An_Web_Hoc.Repositories
         public async Task<UserAccount> LoginAsync(string email, string password)
         {
             var user = await _context.UserAccounts
-                .Where(u => u.Email == email && u.Password == password)
-                .Select(u => new UserAccount
-                {
-                    UserID = u.UserID,
-                    UserName = u.UserName,
-                    Email = u.Email,
-                    RoleID = u.RoleID
-                })
-                .FirstOrDefaultAsync();
+                .FirstOrDefaultAsync(u => u.Email == email);
 
             if (user == null)
             {
-                Console.WriteLine($"[ERROR] Đăng nhập thất bại: Email {email} không tồn tại hoặc mật khẩu sai.");
+                Console.WriteLine($"[ERROR] Đăng nhập thất bại: Email {email} không tồn tại.");
+                return null;
+            }
+
+            var hasher = new PasswordHasher<UserAccount>();
+            var result = hasher.VerifyHashedPassword(user, user.Password, password);
+
+            if (result == PasswordVerificationResult.Failed)
+            {
+                Console.WriteLine($"[ERROR] Đăng nhập thất bại: Sai mật khẩu cho email {email}.");
                 return null;
             }
 
             Console.WriteLine($"[DEBUG] Đăng nhập thành công: {user.Email} - RoleID: {user.RoleID}");
-            return user;
+
+            // Trả lại thông tin cần thiết (nếu không muốn trả cả password)
+            return new UserAccount
+            {
+                UserID = user.UserID,
+                UserName = user.UserName,
+                Email = user.Email,
+                RoleID = user.RoleID
+            };
         }
+
         // (1) Gửi mã OTP đến email người dùng
         public async Task<bool> SendOTPAsync(string email)
         {
@@ -150,7 +164,7 @@ namespace Do_An_Web_Hoc.Repositories
                 return false;
             }
             // Không dùng mã hóa mật khẩu nếu chưa cần
-            user.Password = newPassword;
+            user.Password = _passwordHasher.HashPassword(user, newPassword);
 
             // Xóa thông tin OTP sau khi đổi mật khẩu thành công
             user.ResetToken = null;
@@ -281,6 +295,25 @@ namespace Do_An_Web_Hoc.Repositories
             _context.UserAccounts.Update(user);
             await _context.SaveChangesAsync();
         }
+
+
+        // Lấy tất cả người dùng
+        public async Task<IEnumerable<UserAccount>> GetAllUsersAsync()
+        {
+            return await _context.UserAccounts.ToListAsync();
+        }
+        // Lưu danh sách người dùng sau khi mã hóa lại mật khẩu
+        public async Task SaveAllUsersAsync(IEnumerable<UserAccount> users)
+        {
+            _context.UserAccounts.UpdateRange(users);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task<UserAccount> GetByIdAsync(int id)
+        {
+            return await _context.UserAccounts.FirstOrDefaultAsync(u => u.UserID == id);
+        }
+
     }
 }
 

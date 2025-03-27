@@ -1,45 +1,35 @@
-﻿@{
+﻿@model Do_An_Web_Hoc.Models.UserAccount
+@{
     Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+    ViewData["Title"] = "Xóa mềm học viên";
 }
 
-<!DOCTYPE html>
-<html lang="vi">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Xóa Khóa Học</title>
+<div class="container mt-5">
+    <h3 class="text-danger mb-4">Xóa mềm học viên</h3>
 
-    <!-- Bootstrap & Font Awesome -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-
-    <link href="~/css/Admin.css" rel="stylesheet" />
-</head>
-<body>
-    
-    <div class="container mt-5">
-        <h2 class="text-center text-danger">Xóa Học Viên</h2>
-        <p class="text-center">Bạn có chắc chắn muốn xóa học viên này không?</p>
-
-        <div class="card mx-auto" style="max-width: 500px;">
-            <div class="card-body">
-                <h5 class="card-title"><i class="fas fa-user"></i> Nguyễn Văn A</h5>
-                <p><strong>Email:</strong> nguyenvana@example.com</p>
-                <p><strong>Số Điện Thoại:</strong> 0123-456-789</p>
-                <p><strong>Ngày Sinh:</strong> 01/01/1995</p>
-                <p><strong>Địa Chỉ:</strong> 123 Đường ABC, Quận 1, TP.HCM</p>
-                <p><strong>Khóa Học:</strong> Python Cơ Bản</p>
-            </div>
-        </div>
-
-        <div class="text-center mt-4">
-            <a href="ListStudent" class="btn btn-secondary"><i class="fas fa-times"></i> Hủy</a>
-            <a href="#" class="btn btn-danger"><i class="fas fa-trash"></i> Xác Nhận Xóa</a>
-        </div>
+    <div class="card p-4 shadow-sm">
+        <h5>Họ tên: @Model.FullName</h5>
+        <p><strong>Email:</strong> @Model.Email</p>
+        <p><strong>Ngày sinh:</strong> @Model.Birthday?.ToString("dd/MM/yyyy")</p>
+        <p>
+            <strong>Trạng thái hiện tại:</strong>
+            @(Model.Status == 1 ? "Hoạt động" : Model.Status == 2 ? "Ngừng hoạt động" : "Bị cấm")
+        </p>
     </div>
 
-    <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <div class="mt-4">
+        <form asp-action="DeleteStudent" method="post" class="d-inline">
+            <input type="hidden" name="id" value="@Model.UserID" />
+            <input type="hidden" name="statusId" value="2" />
+            <button type="submit" class="btn btn-warning">Ngừng hoạt động</button>
+        </form>
 
-</body>
-</html>
+        <form asp-action="DeleteStudent" method="post" class="d-inline ms-2">
+            <input type="hidden" name="id" value="@Model.UserID" />
+            <input type="hidden" name="statusId" value="3" />
+            <button type="submit" class="btn btn-danger">Bị cấm</button>
+        </form>
+
+        <a asp-action="ListStudent" class="btn btn-secondary ms-2">Quay lại</a>
+    </div>
+</div>
