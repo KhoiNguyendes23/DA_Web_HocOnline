@@ -17,16 +17,13 @@
         <h2 class="text-primary text-center mb-4">Thông tin cá nhân</h2>
 
         <!-- Hiển thị ảnh đại diện -->
-        <div class="text-center">
-            @if (!string.IsNullOrEmpty(Model.Image))
-            {
-                <img src="~/images/@Model.Image" alt="Profile Picture" class="profile-pic img-fluid rounded-circle mb-3" />
-            }
-            else
-            {
-                <img src="~/images/default-avatar.png" alt="Profile Picture" class="profile-pic img-fluid rounded-circle mb-3" />
-            }
-        </div>
+        @if (!string.IsNullOrEmpty(Model.Image) && Model.Image != "/images/default-avatar.png")
+        {
+            <div class="text-center">
+                <img src="@Model.Image" alt="Profile Picture" class="profile-pic img-fluid rounded-circle mb-3" />
+            </div>
+        }
+
 
         <!-- Hiển thị thông tin người dùng -->
         <div class="table-responsive">

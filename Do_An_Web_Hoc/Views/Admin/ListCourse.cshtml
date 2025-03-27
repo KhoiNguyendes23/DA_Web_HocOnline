@@ -1,7 +1,7 @@
 ﻿@model IEnumerable<Do_An_Web_Hoc.Models.Courses>
 
 @{
-    Layout = "~/Views/Shared/_LayoutAdmin.cshtml"; // Nếu sử dụng Layout Admin
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
 }
 
 <!DOCTYPE html>
@@ -17,14 +17,18 @@
 <body>
     <div class="container mt-4">
         <h3 class="text-primary">Danh sách khóa học</h3>
+        <div class="mb-3">
+            <strong>Lọc theo trạng thái:</strong>
+            <label class="ms-2"><input type="checkbox" class="status-filter" value="Hoạt động" checked /> Hoạt động</label>
+            <label class="ms-2"><input type="checkbox" class="status-filter" value="Ngừng hoạt động" checked /> Ngừng hoạt động</label>
+        </div>
+
         <table id="courseTable" class="table table-bordered table-striped">
             <thead class="table-primary">
                 <tr>
                     <th>STT</th>
                     <th>Tên khóa học</th>
-                    <th>Mô tả</th>
                     <th>Giá</th>
-                    <th>Danh mục</th>
                     <th>Trạng thái</th>
                     <th>Hành động</th>
                 </tr>
@@ -35,12 +39,20 @@
                     <tr>
                         <td>@course.CourseID</td>
                         <td>@course.CourseName</td>
-                        <td>@course.Description</td>
-                        <td>@course.Price</td>
-                        <td>@course.CategoryID</td>
-                        <td>@(course.Status == 1 ? "Hoạt động" : "Ngừng hoạt động")</td>
+                        <td>@String.Format("{0:N0} VNĐ", course.Price)</td>
                         <td>
-                            <a href="@Url.Action("EditCourse", "Admin", new { id = course.CourseID })" class="btn btn-sm btn-warning"><i class="fas fa-edit"></i> Sửa</a>
+                            @if (course.Status == 1)
+                            {
+                                <span class="badge bg-success">Hoạt động</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-secondary">Ngừng hoạt động</span>
+                            }
+                        </td>
+                        <td>
+                            <a href="@Url.Action("ViewCourse", "Admin", new { id = course.CourseID })" class="btn btn-sm btn-info"><i class="fas fa-eye"></i> Xem</a>
+                            <a href="@Url.Action("UpdateCourse", "Admin", new { id = course.CourseID })" class="btn btn-sm btn-warning"><i class="fas fa-edit"></i> Sửa</a>
                             <a href="@Url.Action("DeleteCourse", "Admin", new { id = course.CourseID })" class="btn btn-sm btn-danger"><i class="fas fa-trash"></i> Xóa</a>
                         </td>
                     </tr>
@@ -55,7 +67,7 @@
 
     <script>
         $(document).ready(function () {
-            $('#courseTable').DataTable({
+            var table = $('#courseTable').DataTable({
                 "paging": true,
                 "searching": true,
                 "ordering": true,
@@ -74,7 +86,19 @@
                     }
                 }
             });
+
+            // ✅ Lọc theo trạng thái khi checkbox thay đổi
+            $('.status-filter').on('change', function () {
+                var selected = [];
+                $('.status-filter:checked').each(function () {
+                    selected.push($(this).val());
+                });
+
+                var regex = selected.join('|'); // Tạo regex từ nhiều trạng thái
+                table.column(4).search(regex, true, false).draw(); // Cột 4 là trạng thái
+            });
         });
     </script>
+
 </body>
 </html>

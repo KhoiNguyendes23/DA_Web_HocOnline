@@ -9,6 +9,8 @@ using System.Text.Json;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication;
 using System.Security.Claims;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Do_An_Web_Hoc.Controllers
 {
@@ -36,6 +38,12 @@ namespace Do_An_Web_Hoc.Controllers
             if (user == null)
             {
                 ViewBag.Error = "Sai email hoặc mật khẩu!";
+                return View("Index");
+            }
+            // Nếu người dùng bị cấm (Status == 3), không cho đăng nhập
+            if (user.Status == 3)
+            {
+                ViewBag.Error = "Tài khoản của bạn đã bị cấm.";
                 return View("Index");
             }
 
@@ -82,7 +90,11 @@ namespace Do_An_Web_Hoc.Controllers
                 return View("Index", model);
             }
 
-            var newUser = await _userAccountRepository.RegisterAsync(model, model.Password); //Thêm mật khẩu
+            // Mã hóa mật khẩu trước khi lưu
+            var hasher = new PasswordHasher<UserAccount>();
+            model.Password = hasher.HashPassword(model, model.Password);
+
+            var newUser = await _userAccountRepository.RegisterAsync(model, model.Password);
 
             if (newUser == null)
             {
@@ -185,7 +197,11 @@ namespace Do_An_Web_Hoc.Controllers
                     return Json(new { success = false, message = "Mật khẩu không đủ mạnh! Yêu cầu: ít nhất 8 ký tự, 1 chữ hoa, 1 số, 1 ký tự đặc biệt." });
                 }
                 // Thực hiện đặt lại mật khẩu
-                bool resetSuccess = await _userAccountRepository.ResetPasswordByOTPAsync(email, newPassword);
+                // Mã hóa mật khẩu trước khi lưu
+                var hasher = new PasswordHasher<UserAccount>();
+                var hashedPassword = hasher.HashPassword(new UserAccount(), newPassword);
+
+                bool resetSuccess = await _userAccountRepository.ResetPasswordByOTPAsync(email, hashedPassword);
                 if (!resetSuccess)
                 {
                     return Json(new { success = false, message = "Đặt lại mật khẩu thất bại! Vui lòng thử lại." });
@@ -200,6 +216,26 @@ namespace Do_An_Web_Hoc.Controllers
                 return Json(new { success = false, message = "Đã xảy ra lỗi hệ thống. Vui lòng thử lại sau." });
             }
         }
+        [HttpGet]
+        [AllowAnonymous] // hoặc [Authorize(Roles = "Admin")] nếu muốn giới hạn
+        public async Task<IActionResult> EncryptOldPasswords()
+        {
+            var users = await _userAccountRepository.GetAllUsersAsync();
+            var hasher = new PasswordHasher<UserAccount>();
+
+            foreach (var user in users)
+            {
+                // Nếu độ dài password nhỏ hơn 30 ký tự => có thể là chưa mã hóa
+                if (!string.IsNullOrEmpty(user.Password) && user.Password.Length < 30)
+                {
+                    user.Password = hasher.HashPassword(user, user.Password);
+                }
+            }
+
+            await _userAccountRepository.SaveAllUsersAsync(users);
+            return Content("✅ Mã hóa mật khẩu cũ thành công!");
+        }
+
     }
 }
 

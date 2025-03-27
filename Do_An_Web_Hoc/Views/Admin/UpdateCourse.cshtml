@@ -1,75 +1,50 @@
-﻿@{
+﻿@model Do_An_Web_Hoc.Models.Courses
+@{
     Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+    ViewData["Title"] = "Cập Nhật Khóa Học";
 }
 
-<!DOCTYPE html>
-<html lang="vi">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cập Nhật Khóa Học</title>
+<div class="container mt-5">
+    <h2 class="text-primary mb-4"><i class="fas fa-edit"></i> Cập Nhật Khóa Học</h2>
 
-    <!-- Bootstrap & Font Awesome -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <form asp-action="UpdateCourse" method="post">
+        <input type="hidden" asp-for="CourseID" />
 
-    <link href="~/css/Admin.css" rel="stylesheet" />
-</head>
-<body>
-   
-    <div class="container">
-        <h2 class="text-primary text-center mb-4">Cập Nhật Khóa Học</h2>
+        <div class="mb-3">
+            <label asp-for="CourseName" class="form-label">Tên Khóa Học</label>
+            <input asp-for="CourseName" class="form-control" placeholder="Nhập tên khóa học" />
+            <span asp-validation-for="CourseName" class="text-danger"></span>
+        </div>
 
-        <form action="SaveUpdatedCourse" method="post">
-            <!-- Tên khóa học -->
-            <div class="form-group">
-                <label for="courseName"><i class="fas fa-book"></i> Tên khóa học</label>
-                <input type="text" class="form-control" id="courseName" name="courseName" value="Python cơ bản" required>
-            </div>
+        <div class="mb-3">
+            <label asp-for="Description" class="form-label">Mô Tả</label>
+            <textarea asp-for="Description" class="form-control" rows="3" placeholder="Nhập mô tả"></textarea>
+        </div>
 
-            <!-- Giảng viên -->
-            <div class="form-group">
-                <label for="instructor"><i class="fas fa-chalkboard-teacher"></i> Giảng viên</label>
-                <input type="text" class="form-control" id="instructor" name="instructor" value="Nguyễn Văn B" required>
-            </div>
+        <div class="mb-3">
+            <label asp-for="Price" class="form-label">Giá</label>
+            <input asp-for="Price" type="number" class="form-control" placeholder="VD: 1000000" />
+        </div>
 
-            <!-- Số học viên -->
-            <div class="form-group">
-                <label for="students"><i class="fas fa-users"></i> Số học viên</label>
-                <input type="number" class="form-control" id="students" name="students" value="30" required>
-            </div>
+        <div class="mb-3">
+            <label asp-for="CategoryID" class="form-label">Danh Mục</label>
+            <select asp-for="CategoryID" class="form-select" asp-items="@(new SelectList(ViewBag.Categories, "Value", "Text"))">
+                <option value="">-- Chọn danh mục --</option>
+            </select>
+        </div>
 
-            <!-- Mô tả khóa học -->
-            <div class="form-group">
-                <label for="description"><i class="fas fa-info-circle"></i> Mô tả khóa học</label>
-                <textarea class="form-control" id="description" name="description" rows="3">Khóa học Python cơ bản giúp học viên làm quen với cú pháp, thư viện và ứng dụng của Python trong thực tế.</textarea>
-            </div>
+        <div class="mb-3">
+            <label asp-for="Status" class="form-label">Trạng Thái</label>
+            <select asp-for="Status" class="form-select" asp-items="@(new SelectList(ViewBag.StatusOptions, "Value", "Text"))">
+                <option value="">-- Chọn trạng thái --</option>
+            </select>
+        </div>
 
-            <!-- Thời gian học -->
-            <div class="form-group">
-                <label for="duration"><i class="fas fa-clock"></i> Thời gian học</label>
-                <input type="text" class="form-control" id="duration" name="duration" value="20 buổi (10 tuần)" required>
-            </div>
+        <button type="submit" class="btn btn-success"><i class="fas fa-save"></i> Cập nhật</button>
+        <a asp-action="ListCourse" class="btn btn-secondary ms-2"><i class="fas fa-arrow-left"></i> Quay lại</a>
+    </form>
+</div>
 
-            <!-- Trạng thái khóa học -->
-            <div class="form-group">
-                <label for="status"><i class="fas fa-toggle-on"></i> Trạng thái</label>
-                <select class="form-select" id="status" name="status">
-                    <option value="open" selected>Mở</option>
-                    <option value="closed">Đóng</option>
-                </select>
-            </div>
-
-            <!-- Nút lưu -->
-            <button type="submit" class="btn btn-primary btn-save"><i class="fas fa-save"></i> Lưu Thay Đổi</button>
-
-            <!-- Nút quay lại -->
-            <a href="ListCourse" class="btn btn-secondary btn-back"><i class="fas fa-arrow-left"></i> Quay lại</a>
-        </form>
-    </div>
-
-    <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
-</body>
-</html>
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
