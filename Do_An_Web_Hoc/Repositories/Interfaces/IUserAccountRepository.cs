@@ -27,5 +27,7 @@ namespace Do_An_Web_Hoc.Repositories.Interfaces
         Task<bool> SendOTPAsync(string email);
         Task<bool> VerifyOTPAsync(string email, string otp);
         Task<bool> ResetPasswordByOTPAsync(string email, string newPassword);
+        Task<UserAccount> GetByIdAsync(int id);
+
     }
 }
