@@ -1,5 +1,65 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@model Do_An_Web_Hoc.Models.UserAccount
+
 @{
+    Layout = "~/Views/Shared/_LayoutLecturer.cshtml";
+    ViewData["Title"] = "Chỉnh sửa hồ sơ giảng viên";
 }
+
+<div class="container mt-5">
+    <h2 class="text-warning text-center mb-4">Chỉnh Sửa Thông Tin Cá Nhân</h2>
+
+    <!-- Ảnh đại diện hiện tại -->
+    <div class="text-center mb-4">
+        <img src="@(!string.IsNullOrEmpty(Model.Image) ? Url.Content(Model.Image) : Url.Content("~/images/default-avatar.png"))"
+             alt="Ảnh đại diện"
+             class="img-fluid rounded-circle"
+             width="120" />
+    </div>
+
+    <form asp-action="EditProfile" method="post" enctype="multipart/form-data">
+        <!-- Họ và tên -->
+        <div class="form-group mb-3">
+            <label for="FullName"><i class="fas fa-user"></i> Họ và tên</label>
+            <input type="text" class="form-control" id="FullName" name="FullName" value="@Model.FullName" required />
+        </div>
+
+        <!-- Số điện thoại -->
+        <div class="form-group mb-3">
+            <label for="PhoneNumber"><i class="fas fa-phone"></i> Số điện thoại</label>
+            <input type="text" class="form-control" id="PhoneNumber" name="PhoneNumber" value="@Model.PhoneNumber" />
+        </div>
+
+        <!-- Ngày sinh -->
+        <div class="form-group mb-3">
+            <label for="Birthday"><i class="fas fa-calendar-alt"></i> Ngày sinh</label>
+            <input type="date" class="form-control" id="Birthday" name="Birthday"
+                   value="@(Model.Birthday?.ToString("yyyy-MM-dd"))" />
+        </div>
+
+        <!-- Địa chỉ -->
+        <div class="form-group mb-3">
+            <label for="Address"><i class="fas fa-map-marker-alt"></i> Địa chỉ</label>
+            <input type="text" class="form-control" id="Address" name="Address" value="@Model.Address" />
+        </div>
+
+        <!-- Ảnh đại diện -->
+        <div class="form-group mb-3">
+            <label for="Image"><i class="fas fa-image"></i> Ảnh đại diện mới</label>
+            <input type="file" class="form-control" id="Image" name="image" accept="image/*" />
+        </div>
+
+        <!-- Nút lưu -->
+        <div class="text-center mt-4">
+            <button type="submit" class="btn btn-warning">
+                <i class="fas fa-save"></i> Lưu thay đổi
+            </button>
+        </div>
+
+        <!-- Nút quay lại -->
+        <div class="text-center mt-3">
+            <a href="@Url.Action("Profile", "Lecturer")" class="btn btn-secondary">
+                <i class="fas fa-arrow-left"></i> Quay lại hồ sơ
+            </a>
+        </div>
+    </form>
+</div>

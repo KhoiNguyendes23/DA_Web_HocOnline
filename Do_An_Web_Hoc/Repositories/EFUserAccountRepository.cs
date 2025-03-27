@@ -296,6 +296,7 @@ namespace Do_An_Web_Hoc.Repositories
             await _context.SaveChangesAsync();
         }
 
+
         // Lấy tất cả người dùng
         public async Task<IEnumerable<UserAccount>> GetAllUsersAsync()
         {
@@ -307,6 +308,12 @@ namespace Do_An_Web_Hoc.Repositories
             _context.UserAccounts.UpdateRange(users);
             await _context.SaveChangesAsync();
         }
+
+        public async Task<UserAccount> GetByIdAsync(int id)
+        {
+            return await _context.UserAccounts.FirstOrDefaultAsync(u => u.UserID == id);
+        }
+
     }
 }
 
