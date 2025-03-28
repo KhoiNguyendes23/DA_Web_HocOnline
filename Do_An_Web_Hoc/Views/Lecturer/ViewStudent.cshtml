@@ -1,6 +1,4 @@
-﻿@model Do_An_Web_Hoc.Models.UserAccount
-
-@{
+﻿@{
     Layout = "~/Views/Shared/_LayoutLecturer.cshtml";
 }
 
@@ -32,9 +30,11 @@
         </div>
 
         <div class="text-center mt-4">
-            <!-- Thêm các nút điều hướng -->
-            <a href="@Url.Action("ListStudent")" class="btn btn-secondary"><i class="fas fa-arrow-left"></i> Quay Lại</a>         
+            <a href="@Url.Action("ListStudent")" class="btn btn-secondary">
+                <i class="fas fa-arrow-left"></i> Quay Lại
+            </a>
         </div>
+
     </div>
 
     <!-- Bootstrap JS -->

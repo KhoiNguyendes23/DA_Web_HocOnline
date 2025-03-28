@@ -10,6 +10,13 @@
 <div class="container mt-4">
     <h3 class="text-primary text-center mb-4">Danh sách bài giảng</h3>
 
+    <!-- ✅ Nút được đặt bên phải -->
+    <div class="d-flex justify-content-start mb-3">
+        <a class="btn btn-success" href="@Url.Action("AddLecture", "Lecturer")">
+            <i class="fas fa-plus"></i> Thêm bài giảng
+        </a>
+    </div>
+
     <table id="lectureTable" class="table table-bordered table-hover">
         <thead class="table-primary text-white">
             <tr>
@@ -108,9 +115,6 @@
         </tbody>
     </table>
 
-    <div class="text-center mt-3">
-        <a class="btn btn-success" href="@Url.Action("AddLecture", "Lecturer")"><i class="fas fa-plus"></i> Thêm bài giảng</a>
-    </div>
 </div>
 
 @section Scripts {
@@ -123,7 +127,7 @@
                 searching: true,
                 ordering: true,
                 info: true,
-                lengthMenu: [5, 10, 25, 50],
+                lengthMenu: [1, 10, 25, 50],
                 language: {
                     search: "Tìm kiếm:",
                     lengthMenu: "Hiển thị _MENU_ bài giảng",

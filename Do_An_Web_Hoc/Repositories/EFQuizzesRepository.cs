@@ -15,6 +15,10 @@ namespace Do_An_Web_Hoc.Repositories
         {
             _context = context;
         }
+        public async Task<Quizzes> GetQuizByExamIdAsync(int examId)
+        {
+            return await _context.Quizzes.FirstOrDefaultAsync(q => q.ExamID == examId);
+        }
 
         // Lấy tất cả các bài quiz
         public async Task<IEnumerable<Quizzes>> GetAllQuizzesAsync()
