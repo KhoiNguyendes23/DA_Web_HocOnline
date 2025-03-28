@@ -20,6 +20,11 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
     {
         options.LoginPath = "/Account/Index"; // Chuyển hướng khi chưa đăng nhập
         options.AccessDeniedPath = "/Home/AccessDenied"; // Chuyển hướng khi không có quyền
+    })
+    .AddFacebook(options =>
+    {
+        options.AppId = builder.Configuration["Facebook:AppId"];  // Lấy AppId từ appsettings.json
+        options.AppSecret = builder.Configuration["Facebook:AppSecret"];  // Lấy AppSecret từ appsettings.json
     });
 
 
