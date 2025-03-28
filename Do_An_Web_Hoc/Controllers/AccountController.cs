@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Authentication;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authentication.Facebook;
 
 namespace Do_An_Web_Hoc.Controllers
 {
@@ -236,6 +237,76 @@ namespace Do_An_Web_Hoc.Controllers
             return Content("✅ Mã hóa mật khẩu cũ thành công!");
         }
 
+
+        // đăng nhập bằng facebook
+        public IActionResult LoginFacebook()
+        {
+            var redirectUrl = Url.Action("FacebookResponse", "Account");
+            var properties = new AuthenticationProperties { RedirectUri = redirectUrl };
+            return Challenge(properties, FacebookDefaults.AuthenticationScheme);
+        }
+        // Xử lý phản hồi từ Facebook
+        public async Task<IActionResult> FacebookResponse()
+        {
+            var result = await HttpContext.AuthenticateAsync(FacebookDefaults.AuthenticationScheme);
+
+            if (!result.Succeeded)
+            {
+                return BadRequest();
+            }
+
+            var externalInfo = result.Principal;
+
+            // Lấy thông tin người dùng từ Facebook
+            var name = externalInfo.FindFirstValue(ClaimTypes.Name);
+            var email = externalInfo.FindFirstValue(ClaimTypes.Email);
+
+            // Kiểm tra nếu email đã tồn tại trong hệ thống
+            var user = await _userAccountRepository.GetByEmailAsync(email);
+            if (user == null)
+            {
+                // Nếu không có user, có thể tạo mới tài khoản từ thông tin Facebook
+                var newUser = new UserAccount
+                {
+                    UserName = name,
+                    Email = email,
+                    Password = "", // Có thể để trống vì không cần mật khẩu khi đăng nhập qua Facebook
+                    Status = 1, // Trạng thái hoạt động, có thể thay đổi tùy theo yêu cầu
+                    RoleID = 3  // Đặt role tùy theo yêu cầu
+                };
+
+                await _userAccountRepository.RegisterAsync(newUser, newUser.Password);
+                user = newUser;
+            }
+
+            // Gán Role vào Claims để `[Authorize(Roles="User")]` nhận diện được
+            var roleName = "User"; // Mặc định là User
+
+            var claims = new List<Claim>
+    {
+        new Claim(ClaimTypes.Name, user.UserName),
+        new Claim(ClaimTypes.Email, user.Email),
+        new Claim(ClaimTypes.Role, roleName)
+    };
+
+            var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+            var authProperties = new AuthenticationProperties { IsPersistent = true };
+
+            // Lưu email vào Session sau khi đăng nhập thành công
+            HttpContext.Session.SetString("UserEmail", user.Email);
+            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,
+                new ClaimsPrincipal(claimsIdentity), authProperties);
+
+            Console.WriteLine($"[DEBUG] Đăng nhập qua Facebook thành công: {user.UserName} - Role: {roleName}");
+
+            // Chuyển hướng theo Role
+            return roleName switch
+            {
+                "Admin" => RedirectToAction("Dashboard", "Admin"),
+                "Lecturer" => RedirectToAction("Dashboard", "Lecturer"),
+                _ => RedirectToAction("Dashboard", "User")
+            };
+        }
     }
 }
 
