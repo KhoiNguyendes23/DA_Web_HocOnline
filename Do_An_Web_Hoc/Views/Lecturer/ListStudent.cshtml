@@ -37,9 +37,9 @@
                             <td>@student.FullName</td>
                             <td>@student.Email</td>
                             <td>
-                                <a href="#" class="btn btn-sm btn-info">Xem</a>
-                                <a href="#" class="btn btn-sm btn-warning">Sửa</a>
-                                <a href="#" class="btn btn-sm btn-danger">Xóa</a>
+                                <a href="@Url.Action("ViewStudent", "Lecturer", new { id = student.UserID })" class="btn btn-sm btn-info">Xem</a>
+
+                               
                             </td>
                             <td>
                                 @if (student.Status == 1)

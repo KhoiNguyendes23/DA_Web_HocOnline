@@ -15,6 +15,11 @@ namespace Do_An_Web_Hoc.Repositories
         {
             _context = context;
         }
+        //public void AddExam(Exams exam)
+        //{
+        //    _context.Exams.Add(exam);
+        //    _context.SaveChanges();
+        //}
 
         // Lấy tất cả bài thi (cả hoạt động và ngừng hoạt động)
         public async Task<IEnumerable<Exams>> GetAllExamsAsync()

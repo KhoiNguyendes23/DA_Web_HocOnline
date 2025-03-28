@@ -1,60 +1,59 @@
-﻿@{
+﻿@model IEnumerable<Do_An_Web_Hoc.Models.Exams>
+
+@{
     Layout = "~/Views/Shared/_LayoutLecturer.cshtml";
+    ViewData["Title"] = "Danh sách bài kiểm tra";
 }
 
 <div class="container mt-4">
     <h2 class="text-primary text-center mb-4">Danh sách bài kiểm tra</h2>
+
     <table class="table table-bordered table-striped">
         <thead class="table-primary">
             <tr>
                 <th>#</th>
                 <th>Tên bài kiểm tra</th>
-                <th>Ngày kiểm tra</th>
+                <th>Mô tả</th>
+                <th>Tổng điểm</th>
                 <th>Khóa học</th>
-                <th>Thời gian kiểm tra (phút)</th>
-                <th>Hành động</th>
+                <th>Ngày tạo</th>
+                <th>Trạng thái</th>
             </tr>
         </thead>
         <tbody>
-            <tr>
-                <td>1</td>
-                <td>Bài kiểm tra Python cơ bản</td>
-                <td>15/04/2025</td>
-                <td>Python cơ bản</td>
-                <td>60</td>
-                <td>
-                    <a href="ViewExam" class="btn btn-sm btn-info"><i class="fas fa-eye"></i> Xem</a>
-                    <a href="EditExam" class="btn btn-sm btn-warning"><i class="fas fa-edit"></i> Sửa</a>
-                    <a href="DeleteExam" class="btn btn-sm btn-danger"><i class="fas fa-trash"></i> Xóa</a>
-                </td>
-            </tr>
-            <tr>
-                <td>2</td>
-                <td>Bài kiểm tra Java nâng cao</td>
-                <td>20/04/2025</td>
-                <td>Java nâng cao</td>
-                <td>75</td>
-                <td>
-                    <a href="ViewExam" class="btn btn-sm btn-info"><i class="fas fa-eye"></i> Xem</a>
-                    <a href="UpdateExam" class="btn btn-sm btn-warning"><i class="fas fa-edit"></i> Sửa</a>
-                    <a href="DeleteExam" class="btn btn-sm btn-danger"><i class="fas fa-trash"></i> Xóa</a>
-                </td>
-            </tr>
-            <tr>
-                <td>3</td>
-                <td>Bài kiểm tra JavaScript cơ bản</td>
-                <td>25/04/2025</td>
-                <td>JavaScript cơ bản</td>
-                <td>45</td>
-                <td>
-                    <a href="ViewExam" class="btn btn-sm btn-info"><i class="fas fa-eye"></i> Xem</a>
-                    <a href="UpdateExam" class="btn btn-sm btn-warning"><i class="fas fa-edit"></i> Sửa</a>
-                    <a href="DeleteExam" class="btn btn-sm btn-danger"><i class="fas fa-trash"></i> Xóa</a>
-                </td>
-            </tr>
+            @if (Model != null && Model.Any())
+            {
+                int index = 1;
+                foreach (var exam in Model)
+                {
+                    <tr>
+                        <td>@index</td>
+                        <td>@exam.ExamName</td>
+                        <td>@(string.IsNullOrEmpty(exam.Description) ? "Không có mô tả" : exam.Description)</td>
+                        <td>@exam.TotalMarks điểm</td>
+                        <td>@exam.CourseID</td>
+                        <td>@(exam.CreatedAt?.ToString("dd/MM/yyyy") ?? "Chưa có")</td>
+                        <td>
+                            <a href="@Url.Action("ViewExam", "Lecturer", new { id = exam.ExamID })" class="btn btn-sm btn-info"><i class="fas fa-eye"></i></a>
+                            <a href="@Url.Action("EditExam", "Lecturer", new { id = exam.ExamID })" class="btn btn-sm btn-warning"><i class="fas fa-edit"></i></a>
+                            <a href="@Url.Action("DeleteExam", "Lecturer", new { id = exam.ExamID })" class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></a>
+                        </td>
+                    </tr>
+                    index++;
+                }
+            }
+            else
+            {
+                <tr>
+                    <td colspan="7" class="text-center text-danger">Không có bài kiểm tra nào</td>
+                </tr>
+            }
         </tbody>
     </table>
-    <div class="text-center">
-        <a href="AddExam" class="btn btn-success mt-4"><i class="fas fa-plus"></i> Thêm bài kiểm tra</a>
+
+    <div class="text-start">
+        <a href="@Url.Action("AddExam", "Lecturer")" class="btn btn-success mt-4">
+            <i class="fas fa-plus"></i> Thêm bài kiểm tra
+        </a>
     </div>
 </div>

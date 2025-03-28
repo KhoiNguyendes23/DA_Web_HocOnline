@@ -16,7 +16,8 @@ namespace Do_An_Web_Hoc.Repositories.Interfaces
         Task<Questions> GetQuestionByIdAsync(int questionId);
 
         // Thêm một câu hỏi mới vào cơ sở dữ liệu
-        Task AddQuestionAsync(Questions question);
+        Task<int> AddQuestionAsync(Questions question);
+
 
         // Cập nhật thông tin của một câu hỏi
         Task UpdateQuestionAsync(Questions question);
