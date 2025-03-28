@@ -1,0 +1,338 @@
+﻿:root {
+    --sidebar-width: 280px;
+    --sidebar-width-collapsed: 80px;
+}
+
+body {
+    overflow-x: hidden;
+}
+
+/* Sidebar chính */
+.sidebar {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    width: var(--sidebar-width);
+    /* background: linear-gradient(135deg, #424eb9 0%, #16181f 100%); */
+    background: linear-gradient(45deg, #6a11cb 0%, #2575fc 100%);
+    transition: all 0.3s ease;
+    justify-content: flex-start;
+    padding: 0;
+    margin: 0;
+}
+
+    .sidebar.collapsed {
+        width: var(--sidebar-width-collapsed);
+    }
+
+/* Sidebar link */
+.sidebar-link {
+    display: flex;
+    align-items: center;
+    /* color: #a0a3bd; */
+    color: #ffffff !important; /* Chữ màu trắng */
+    transition: all 0.2s ease;
+    border-radius: 8px;
+    margin: 4px 16px;
+    padding: 10px 16px;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+    .sidebar-link i {
+        color: #ffffff !important; /* Chữ màu trắng */
+        font-size: 18px;
+        width: 24px;
+        text-align: center;
+    }
+
+/* Khi sidebar thu gọn */
+.sidebar.collapsed .sidebar-link {
+    justify-content: center;
+    padding: 12px 0;
+    width: 100%;
+}
+
+    .sidebar.collapsed .sidebar-link i {
+        width: auto;
+        text-align: center;
+    }
+
+    /* Ẩn chữ khi sidebar thu gọn */
+    .sidebar.collapsed .sidebar-link span {
+        display: none;
+    }
+
+/* Hover */
+.sidebar-link:hover {
+    color: #ffffff;
+    background: rgba(255, 255, 255, 0.1);
+    transform: translateX(5px);
+}
+
+.sidebar-link.active {
+    color: #ffffff;
+    background: rgba(255, 255, 255, 0.2);
+}
+
+/* Profile Section */
+.profile-section {
+    display: flex;
+    align-items: center;
+    padding: 10px 16px;
+    margin: 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+    .profile-section img {
+        height: 50px;
+        border-radius: 50%;
+    }
+
+.profile-info {
+    margin-left: 10px;
+    transition: opacity 0.3s ease;
+}
+
+/* Khi thu gọn */
+.sidebar.collapsed .profile-info {
+    opacity: 0;
+    visibility: hidden;
+}
+
+/* Nút Toggle */
+.toggle-btn {
+    position: absolute;
+    right: -15px;
+    top: 20px;
+    background: white;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    border: none;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+    z-index: 100;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+
+.collapsed .toggle-btn {
+    transform: rotate(180deg);
+}
+
+/* Main Content */
+.main-content {
+        margin-left: var(--sidebar-width);
+    background-color: #f8f9fa;
+    min-height: 100vh;
+    padding: 20px;
+    transition: all 0.3s ease;
+}
+
+.collapsed ~ .main-content {
+    margin-left: var(--sidebar-width-collapsed);
+}
+
+/* Logout Button */
+.logout-btn {
+    display: flex;
+    align-items: center;
+    color: #ff4d4d !important;
+    font-weight: bold;
+    transition: all 0.2s ease;
+    border-radius: 8px;
+    margin: 4px 16px;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+    .logout-btn i {
+        font-size: 18px;
+        width: 24px;
+        text-align: center;
+    }
+
+    .logout-btn:hover {
+        background: rgba(255, 77, 77, 0.2);
+        color: #ff1a1a !important;
+        transform: translateX(5px);
+    }
+
+/* Khi sidebar thu gọn */
+.sidebar.collapsed .logout-btn {
+    justify-content: center;
+    padding: 12px 0;
+    width: 100%;
+}
+
+    .sidebar.collapsed .logout-btn span {
+        display: none;
+    }
+
+/* Account Button */
+.account-btn {
+    display: flex;
+    align-items: center;
+    color: #a0a3bd;
+    transition: all 0.2s ease;
+    border-radius: 8px;
+    margin: 4px 16px;
+    padding: 10px 16px;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+    .account-btn i {
+        font-size: 18px;
+        width: 24px;
+        text-align: center;
+    }
+
+    .account-btn:hover {
+        color: #ffffff;
+        background: rgba(255, 255, 255, 0.1);
+        transform: translateX(5px);
+    }
+
+    .account-btn.active {
+        color: #ffffff;
+        background: rgba(255, 255, 255, 0.2);
+        font-weight: bold;
+    }
+
+/* Khi sidebar thu gọn */
+.sidebar.collapsed .account-btn {
+    justify-content: center;
+    padding: 12px 0;
+    width: 100%;
+}
+
+    .sidebar.collapsed .account-btn span {
+        display: none;
+    }
+
+/* Ẩn submenu mặc định */
+.submenu {
+    display: none;
+    padding-left: 30px;
+}
+
+.submenu-link {
+    display: block;
+    padding: 8px 16px;
+    color: #ffffff !important; /* Chữ màu trắng */
+    text-decoration: none !important;
+    transition: all 0.2s ease;
+}
+
+    .submenu-link:hover {
+        color: #ffffff;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 8px;
+        text-decoration: none !important;
+    }
+
+/* Dropdown icon */
+.dropdown-icon {
+    margin-left: auto;
+    transition: transform 0.3s ease;
+}
+
+/* Khi submenu mở, icon xoay xuống */
+.submenu.open {
+    display: block;
+}
+
+.sidebar-link.active .dropdown-icon {
+    transform: rotate(180deg);
+}
+
+/* Ẩn mũi tên dropdown khi sidebar thu gọn */
+.sidebar.collapsed .dropdown-icon {
+    display: none;
+}
+
+/* Ẩn chữ "NexusFlow" khi sidebar thu gọn */
+.sidebar.collapsed .logo-text {
+    display: none;
+}
+
+.logo-text {
+    color: #ffffff !important; /* Chuyển thành màu trắng */
+    font-weight: bold;
+    text-align: center;
+}
+/* 
+chỉnh sửa */
+/* Hiệu ứng hover mặc định */
+.sidebar-link {
+    display: flex;
+    align-items: center;
+    color: #a0a3bd;
+    transition: all 0.2s ease;
+    border-radius: 8px;
+    margin: 4px 16px;
+    padding: 10px 16px;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+    .sidebar-link:hover {
+        color: #ffffff;
+        background: rgba(255, 255, 255, 0.1);
+        transform: translateX(5px);
+    }
+
+/* Khi sidebar thu gọn */
+.sidebar.collapsed .sidebar-link {
+    justify-content: center;
+    padding: 12px 0;
+    width: 100%;
+    margin: 4px 0; /* Căn chỉnh khoảng cách để không bị lệch */
+}
+
+    /* Khi sidebar thu gọn, hiệu ứng hover vừa với chiều rộng */
+    .sidebar.collapsed .sidebar-link:hover {
+        background: rgba(255, 255, 255, 0.1);
+        transform: none; /* Không cần hiệu ứng dịch chuyển */
+        width: var(--sidebar-width-collapsed); /* Chỉ vừa với sidebar thu nhỏ */
+    }
+
+/* Định dạng đặc biệt cho nút Đăng xuất */
+.logout-btn {
+    color: #ff4d4d !important;
+    font-weight: bold;
+    transition: all 0.2s ease;
+    border-radius: 8px;
+    margin: 4px 16px;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+/* Hover cho nút đăng xuất khi sidebar thu gọn */
+.sidebar.collapsed .logout-btn:hover {
+    background: rgba(255, 77, 77, 0.2);
+    color: #ff1a1a !important;
+    width: var(--sidebar-width-collapsed);
+    border-radius: 8px;
+}
+
+/* Ẩn submenu khi sidebar thu nhỏ */
+.sidebar.collapsed .submenu {
+    display: none !important;
+}
+
+a.submenu-link,
+a.submenu-link:hover,
+a.submenu-link:focus,
+a.submenu-link:visited,
+a.submenu-link:active {
+    text-decoration: none !important;
+}
+
+.sidebar a,
+.sidebar a * {
+    text-decoration: none !important;
+}
+
+
