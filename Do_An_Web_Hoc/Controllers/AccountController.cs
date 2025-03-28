@@ -92,8 +92,8 @@ namespace Do_An_Web_Hoc.Controllers
             }
 
             // Mã hóa mật khẩu trước khi lưu
-            var hasher = new PasswordHasher<UserAccount>();
-            model.Password = hasher.HashPassword(model, model.Password);
+            //var hasher = new PasswordHasher<UserAccount>();
+            //model.Password = hasher.HashPassword(model, model.Password);
 
             var newUser = await _userAccountRepository.RegisterAsync(model, model.Password);
 

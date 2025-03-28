@@ -62,7 +62,7 @@ namespace Do_An_Web_Hoc.Repositories
                 await _context.SaveChangesAsync();
             }
         }
-        // Đăng ký người dùng mới (KHÔNG MÃ HÓA MẬT KHẨU)
+        // Đăng ký người dùng mới
         public async Task<UserAccount> RegisterAsync(UserAccount user, string password)
         {
             // Kiểm tra email đã tồn tại chưa
@@ -111,7 +111,9 @@ namespace Do_An_Web_Hoc.Repositories
                 UserID = user.UserID,
                 UserName = user.UserName,
                 Email = user.Email,
-                RoleID = user.RoleID
+                RoleID = user.RoleID,
+                Status = user.Status
+
             };
         }
 
