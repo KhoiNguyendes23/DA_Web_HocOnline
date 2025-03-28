@@ -26,7 +26,7 @@
                     <th>Giá</th>
                     <th>Danh mục</th>
                     <th>Trạng thái</th>
-                    <th>Hành động</th>
+                   
                 </tr>
             </thead>
             <tbody>
@@ -41,10 +41,7 @@
                             <td>@course.Price</td>
                             <td>@course.CategoryID</td>
                             <td>@(course.Status == 1 ? "Hoạt động" : "Ngừng hoạt động")</td>
-                            <td>
-                                <a href="#" class="btn btn-sm btn-warning"><i class="fas fa-edit"></i> Sửa</a>
-                                <a href="#" class="btn btn-sm btn-danger"><i class="fas fa-trash"></i> Xóa</a>
-                            </td>
+                            
                         </tr>
                     }
                 }

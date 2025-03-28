@@ -216,25 +216,26 @@ namespace Do_An_Web_Hoc.Controllers
                 return Json(new { success = false, message = "Đã xảy ra lỗi hệ thống. Vui lòng thử lại sau." });
             }
         }
-        [HttpGet]
-        [AllowAnonymous] // hoặc [Authorize(Roles = "Admin")] nếu muốn giới hạn
-        public async Task<IActionResult> EncryptOldPasswords()
-        {
-            var users = await _userAccountRepository.GetAllUsersAsync();
-            var hasher = new PasswordHasher<UserAccount>();
+        //Để mã hóa mật khẩu cũ
+        //[HttpGet]
+        //[AllowAnonymous] // hoặc [Authorize(Roles = "Admin")] nếu muốn giới hạn
+        //public async Task<IActionResult> EncryptOldPasswords()
+        //{
+        //    var users = await _userAccountRepository.GetAllUsersAsync();
+        //    var hasher = new PasswordHasher<UserAccount>();
 
-            foreach (var user in users)
-            {
-                // Nếu độ dài password nhỏ hơn 30 ký tự => có thể là chưa mã hóa
-                if (!string.IsNullOrEmpty(user.Password) && user.Password.Length < 30)
-                {
-                    user.Password = hasher.HashPassword(user, user.Password);
-                }
-            }
+        //    foreach (var user in users)
+        //    {
+        //        // Nếu độ dài password nhỏ hơn 30 ký tự => có thể là chưa mã hóa
+        //        if (!string.IsNullOrEmpty(user.Password) && user.Password.Length < 30)
+        //        {
+        //            user.Password = hasher.HashPassword(user, user.Password);
+        //        }
+        //    }
 
-            await _userAccountRepository.SaveAllUsersAsync(users);
-            return Content("✅ Mã hóa mật khẩu cũ thành công!");
-        }
+        //    await _userAccountRepository.SaveAllUsersAsync(users);
+        //    return Content("✅ Mã hóa mật khẩu cũ thành công!");
+        //}
 
     }
 }

@@ -55,6 +55,11 @@ builder.Services.AddScoped<ICatogoriesRepository, EFCatogoriesRepository> ();
 builder.Services.AddScoped<ILecturesRepository, EFLecturesRepository>();
 builder.Services.AddScoped<IQuestionsRepository, EFQuestionsRepository>();
 builder.Services.AddScoped<IResultsRepository, EFResultsRepository>();
+builder.Services.AddScoped<IQuizzesRepository, EFQuizzesRepository>();
+builder.Services.AddScoped<IQuestionsRepository, EFQuestionsRepository>();
+
+
+
 
 // 💡 **Cấu hình MVC & View Localization**
 builder.Services.AddControllersWithViews()

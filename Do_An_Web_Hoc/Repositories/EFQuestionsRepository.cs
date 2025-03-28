@@ -37,10 +37,11 @@ namespace Do_An_Web_Hoc.Repositories
         }
 
         // Thêm một câu hỏi mới
-        public async Task AddQuestionAsync(Questions question)
+        public async Task<int> AddQuestionAsync(Questions question)
         {
-            await _context.Questions.AddAsync(question);
+            _context.Questions.Add(question);
             await _context.SaveChangesAsync();
+            return question.QuestionID;
         }
 
         // Cập nhật thông tin câu hỏi

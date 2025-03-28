@@ -6,10 +6,12 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
 using Microsoft.Extensions.Logging;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Mvc.Rendering;
+
 namespace Do_An_Web_Hoc.Controllers
 {
     [Authorize(Roles = "Lecturer")]
-
     public class LecturerController : Controller
     {
         private readonly ILecturesRepository _lecturesRepository;
@@ -18,13 +20,23 @@ namespace Do_An_Web_Hoc.Controllers
         private readonly IResultsRepository _resultsRepository;
         private readonly IUserAccountRepository _userAccountRepository;
         private readonly ILogger<LecturerController> _logger;
+        private readonly IQuestionsRepository _questionsRepository;
+        private readonly IQuizzesRepository _quizzesRepository;
+        private readonly ApplicationDbContext _context;
+       
+
         public LecturerController(
             ILecturesRepository lecturesRepository,
             ICoursesRepository coursesRepository,
             IExamsRepository examsRepository,
             IResultsRepository resultsRepository,
             IUserAccountRepository userAccountRepository,
-             ILogger<LecturerController> logger)
+            ILogger<LecturerController> logger,
+            IQuestionsRepository questionsRepository,
+            IQuizzesRepository quizzesRepository,
+          
+            ApplicationDbContext context)
+
         {
             _lecturesRepository = lecturesRepository;
             _coursesRepository = coursesRepository;
@@ -32,6 +44,10 @@ namespace Do_An_Web_Hoc.Controllers
             _resultsRepository = resultsRepository;
             _userAccountRepository = userAccountRepository;
             _logger = logger;
+            _questionsRepository = questionsRepository;
+            _quizzesRepository = quizzesRepository;
+           
+            _context = context;
         }
 
         private void SetLecturerViewData()
@@ -66,26 +82,16 @@ namespace Do_An_Web_Hoc.Controllers
             return View();
         }
 
-        public async Task<IActionResult> Profile ()
+        public async Task<IActionResult> Profile()
         {
-            // Lấy email từ Claims
             var currentUserEmail = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value;
+            if (string.IsNullOrEmpty(currentUserEmail)) return RedirectToAction("Login", "Account");
 
-            if (string.IsNullOrEmpty(currentUserEmail))
-            {
-                return RedirectToAction("Login", "Account");
-            }
             var userAccount = await _userAccountRepository.GetByEmailAsync(currentUserEmail);
-
-            if (userAccount == null)
-            {
-                return View("Error");
-            }
+            if (userAccount == null) return View("Error");
 
             return View(userAccount);
         }
-
-
 
         [HttpGet]
         public async Task<IActionResult> EditProfile()
@@ -144,33 +150,6 @@ namespace Do_An_Web_Hoc.Controllers
             return RedirectToAction("Profile");
         }
 
-        public async Task<IActionResult> ListCourse()
-        {
-            SetLecturerViewData();
-            var courses = await _coursesRepository.GetAllCoursesAsync();
-            return View(courses);
-        }
-
-        public IActionResult AddCourse()
-        {
-            SetLecturerViewData();
-            return View();
-        }
-
-        public async Task<IActionResult> EditCourse(int id)
-        {
-            SetLecturerViewData();
-            var course = await _coursesRepository.GetCourseByIdAsync(id);
-            return View(course);
-        }
-
-        public async Task<IActionResult> DeleteCourse(int id)
-        {
-            SetLecturerViewData();
-            var course = await _coursesRepository.GetCourseByIdAsync(id);
-            return View(course);
-        }
-
         public async Task<IActionResult> ListExam()
         {
             SetLecturerViewData();
@@ -178,11 +157,14 @@ namespace Do_An_Web_Hoc.Controllers
             return View(exams);
         }
 
-        public IActionResult AddExam()
-        {
-            SetLecturerViewData();
-            return View();
-        }
+        //public IActionResult AddExam()
+        //{
+        //    SetLecturerViewData();
+        //    return View();
+        //}
+
+
+
 
         public async Task<IActionResult> EditExam(int id)
         {
@@ -198,12 +180,62 @@ namespace Do_An_Web_Hoc.Controllers
             return View(exam);
         }
 
-        public async Task<IActionResult> ViewExam(int id)
-        {
-            SetLecturerViewData();
-            var exam = await _examsRepository.GetExamByIdAsync(id);
-            return View(exam);
-        }
+        //public async Task<IActionResult> ViewExam(int id)
+        //{
+        //    SetLecturerViewData();
+
+        //    // Lấy bài kiểm tra
+        //    var exam = await _examsRepository.GetExamByIdAsync(id);
+        //    if (exam == null) return NotFound();
+
+        //    // Lấy quiz của bài kiểm tra
+        //    var quiz = await _quizzesRepository.GetQuizByExamIdAsync(exam.ExamID);
+        //    if (quiz == null) return View(exam); // Nếu chưa có quiz thì chỉ hiển thị thông tin exam
+
+        //    // Lấy danh sách câu hỏi
+        //    var questions = await _questionsRepository.GetQuestionsByQuizIdAsync(quiz.QuizID);
+
+        //    // Gắn vào model
+        //    var questionList = new List<QuestionTempModel>();
+        //    foreach (var q in questions)
+        //    {
+        //        var questionModel = new QuestionTempModel
+        //        {
+        //            QuestionText = q.QuestionText,
+        //            QuestionType = q.QuestionType
+        //        };
+
+        //        if (q.QuestionType == "Trắc nghiệm")
+        //        {
+        //            var answers = await _answersRepository.GetAnswersByQuestionIdAsync(q.QuestionID);
+
+        //            questionModel.OptionA = answers.FirstOrDefault(a => a.AnswerText != null && a.AnswerText == a.AnswerText && a.IsCorrect == (a.AnswerText == "A"))?.AnswerText;
+        //            questionModel.OptionB = answers.FirstOrDefault(a => a.AnswerText != null && a.AnswerText == a.AnswerText && a.IsCorrect == (a.AnswerText == "B"))?.AnswerText;
+        //            questionModel.OptionC = answers.FirstOrDefault(a => a.AnswerText != null && a.AnswerText == a.AnswerText && a.IsCorrect == (a.AnswerText == "C"))?.AnswerText;
+        //            questionModel.OptionD = answers.FirstOrDefault(a => a.AnswerText != null && a.AnswerText == a.AnswerText && a.IsCorrect == (a.AnswerText == "D"))?.AnswerText;
+        //            if (answers.Count() >= 4)
+        //            {
+        //                var list = answers.ToList();
+        //                questionModel.OptionA = list[0].AnswerText;
+        //                questionModel.OptionB = list[1].AnswerText;
+        //                questionModel.OptionC = list[2].AnswerText;
+        //                questionModel.OptionD = list[3].AnswerText;
+
+        //                questionModel.CorrectAnswer = list.FirstOrDefault(a => a.IsCorrect == true)?.AnswerText;
+        //            }
+
+
+        //        }
+
+        //        questionList.Add(questionModel);
+        //    }
+
+        //    exam.Questions = questionList;
+        //    exam.Description = quiz.Description;
+        //    exam.TotalMarks = quiz.TotalMarks ?? 0;
+
+        //    return View(exam);
+        //}
 
         public async Task<IActionResult> ResultExam()
         {
@@ -232,16 +264,89 @@ namespace Do_An_Web_Hoc.Controllers
             return View();
         }
 
-        [HttpPost]
-        public async Task<IActionResult> AddLecture(Lectures lecture)
+
+        // Hiển thị form thêm bài kiểm tra
+        [HttpGet]
+        public async Task<IActionResult> AddExam()
         {
-            if (ModelState.IsValid)
-            {
-                await _lecturesRepository.AddLectureAsync(lecture);
-                return RedirectToAction("ListLecture");
-            }
-            return View(lecture);
+            SetLecturerViewData();
+
+            var courses = await _coursesRepository.GetAllCoursesAsync();
+            ViewBag.Courses = new SelectList(courses, "CourseID", "CourseName");
+
+            return View();
         }
+
+
+        // Xử lý khi submit form
+//      [HttpPost]
+//[ValidateAntiForgeryToken]
+//public async Task<IActionResult> AddExam(Exams exam)
+//{
+//    if (ModelState.IsValid)
+//    {
+//        exam.CreatedAt = DateTime.Now;
+//        exam.Status = 1;
+
+//        await _examsRepository.AddExamAsync(exam); // ✅ Lưu bài kiểm tra chính
+
+//        // ✅ Bước 1: Tạo quiz cho exam
+//        var quiz = new Quizzes
+//        {
+//            QuizName = exam.QuizName ?? "Quiz tự động",
+//            Description = exam.Description,
+//            TotalMarks = exam.TotalMarks,
+//            ExamID = exam.ExamID
+//        };
+//        await _quizzesRepository.AddQuizAsync(quiz);
+
+//        // ✅ Bước 2: Lưu câu hỏi và đáp án
+//        if (exam.Questions != null)
+//        {
+//            foreach (var q in exam.Questions)
+//            {
+//                var question = new Questions
+//                {
+//                    QuizID = quiz.QuizID,
+//                    QuestionText = q.QuestionText,
+//                    QuestionType = q.QuestionType
+//                };
+
+//                int questionId = await _questionsRepository.AddQuestionAsync(question);
+
+//                // Nếu là trắc nghiệm thì lưu thêm đáp án
+//                if (q.QuestionType == "Trắc nghiệm")
+//                {
+//                    var answers = new List<Answers>
+//                    {
+//                        new() { QuestionID = questionId, AnswerText = q.OptionA, IsCorrect = q.CorrectAnswer == "A" },
+//                        new() { QuestionID = questionId, AnswerText = q.OptionB, IsCorrect = q.CorrectAnswer == "B" },
+//                        new() { QuestionID = questionId, AnswerText = q.OptionC, IsCorrect = q.CorrectAnswer == "C" },
+//                        new() { QuestionID = questionId, AnswerText = q.OptionD, IsCorrect = q.CorrectAnswer == "D" },
+//                    };
+
+//                    foreach (var a in answers)
+//                        await _answersRepository.AddAnswerAsync(a);
+//                }
+//            }
+//        }
+
+//        return RedirectToAction("ListExam");
+//    }
+
+    // Nếu lỗi thì load lại view
+//    SetLecturerViewData();
+//    var courses = await _coursesRepository.GetAllCoursesAsync();
+//    ViewBag.Courses = new SelectList(courses, "CourseID", "CourseName");
+
+//    return View(exam);
+//}
+
+
+
+
+
+
 
         public async Task<IActionResult> EditLecture(int id)
         {
