@@ -1,15 +1,21 @@
 ﻿@using Microsoft.AspNetCore.Localization
 @using Microsoft.AspNetCore.Http
 @using Microsoft.AspNetCore.Mvc.Localization
+@using Do_An_Web_Hoc.Repositories.Interfaces
 @inject IViewLocalizer Localizer
 @inject IHttpContextAccessor HttpContextAccessor
+@inject ICatogoriesRepository categoriesRepo
+@inject ICoursesRepository coursesRepo
 
 <!-- Lấy ngôn ngữ hiện tại từ Cookie -->
 @{
     var cultureFeature = HttpContextAccessor.HttpContext?.Features.Get<IRequestCultureFeature>();
     var currentCulture = cultureFeature?.RequestCulture.Culture.Name ?? "vi-VN"; // Mặc định là tiếng Việt
 }
-
+@{
+    var categories = await categoriesRepo.GetAllCategoriesAsync();
+    var courses = await coursesRepo.GetAllCoursesAsync();
+}
 
 <!DOCTYPE html>
 <html lang="en">
@@ -49,11 +55,24 @@
                     <li class="nav-link-item dropdown-menu-branch">
                         <a href="#" data-toggle="dropdown-menu">@Localizer["Courses"]<i class="fa-solid fa-chevron-down"></i></a>
                         <ul class="custom-dropdown-menu">
-                            <li class="dropdown-menu-item"><a asp-controller="Courses" asp-action="WebDevelopment">Lập trình Web</a></li>
-                            <li class="dropdown-menu-item"><a asp-controller="Courses" asp-action="DataScience">Khoa học dữ liệu</a></li>
-                            <li class="dropdown-menu-item"><a asp-controller="Courses" asp-action="AI_MachineLearning">AI & Machine Learning</a></li>
-                            <li class="dropdown-menu-item"><a asp-controller="Courses" asp-action="AdvancedDatabase">Cơ Sở Dữ Liệu Nâng Cao</a></li>
+                            @foreach (var category in categories.Where(c => c.Status == 1))
+                            {
+                                <li class="dropdown-menu-item has-submenu">
+                                    <a href="#">@category.CategoryName</a>
+                                    <ul class="sub-dropdown-menu">
+                                        @foreach (var course in courses.Where(c => c.CategoryID == category.CategoryId && c.Status == 1))
+                                        {
+                                            <li>
+                                                <a asp-controller="Courses" asp-action="Details" asp-route-id="@course.CourseID">
+                                                    @course.CourseName
+                                                </a>
+                                            </li>
+                                        }
+                                    </ul>
+                                </li>
+                            }
                         </ul>
+
                     </li>
                     <li class="nav-link-item"><a asp-controller="AboutMe" asp-action="AboutMe">@Localizer["AboutUs"]</a></li>
                     <li class="nav-link-item"><a asp-controller="Contact" asp-action="Index">@Localizer["Contact"]</a></li>
