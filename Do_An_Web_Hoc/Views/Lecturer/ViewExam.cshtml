@@ -1,8 +1,11 @@
 ﻿@model Do_An_Web_Hoc.Models.Exams
-
 @{
     Layout = "~/Views/Shared/_LayoutLecturer.cshtml";
     ViewData["Title"] = "Chi Tiết Bài Kiểm Tra";
+
+    var quizzes = ViewBag.Quizzes as List<Do_An_Web_Hoc.Models.Quizzes>;
+    var questions = ViewBag.Questions as List<Do_An_Web_Hoc.Models.Questions>;
+    var answers = ViewBag.Answers as List<Do_An_Web_Hoc.Models.Answers>;
 }
 
 <div class="container mt-5">
@@ -11,9 +14,10 @@
     <div class="card mx-auto" style="max-width: 700px;">
         <div class="card-body">
             <h5 class="card-title"><i class="fas fa-file-alt"></i> Bài Kiểm Tra: @Model.ExamName</h5>
-            <p><strong>Ngày Kiểm Tra:</strong> @Model.CreatedAt?.ToString("dd/MM/yyyy")</p>
-            <p><strong>Khóa Học:</strong> @Model.CourseID</p>
-            <p><strong>Thời Gian Làm Bài:</strong> @Model.TotalMarks phút</p>
+            <p><strong>Ngày Tạo:</strong> @Model.CreatedAt?.ToString("dd/MM/yyyy")</p>
+            <p><strong>Khóa Học ID:</strong> @Model.CourseID</p>
+            <p><strong>Tổng điểm:</strong> @Model.TotalMarks</p>
+            <p><strong>Thời gian:</strong> @Model.Duration phút</p>
             <p>
                 <strong>Trạng Thái:</strong>
                 @if (Model.Status == 1)
@@ -28,9 +32,38 @@
         </div>
     </div>
 
-    <h3 class="text-center mt-4">Danh Sách Câu Hỏi</h3>
+    <h4 class="mt-5 text-center">Danh Sách Câu Hỏi & Đáp Án</h4>
 
-   
+    @foreach (var quiz in quizzes)
+    {
+        <div class="mt-4">
+            <h5 class="text-primary">Quiz: @quiz.QuizName</h5>
+            <p><em>@quiz.Description</em></p>
+
+            <ul class="list-group">
+                @foreach (var q in questions.Where(q => q.QuizID == quiz.QuizID))
+                {
+                    <li class="list-group-item">
+                        <strong>Câu hỏi:</strong> @q.QuestionText
+                        <span class="badge bg-info">@q.QuestionType</span>
+
+                        <ul class="mt-2">
+                            @foreach (var a in answers.Where(a => a.QuestionID == q.QuestionID))
+                            {
+                                <li>
+                                    @if (a.IsCorrect == true)
+                                    {
+                                        <i class="fas fa-check text-success"></i>
+                                    }
+                                    @a.AnswerText
+                                </li>
+                            }
+                        </ul>
+                    </li>
+                }
+            </ul>
+        </div>
+    }
 
     <div class="text-center mt-4">
         <a href="@Url.Action("ListExam", "Lecturer")" class="btn btn-secondary"><i class="fas fa-arrow-left"></i> Quay Lại</a>

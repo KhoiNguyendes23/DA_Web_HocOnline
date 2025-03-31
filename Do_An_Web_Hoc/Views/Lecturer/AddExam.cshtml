@@ -33,19 +33,27 @@
         </div>
 
         <div class="mb-3">
-            <label asp-for="CourseID" class="form-label">Mã khóa học</label>
-            <input asp-for="CourseID" type="number" class="form-control" />
+            <select asp-for="CourseID" asp-items="ViewBag.CourseList" class="form-select">
+                <option value="">-- Chọn khóa học --</option>
+            </select>
             <span asp-validation-for="CourseID" class="text-danger"></span>
+
+            
         </div>
         <div class="mb-3">
-            <label class="form-label">Tên kiểm tra nhỏ (Quiz)</label>
-            <input name="QuizName" class="form-control" placeholder="VD: Kiểm tra giữa kỳ" />
+            <div class="mb-3">
+                <label class="form-label">Danh sách Quiz</label>
+                <button type="button" class="btn btn-success mb-2" onclick="addQuiz()">+ Thêm Quiz</button>
+                <div id="quizList"></div>
+            </div>
+
+
         </div>
-        <div class="mb-3">
+        @* <div class="mb-3">
             <label class="form-label">Danh sách câu hỏi</label>
             <button type="button" class="btn btn-sm btn-success mb-2" onclick="addQuestion()">+ Thêm câu hỏi</button>
             <div id="questionList"></div>
-        </div>
+        </div> *@
 
        
         <div class="text-center mt-4">
@@ -63,50 +71,76 @@
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
     <script>
-        function addQuestion() {
-            const index = document.querySelectorAll(".question-box").length;
+        function addQuiz() {
+            const quizIndex = document.querySelectorAll(".quiz-box").length;
+            const quizBox = document.createElement("div");
+            quizBox.className = "quiz-box border p-3 rounded mb-4";
+
+            quizBox.innerHTML = `
+                <h5 class="text-primary">Quiz ${quizIndex + 1}</h5>
+                <div class="mb-3">
+                    <label class="form-label">Tên Quiz</label>
+                    <input name="Quizzes[${quizIndex}].QuizName" class="form-control" required />
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Mô tả</label>
+                    <input name="Quizzes[${quizIndex}].Description" class="form-control" />
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Danh sách câu hỏi</label>
+                    <button type="button" class="btn btn-sm btn-success mb-2" onclick="addQuestion(${quizIndex})">+ Thêm câu hỏi</button>
+                    <div id="quiz-${quizIndex}-questions"></div>
+                </div>
+            `;
+
+            document.getElementById("quizList").appendChild(quizBox);
+        }
+
+        function addQuestion(quizIndex) {
+            const container = document.getElementById(`quiz-${quizIndex}-questions`);
+            const questionIndex = container.querySelectorAll(".question-box").length;
             const box = document.createElement("div");
             box.className = "question-box border p-3 rounded mb-3";
 
             box.innerHTML = `
-                <label class="form-label fw-bold">Câu hỏi ${index + 1}</label>
-                <input name="Questions[${index}].QuestionText" class="form-control mb-2" placeholder="Nhập nội dung câu hỏi" required>
+                <label class="form-label fw-bold">Câu hỏi ${questionIndex + 1}</label>
+                <input name="Quizzes[${quizIndex}].Questions[${questionIndex}].QuestionText" class="form-control mb-2" placeholder="Nhập nội dung câu hỏi" required>
 
                 <label>Loại câu hỏi</label>
-                <select name="Questions[${index}].QuestionType" class="form-select mb-2" onchange="toggleAnswerFields(this, ${index})" required>
+                <select name="Quizzes[${quizIndex}].Questions[${questionIndex}].QuestionType" class="form-select mb-2" onchange="toggleAnswerFields(this, ${quizIndex}, ${questionIndex})" required>
                     <option value="">-- Chọn loại câu hỏi --</option>
                     <option value="Tự luận">Tự luận</option>
                     <option value="Trắc nghiệm">Trắc nghiệm</option>
                 </select>
 
-                <div class="answer-area" id="answer-area-${index}"></div>
+                <div class="answer-area" id="answer-area-${quizIndex}-${questionIndex}"></div>
 
                 <button type="button" class="btn btn-danger mt-2" onclick="this.closest('.question-box').remove()">Xóa câu hỏi</button>
             `;
 
-            document.getElementById("questionList").appendChild(box);
+            container.appendChild(box);
         }
 
-        function toggleAnswerFields(select, index) {
-            const area = document.getElementById(`answer-area-${index}`);
+        function toggleAnswerFields(select, quizIndex, questionIndex) {
+            const area = document.getElementById(`answer-area-${quizIndex}-${questionIndex}`);
             const type = select.value;
 
             if (type === "Trắc nghiệm") {
                 area.innerHTML = `
                     <label>Đáp án A</label>
-                    <input name="Questions[${index}].OptionA" class="form-control mb-2" required>
+                    <input name="Quizzes[${quizIndex}].Questions[${questionIndex}].OptionA" class="form-control mb-2" required>
 
                     <label>Đáp án B</label>
-                    <input name="Questions[${index}].OptionB" class="form-control mb-2" required>
+                    <input name="Quizzes[${quizIndex}].Questions[${questionIndex}].OptionB" class="form-control mb-2" required>
 
                     <label>Đáp án C</label>
-                    <input name="Questions[${index}].OptionC" class="form-control mb-2" required>
+                    <input name="Quizzes[${quizIndex}].Questions[${questionIndex}].OptionC" class="form-control mb-2" required>
 
                     <label>Đáp án D</label>
-                    <input name="Questions[${index}].OptionD" class="form-control mb-2" required>
+                    <input name="Quizzes[${quizIndex}].Questions[${questionIndex}].OptionD" class="form-control mb-2" required>
 
                     <label>Đáp án đúng</label>
-                    <select name="Questions[${index}].CorrectAnswer" class="form-select mb-2" required>
+                    <select name="Quizzes[${quizIndex}].Questions[${questionIndex}].CorrectAnswer" class="form-select mb-2" required>
                         <option value="">-- Chọn đáp án đúng --</option>
                         <option value="A">A</option>
                         <option value="B">B</option>
