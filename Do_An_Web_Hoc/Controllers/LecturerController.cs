@@ -180,62 +180,23 @@ namespace Do_An_Web_Hoc.Controllers
             return View(exam);
         }
 
-        //public async Task<IActionResult> ViewExam(int id)
-        //{
-        //    SetLecturerViewData();
+        public IActionResult ViewExam(int id)
+        {
+            var exam = _context.Exams.FirstOrDefault(e => e.ExamID == id);
+            if (exam == null) return NotFound();
 
-        //    // Lấy bài kiểm tra
-        //    var exam = await _examsRepository.GetExamByIdAsync(id);
-        //    if (exam == null) return NotFound();
+            var quizzes = _context.Quizzes.Where(q => q.ExamID == id).ToList();
+            var quizIds = quizzes.Select(q => q.QuizID).ToList();
+            var questions = _context.Questions.Where(q => quizIds.Contains(q.QuizID ?? 0)).ToList();
+            var questionIds = questions.Select(q => q.QuestionID).ToList();
+            var answers = _context.Answers.Where(a => questionIds.Contains(a.QuestionID ?? 0)).ToList();
 
-        //    // Lấy quiz của bài kiểm tra
-        //    var quiz = await _quizzesRepository.GetQuizByExamIdAsync(exam.ExamID);
-        //    if (quiz == null) return View(exam); // Nếu chưa có quiz thì chỉ hiển thị thông tin exam
+            ViewBag.Quizzes = quizzes;
+            ViewBag.Questions = questions;
+            ViewBag.Answers = answers;
 
-        //    // Lấy danh sách câu hỏi
-        //    var questions = await _questionsRepository.GetQuestionsByQuizIdAsync(quiz.QuizID);
-
-        //    // Gắn vào model
-        //    var questionList = new List<QuestionTempModel>();
-        //    foreach (var q in questions)
-        //    {
-        //        var questionModel = new QuestionTempModel
-        //        {
-        //            QuestionText = q.QuestionText,
-        //            QuestionType = q.QuestionType
-        //        };
-
-        //        if (q.QuestionType == "Trắc nghiệm")
-        //        {
-        //            var answers = await _answersRepository.GetAnswersByQuestionIdAsync(q.QuestionID);
-
-        //            questionModel.OptionA = answers.FirstOrDefault(a => a.AnswerText != null && a.AnswerText == a.AnswerText && a.IsCorrect == (a.AnswerText == "A"))?.AnswerText;
-        //            questionModel.OptionB = answers.FirstOrDefault(a => a.AnswerText != null && a.AnswerText == a.AnswerText && a.IsCorrect == (a.AnswerText == "B"))?.AnswerText;
-        //            questionModel.OptionC = answers.FirstOrDefault(a => a.AnswerText != null && a.AnswerText == a.AnswerText && a.IsCorrect == (a.AnswerText == "C"))?.AnswerText;
-        //            questionModel.OptionD = answers.FirstOrDefault(a => a.AnswerText != null && a.AnswerText == a.AnswerText && a.IsCorrect == (a.AnswerText == "D"))?.AnswerText;
-        //            if (answers.Count() >= 4)
-        //            {
-        //                var list = answers.ToList();
-        //                questionModel.OptionA = list[0].AnswerText;
-        //                questionModel.OptionB = list[1].AnswerText;
-        //                questionModel.OptionC = list[2].AnswerText;
-        //                questionModel.OptionD = list[3].AnswerText;
-
-        //                questionModel.CorrectAnswer = list.FirstOrDefault(a => a.IsCorrect == true)?.AnswerText;
-        //            }
-
-
-        //        }
-
-        //        questionList.Add(questionModel);
-        //    }
-
-        //    exam.Questions = questionList;
-        //    exam.Description = quiz.Description;
-        //    exam.TotalMarks = quiz.TotalMarks ?? 0;
-
-        //    return View(exam);
-        //}
+            return View(exam);
+        }
 
         public async Task<IActionResult> ResultExam()
         {
@@ -264,83 +225,100 @@ namespace Do_An_Web_Hoc.Controllers
             return View();
         }
 
-
-        // Hiển thị form thêm bài kiểm tra
         [HttpGet]
-        public async Task<IActionResult> AddExam()
+        public IActionResult AddExam()
         {
             SetLecturerViewData();
 
-            var courses = await _coursesRepository.GetAllCoursesAsync();
-            ViewBag.Courses = new SelectList(courses, "CourseID", "CourseName");
+            var courses = _context.Courses
+                .Select(c => new SelectListItem
+                {
+                    Value = c.CourseID.ToString(),
+                    Text = c.CourseName
+                }).ToList();
+
+            ViewBag.CourseList = courses;
 
             return View();
         }
 
 
-        // Xử lý khi submit form
-//      [HttpPost]
-//[ValidateAntiForgeryToken]
-//public async Task<IActionResult> AddExam(Exams exam)
-//{
-//    if (ModelState.IsValid)
-//    {
-//        exam.CreatedAt = DateTime.Now;
-//        exam.Status = 1;
+        // Hiển thị form thêm bài kiểm tra
+        [HttpPost]
+        public IActionResult AddExam(Exams exam)
+        {
+            if (!ModelState.IsValid)
+                return View(exam);
 
-//        await _examsRepository.AddExamAsync(exam); // ✅ Lưu bài kiểm tra chính
+            // 1. Thêm bài kiểm tra
+            exam.CreatedAt = DateTime.Now;
+            exam.Status = 1;
+            _context.Exams.Add(exam);
+            _context.SaveChanges();
 
-//        // ✅ Bước 1: Tạo quiz cho exam
-//        var quiz = new Quizzes
-//        {
-//            QuizName = exam.QuizName ?? "Quiz tự động",
-//            Description = exam.Description,
-//            TotalMarks = exam.TotalMarks,
-//            ExamID = exam.ExamID
-//        };
-//        await _quizzesRepository.AddQuizAsync(quiz);
+            // 2. Lặp qua các quiz được gửi lên từ form
+            int quizIndex = 0;
+            while (true)
+            {
+                var quizName = Request.Form[$"Quizzes[{quizIndex}].QuizName"];
+                if (string.IsNullOrWhiteSpace(quizName)) break;
 
-//        // ✅ Bước 2: Lưu câu hỏi và đáp án
-//        if (exam.Questions != null)
-//        {
-//            foreach (var q in exam.Questions)
-//            {
-//                var question = new Questions
-//                {
-//                    QuizID = quiz.QuizID,
-//                    QuestionText = q.QuestionText,
-//                    QuestionType = q.QuestionType
-//                };
+                var quiz = new Quizzes
+                {
+                    QuizName = quizName,
+                    Description = Request.Form[$"Quizzes[{quizIndex}].Description"],
+                    ExamID = exam.ExamID,
+                    TotalMarks = 50
+                };
+                _context.Quizzes.Add(quiz);
+                _context.SaveChanges();
 
-//                int questionId = await _questionsRepository.AddQuestionAsync(question);
+                // 3. Lặp các câu hỏi trong mỗi quiz
+                int questionIndex = 0;
+                while (true)
+                {
+                    var questionText = Request.Form[$"Quizzes[{quizIndex}].Questions[{questionIndex}].QuestionText"];
+                    if (string.IsNullOrWhiteSpace(questionText)) break;
 
-//                // Nếu là trắc nghiệm thì lưu thêm đáp án
-//                if (q.QuestionType == "Trắc nghiệm")
-//                {
-//                    var answers = new List<Answers>
-//                    {
-//                        new() { QuestionID = questionId, AnswerText = q.OptionA, IsCorrect = q.CorrectAnswer == "A" },
-//                        new() { QuestionID = questionId, AnswerText = q.OptionB, IsCorrect = q.CorrectAnswer == "B" },
-//                        new() { QuestionID = questionId, AnswerText = q.OptionC, IsCorrect = q.CorrectAnswer == "C" },
-//                        new() { QuestionID = questionId, AnswerText = q.OptionD, IsCorrect = q.CorrectAnswer == "D" },
-//                    };
+                    var questionType = Request.Form[$"Quizzes[{quizIndex}].Questions[{questionIndex}].QuestionType"];
+                    var question = new Questions
+                    {
+                        QuizID = quiz.QuizID,
+                        QuestionText = questionText,
+                        QuestionType = questionType == "Trắc nghiệm" ? "MCQ" : "Essay"
+                    };
+                    _context.Questions.Add(question);
+                    _context.SaveChanges();
 
-//                    foreach (var a in answers)
-//                        await _answersRepository.AddAnswerAsync(a);
-//                }
-//            }
-//        }
+                    // Nếu là trắc nghiệm → thêm 4 đáp án
+                    if (questionType == "Trắc nghiệm")
+                    {
+                        string[] options = { "A", "B", "C", "D" };
+                        var correctAnswer = Request.Form[$"Quizzes[{quizIndex}].Questions[{questionIndex}].CorrectAnswer"];
 
-//        return RedirectToAction("ListExam");
-//    }
+                        foreach (var opt in options)
+                        {
+                            var text = Request.Form[$"Quizzes[{quizIndex}].Questions[{questionIndex}].Option{opt}"];
+                            var answer = new Answers
+                            {
+                                QuestionID = question.QuestionID,
+                                AnswerText = text,
+                                IsCorrect = (opt == correctAnswer)
+                            };
+                            _context.Answers.Add(answer);
+                        }
+                        _context.SaveChanges();
+                    }
 
-    // Nếu lỗi thì load lại view
-//    SetLecturerViewData();
-//    var courses = await _coursesRepository.GetAllCoursesAsync();
-//    ViewBag.Courses = new SelectList(courses, "CourseID", "CourseName");
+                    questionIndex++;
+                }
 
-//    return View(exam);
-//}
+                quizIndex++;
+            }
+
+            return RedirectToAction("ListExam");
+        }
+
 
 
 
