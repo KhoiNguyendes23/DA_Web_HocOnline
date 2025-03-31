@@ -68,11 +68,12 @@ namespace Do_An_Web_Hoc.Repositories
         public async Task SoftDeleteExamAsync(int examId)
         {
             var exam = await _context.Exams.FindAsync(examId);
-            if (exam != null)
+            if (exam != null && exam.Status == 1)
             {
-                exam.Status = 2; // Đặt trạng thái thành ngừng hoạt động
+                exam.Status = 2;
                 await _context.SaveChangesAsync();
             }
+
         }
 
         // Khôi phục bài thi đã xóa mềm
