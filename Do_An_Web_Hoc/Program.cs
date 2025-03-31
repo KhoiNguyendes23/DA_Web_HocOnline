@@ -50,6 +50,10 @@ builder.Services.AddSession(options =>
     options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
 });
 
+
+builder.Services.Configure<MomoOptionModel>(builder.Configuration.GetSection("MomoAPI"));
+builder.Services.AddScoped<IMomoService, MomoService>();
+
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 builder.Services.AddLogging();
 // 💡 **Thêm Repository**
@@ -62,6 +66,7 @@ builder.Services.AddScoped<IQuestionsRepository, EFQuestionsRepository>();
 builder.Services.AddScoped<IResultsRepository, EFResultsRepository>();
 builder.Services.AddScoped<IQuizzesRepository, EFQuizzesRepository>();
 builder.Services.AddScoped<IQuestionsRepository, EFQuestionsRepository>();
+builder.Services.AddScoped<IEnrollmentsRepository, EFEnrollmentsRepository>();
 
 
 

@@ -11,5 +11,6 @@ namespace Do_An_Web_Hoc.Models
         public decimal? Price { get; set; }
         public int? CategoryID { get; set; }
         public int? Status { get; set; }
+        public string? ImageUrl { get; set; }
     }
 }

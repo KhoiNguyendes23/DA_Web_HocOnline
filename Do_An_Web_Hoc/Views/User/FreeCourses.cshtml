@@ -1,36 +1,35 @@
-﻿@{
+﻿@model IEnumerable<Do_An_Web_Hoc.Models.Courses>
+
+@{
     Layout = "~/Views/Shared/_LayoutUsers.cshtml";
+    ViewData["Title"] = "Khóa học miễn phí";
 }
 
-<div class="container mt-5">
-    <div class="card p-4 shadow-sm">
-        <h4 class="text-success fw-bold mb-4">Khóa học miễn phí</h4>
-        <table class="table table-bordered table-striped">
-            <thead class="table-success">
-                <tr>
-                    <th>STT</th>
-                    <th>Tên khóa học</th>
-                    <th>Mô tả</th>
-                    <th>Danh mục</th>
-                    <th>Hành động</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>1</td>
-                    <td>HTML cơ bản</td>
-                    <td>Thiết kế web từ đầu</td>
-                    <td>Frontend</td>
-                    <td><button class="btn btn-sm btn-primary">Đăng ký</button></td>
-                </tr>
-                <tr>
-                    <td>2</td>
-                    <td>Python cơ bản</td>
-                    <td>Lập trình cho người mới bắt đầu</td>
-                    <td>Lập trình</td>
-                    <td><button class="btn btn-sm btn-primary">Đăng ký</button></td>
-                </tr>
-            </tbody>
-        </table>
+<div class="container-fluid px-4 mt-4">
+    <h2 class="mb-4">@ViewData["Title"]</h2>
+
+    <div class="row">
+        @if (!Model.Any())
+        {
+            <div class="col-12">
+                <div class="alert alert-info">Hiện chưa có khóa học miễn phí nào.</div>
+            </div>
+        }
+        else
+        {
+            @foreach (var course in Model)
+            {
+                <div class="col-12 col-sm-6 col-lg-4 mb-4">
+                    <div class="card h-100 shadow-sm">
+                        <img src="@course.ImageUrl" class="card-img-top" style="height:200px; object-fit:cover;" />
+                        <div class="card-body">
+                            <h5 class="card-title">@course.CourseName</h5>
+                            <p class="card-text">@course.Description</p>
+                            <p class="card-text"><strong>Giá:</strong> Miễn phí</p>
+                        </div>
+                    </div>
+                </div>
+            }
+        }
     </div>
 </div>

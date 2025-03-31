@@ -58,6 +58,7 @@ namespace Do_An_Web_Hoc.Controllers
             // Gán Role vào Claims để `[Authorize(Roles="User")]` nhận diện được
             var claims = new List<Claim>
     {
+        new Claim(ClaimTypes.NameIdentifier, user.UserID.ToString()),
         new Claim(ClaimTypes.Name, user.UserName),
         new Claim(ClaimTypes.Email, user.Email),
         new Claim(ClaimTypes.Role, roleName) //Đây là Role mà `[Authorize]` sử dụng

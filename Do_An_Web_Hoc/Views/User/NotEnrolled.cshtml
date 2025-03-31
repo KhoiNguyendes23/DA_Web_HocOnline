@@ -2,7 +2,7 @@
 
 @{
     Layout = "~/Views/Shared/_LayoutUsers.cshtml";
-    ViewData["Title"] = "Khóa học mất phí";
+    ViewData["Title"] = "Khóa học chưa đăng ký";
 }
 
 <div class="container-fluid px-4 mt-4">
@@ -12,20 +12,28 @@
         @if (!Model.Any())
         {
             <div class="col-12">
-                <div class="alert alert-info">Hiện chưa có khóa học miễn phí nào.</div>
+                <div class="alert alert-success">Bạn đã đăng ký tất cả các khóa học.</div>
             </div>
         }
         else
         {
             @foreach (var course in Model)
             {
-                <div class="col-12 col-sm-6 col-lg-4 mb-4">
+                <div class="col-lg-4 col-md-6 mb-4">
                     <div class="card h-100 shadow-sm">
                         <img src="@course.ImageUrl" class="card-img-top" style="height:200px; object-fit:cover;" />
                         <div class="card-body">
                             <h5 class="card-title">@course.CourseName</h5>
                             <p class="card-text">@course.Description</p>
                             <p class="card-text"><strong>Giá:</strong> @course.Price?.ToString("N0") VNĐ</p>
+                        </div>
+                        <div class="card-footer bg-transparent border-0 text-end">
+                            <form method="post" asp-action="RegisterCourse" asp-controller="User">
+                                <input type="hidden" name="courseId" value="@course.CourseID" />
+                                <button type="submit" class="btn btn-sm btn-success">
+                                    <i class="fas fa-plus-circle"></i> Đăng ký
+                                </button>
+                            </form>
                         </div>
                     </div>
                 </div>

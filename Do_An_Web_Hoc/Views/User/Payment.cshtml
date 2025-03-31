@@ -1,0 +1,42 @@
+﻿@{
+    Layout = "~/Views/Shared/_LayoutUsers.cshtml";
+    var course = ViewBag.Course as Do_An_Web_Hoc.Models.Courses;
+    ViewData["Title"] = "Thanh toán khóa học";
+}
+
+<div class="container mt-5">
+    <h2 class="mb-4 text-primary">Xác nhận thanh toán khóa học</h2>
+
+    @if (course != null)
+    {
+        <div class="card p-4 shadow-sm">
+            <h4>@course.CourseName</h4>
+            <p>@course.Description</p>
+            <p><strong>Giá:</strong> @course.Price?.ToString("N0") VNĐ</p>
+
+            @if (TempData["Message"] != null)
+            {
+                <div class="alert alert-warning">@TempData["Message"]</div>
+            }
+
+            <!-- Gửi đến controller PaymentController, action CreatePaymentUrl -->
+            <form method="post" asp-controller="Payment" asp-action="CreatePaymentUrl">
+
+                @Html.AntiForgeryToken()
+
+                <input type="hidden" name="FullName" value="@User.Identity.Name" />
+                <input type="hidden" name="Amount" value="@((int)(course?.Price ?? 0))" />
+                <input type="hidden" name="OrderInfo" value="Thanh toán khóa học: @course?.CourseName" />
+
+                <button class="btn btn-danger" type="submit">Thanh toán bằng MoMo</button>
+            </form>
+
+
+
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-danger">Không tìm thấy thông tin khóa học.</div>
+    }
+</div>

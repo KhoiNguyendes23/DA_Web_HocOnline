@@ -15,6 +15,8 @@
 
     <!-- CSS giao diện người dùng -->
     <link rel="stylesheet" href="~/css/LayoutUser.css" asp-append-version="true" />
+
+    @RenderSection("Styles", required: false)
 </head>
 <body>
     <div class="d-flex">
@@ -42,8 +44,8 @@
                         <i class="fas fa-chevron-down dropdown-icon ms-auto"></i>
                     </a>
                     <div id="my-courses-menu" class="submenu">
-                        <a href="#" class="submenu-link" data-view="registered">Đã đăng ký</a>
-                        <a href="#" class="submenu-link" data-view="completed">Đã hoàn thành</a>
+                        <a href="@Url.Action("Enrolled", "User")" class="submenu-link">Đã đăng ký</a>
+                        <a href="@Url.Action("NotEnrolled", "User")" class="submenu-link">Chưa đăng ký</a>
                     </div>
                 </div>
 
@@ -54,8 +56,8 @@
                         <i class="fas fa-chevron-down dropdown-icon ms-auto"></i>
                     </a>
                     <div id="all-courses-menu" class="submenu">
-                        <a href="#" class="submenu-link" data-view="FreeCourses">Khóa học miễn phí</a>
-                        <a href="#" class="submenu-link" data-view="PaidCourses">Khóa học trả phí</a>
+                        <a href="@Url.Action("FreeCourses", "User")" class="submenu-link">Khóa học miễn phí</a>
+                        <a href="@Url.Action("PaidCourses", "User")" class="submenu-link">Khóa học trả phí</a>
                     </div>
                 </div>
 
@@ -66,9 +68,9 @@
                         <i class="fas fa-chevron-down dropdown-icon ms-auto"></i>
                     </a>
                     <div id="practice-menu" class="submenu">
-                        <a href="#" class="submenu-link" data-view="Quiz">Trắc nghiệm</a>
-                        <a href="#" class="submenu-link" data-view="Practice">Luyện đề</a>
-                        <a href="#" class="submenu-link" data-view="Ranking">Xếp hạng</a>
+                        <a href="@Url.Action("Quiz", "User")" class="submenu-link">Trắc nghiệm</a>
+                        <a href="@Url.Action("Practice", "User")" class="submenu-link">Luyện đề</a>
+                        <a href="@Url.Action("Ranking", "User")" class="submenu-link">Xếp hạng</a>
                     </div>
                 </div>
 
@@ -79,9 +81,9 @@
                         <i class="fas fa-chevron-down dropdown-icon ms-auto"></i>
                     </a>
                     <div id="support-menu" class="submenu">
-                        <a href="#" class="submenu-link" data-view="Support">Trợ giúp</a>
-                        <a href="#" class="submenu-link" data-view="ContactLecturer">Liên hệ giảng viên</a>
-                        <a href="#" class="submenu-link" data-view="Community">Cộng đồng</a>
+                        <a href="@Url.Action("Support", "User")" class="submenu-link">Trợ giúp</a>
+                        <a href="@Url.Action("ContactLecturer", "User")" class="submenu-link">Liên hệ giảng viên</a>
+                        <a href="@Url.Action("Community", "User")" class="submenu-link">Cộng đồng</a>
 
                     </div>
                 </div>
@@ -93,9 +95,9 @@
                         <i class="fas fa-chevron-down dropdown-icon ms-auto"></i>
                     </a>
                     <div id="account-menu" class="submenu">
-                        <a href="#" class="submenu-link" data-view="Profile">Hồ sơ</a>
-                        <a href="#" class="submenu-link" data-view="PaymentHistory">Lịch sử thanh toán</a>
-                        <a href="#" class="submenu-link" data-view="SecuritySettings">Cài đặt bảo mật</a>
+                        <a href="@Url.Action("Profile", "User")" class="submenu-link">Hồ sơ</a>
+                        <a href="@Url.Action("PaymentHistory", "User")" class="submenu-link">Lịch sử thanh toán</a>
+                        <a href="@Url.Action("SecuritySettings", "User")" class="submenu-link">Cài đặt bảo mật</a>
 
                     </div>
                 </div>

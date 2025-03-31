@@ -1,0 +1,65 @@
+﻿/* Giao diện thẻ khóa học */
+.card {
+    border-radius: 12px;
+    overflow: hidden;
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s;
+}
+
+    .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+    }
+
+.card-img-top {
+    height: 200px;
+    object-fit: cover;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+/* Tên khóa học */
+.card-title {
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+
+/* Mô tả khóa học */
+.card-text {
+    font-size: 0.95rem;
+    color: #555;
+}
+
+/* Thanh tìm kiếm */
+.input-group input[type="text"] {
+    border-radius: 6px 0 0 6px;
+}
+
+.input-group .btn {
+    border-radius: 0 6px 6px 0;
+}
+
+/* Khoảng cách giữa các card */
+#courseContainer {
+    row-gap: 20px;
+}
+
+/* Responsive cho màn hình nhỏ */
+@media (max-width: 768px) {
+    .card-title {
+        font-size: 1.1rem;
+    }
+
+    .card-text {
+        font-size: 0.9rem;
+    }
+
+    .input-group {
+        flex-direction: column;
+    }
+
+        .input-group .form-control,
+        .input-group .btn {
+            width: 100%;
+            border-radius: 6px !important;
+            margin-top: 5px;
+        }
+}

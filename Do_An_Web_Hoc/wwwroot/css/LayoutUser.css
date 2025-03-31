@@ -120,9 +120,9 @@ body {
     transform: rotate(180deg);
 }
 
-/* Main Content */
 .main-content {
-        margin-left: var(--sidebar-width);
+    margin-left: var(--sidebar-width);
+    width: calc(100% - var(--sidebar-width)); /* ✅ Thêm dòng này */
     background-color: #f8f9fa;
     min-height: 100vh;
     padding: 20px;
