@@ -82,19 +82,35 @@ namespace Do_An_Web_Hoc.Models
                 .WithMany()
                 .HasForeignKey(d => d.UploadedBy);
 
+            //// Enrollments - Courses (1-N)
+            //modelBuilder.Entity<Enrollments>()
+            //    .HasOne<Courses>()
+            //    .WithMany()
+            //    .HasForeignKey(e => e.CourseID)
+            //    .OnDelete(DeleteBehavior.Cascade);
+
+            //// Enrollments - UserAccounts (1-N)
+            //modelBuilder.Entity<Enrollments>()
+            //    .HasOne<UserAccount>()
+            //    .WithMany()
+            //    .HasForeignKey(e => e.UserID)
+            //    .OnDelete(DeleteBehavior.Cascade);
+
+            // Enrollments - Courses (1-N)
             // Enrollments - Courses (1-N)
             modelBuilder.Entity<Enrollments>()
-                .HasOne<Courses>()
-                .WithMany()
+                .HasOne(e => e.Course)
+                .WithMany(c => c.Enrollments)  // ← rất quan trọng: ánh xạ chiều ngược lại
                 .HasForeignKey(e => e.CourseID)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.Restrict);
 
             // Enrollments - UserAccounts (1-N)
             modelBuilder.Entity<Enrollments>()
-                .HasOne<UserAccount>()
-                .WithMany()
+                .HasOne(e => e.User)
+                .WithMany(u => u.Enrollments)  // ← ánh xạ chiều ngược lại
                 .HasForeignKey(e => e.UserID)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.Restrict);
+
 
             // Exams - Courses (1-N)
             modelBuilder.Entity<Exams>()

@@ -19,6 +19,8 @@ namespace Do_An_Web_Hoc.Repositories.Interfaces
 
         // 📌 Thống kê tổng số người đăng ký một khóa học
         Task<int> CountEnrollmentsForCourseAsync(int courseId);
+        // Doanh Thu
+        Task<IEnumerable<RevenueStatisticViewModel>> GetMonthlyRevenueStatisticsAsync();
 
     }
 }

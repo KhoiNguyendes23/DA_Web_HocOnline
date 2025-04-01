@@ -1,9 +1,14 @@
-﻿@using Microsoft.AspNetCore.Localization
+@using Microsoft.AspNetCore.Localization
 @using Microsoft.AspNetCore.Http
 @using Microsoft.AspNetCore.Mvc.Localization
 @inject IViewLocalizer Localizer
 @inject IHttpContextAccessor HttpContextAccessor
 
+@using Do_An_Web_Hoc.Repositories.Interfaces
+@inject IViewLocalizer Localizer
+@inject IHttpContextAccessor HttpContextAccessor
+@inject ICatogoriesRepository categoriesRepo
+@inject ICoursesRepository coursesRepo
 @{
     ViewData["Title"] = "Home Page";
 }
@@ -19,6 +24,8 @@
         <h1 class="hero-title">@Localizer["WelcomeText"]</h1>
         <h2 class="hero-subtitle">@Localizer["WelcomeText_p1"]</h2>
         <p class="hero-description">@Localizer["WelcomeText_p2"]</p>
+        <h2 class="hero-subtitle">Học Tập Và Phát Triển Tương Lai</h2>
+        <p class="hero-description">Cung cấp các khóa học chất lượng và tốt nhất !</p>
         <div class="hero-cta">
             <a asp-controller="Account" asp-action="Index" class="btn primary-btn">@Localizer["StartLearning"]</a>
             <a href="#contact" class="btn secondary-btn">@Localizer["MoreCourses"]</a>

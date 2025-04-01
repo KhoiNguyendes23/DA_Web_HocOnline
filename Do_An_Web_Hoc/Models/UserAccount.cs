@@ -22,5 +22,8 @@ namespace Do_An_Web_Hoc.Models
         public DateTime? ResetTokenExpiry { get; set; }
         public string? Address { get; set; }
         public string? Image { get; set; }
+
+        public ICollection<Enrollments> Enrollments { get; set; } = new List<Enrollments>();
+
     }
 }

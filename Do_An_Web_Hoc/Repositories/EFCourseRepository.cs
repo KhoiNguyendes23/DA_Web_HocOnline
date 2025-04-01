@@ -18,7 +18,10 @@ namespace Do_An_Web_Hoc.Repositories
         // Lấy tất cả khóa học
         public async Task<IEnumerable<Courses>> GetAllCoursesAsync()
         {
-            return await _context.Courses.ToListAsync();
+            //return await _context.Courses.ToListAsync()
+            return await _context.Courses
+                .Include(c => c.Enrollments) // Load luôn danh sách đăng ký
+                .ToListAsync();
         }
 
         // Lấy khóa học theo ID
