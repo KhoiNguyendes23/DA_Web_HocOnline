@@ -388,4 +388,31 @@
         box-shadow: 0 6px 14px rgba(0, 0, 0, 0.25);
     }
 
+/* Responsive cho phần CÁC THÀNH VIÊN NHÓM */
+.Team-Members .d-flex {
+    flex-wrap: wrap !important;
+    justify-content: center !important;
+    gap: 20px;
+}
+
+.Team-Members .team-member {
+    flex: 0 0 calc(33.333% - 20px); /* 3 cột trên desktop */
+    max-width: calc(33.333% - 20px);
+}
+
+/* Medium screen */
+@media screen and (max-width: 992px) {
+    .Team-Members .team-member {
+        flex: 0 0 calc(50% - 20px); /* 2 cột trên tablet */
+        max-width: calc(50% - 20px);
+    }
+}
+
+/* Mobile */
+@media screen and (max-width: 576px) {
+    .Team-Members .team-member {
+        flex: 0 0 100%;
+        max-width: 100%;
+    }
+}
 

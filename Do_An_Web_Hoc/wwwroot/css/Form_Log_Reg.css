@@ -104,7 +104,7 @@ form {
 }
 
     .forgot-link a {
-        font-size: 14.5px;
+        font-size: 15.5px;
         color: #333;
     }
 
@@ -135,6 +135,33 @@ form {
         color: #333;
         margin: 0 8px;
     }
+
+.back-home-link {
+    margin-top: 15px;
+    text-align: center;
+}
+
+.home-btn {
+    display: inline-block;
+    margin-top: 10px;
+    padding: 10px 20px;
+    font-size: 15px;
+    color: #333;
+    background-color: transparent;
+    border: 2px solid #333;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+    .home-btn:hover {
+        background-color: #2575fc;
+        color: white;
+        border-color: #2575fc;
+        text-decoration: none;
+    }
+
+
 
 .toggle-box {
     position: absolute;
