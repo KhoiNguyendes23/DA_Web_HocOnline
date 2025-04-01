@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Http;
+using System.ComponentModel.DataAnnotations;
 
 namespace Do_An_Web_Hoc.ViewModels
 {
@@ -7,12 +8,18 @@ namespace Do_An_Web_Hoc.ViewModels
         [Required(ErrorMessage = "Câu hỏi không được để trống")]
         public string QuestionText { get; set; }
 
-        [Required] public string OptionA { get; set; }
-        [Required] public string OptionB { get; set; }
-        [Required] public string OptionC { get; set; }
-        [Required] public string OptionD { get; set; }
+        public string? OptionA { get; set; }
+        public string? OptionB { get; set; }
+        public string? OptionC { get; set; }
+        public string? OptionD { get; set; }
 
-        [Required(ErrorMessage = "Phải chọn đáp án đúng")]
-        public string CorrectAnswer { get; set; } // A, B, C, D
+        public string? CorrectAnswer { get; set; }
+        public string? QuestionType { get; set; }
+
+        // ✅ Thêm mới:
+        public IFormFile? QuestionImage { get; set; }
+
+        // ✅ Tuỳ chọn: để hiển thị lại khi Edit
+        public string? ImagePath { get; set; }
     }
 }

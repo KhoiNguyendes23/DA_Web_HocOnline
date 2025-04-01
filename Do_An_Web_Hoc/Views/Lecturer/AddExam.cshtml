@@ -7,50 +7,74 @@
 
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" />
 <link rel="stylesheet" href="~/css/exam-form.css" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+<link rel="stylesheet" href="~/css/exam-form.css" />
 
 <div class="container mt-4">
-    <h2 class="text-primary text-center mb-4">Thêm bài kiểm tra</h2>
+    <h2 class="text-center text-primary mb-4">
+        <i class="fas fa-plus-circle"></i> Thêm bài kiểm tra mới
+    </h2>
 
     @if (!ViewData.ModelState.IsValid)
     {
-        <div class="alert alert-danger">Vui lòng kiểm tra lại thông tin!</div>
+        <div class="alert alert-danger">
+            <i class="fas fa-exclamation-triangle"></i> Vui lòng kiểm tra lại thông tin!
+        </div>
     }
 
-    <form asp-action="AddExam" method="post">
-        <div class="mb-3">
-            <label asp-for="ExamName" class="form-label">Tên bài kiểm tra</label>
-            <input asp-for="ExamName" class="form-control" />
-            <span asp-validation-for="ExamName" class="text-danger"></span>
-        </div>
-
-        <div class="mb-3">
-            <label asp-for="Description" class="form-label">Mô tả</label>
-            <textarea asp-for="Description" class="form-control" rows="3"></textarea>
-            <span asp-validation-for="Description" class="text-danger"></span>
-        </div>
-
-        <div class="row mb-3">
-            <div class="col-md-4">
-                <label asp-for="TotalMarks" class="form-label">Tổng điểm</label>
-                <input asp-for="TotalMarks" type="number" class="form-control" />
-                <span asp-validation-for="TotalMarks" class="text-danger"></span>
+    <form asp-action="AddExam" method="post" enctype="multipart/form-data" id="examForm">
+        <!-- Thông tin bài kiểm tra -->
+        <div class="card shadow mb-4 border-left-primary">
+            <div class="card-header bg-primary text-white">
+                <strong><i class="fas fa-info-circle"></i> Thông tin bài kiểm tra</strong>
             </div>
-            <div class="col-md-4">
-                <label asp-for="StartTime" class="form-label">Bắt đầu</label>
-                <input asp-for="StartTime" class="form-control" type="datetime-local" />
-            </div>
-            <div class="col-md-4">
-                <label asp-for="EndTime" class="form-label">Kết thúc</label>
-                <input asp-for="EndTime" class="form-control" type="datetime-local" />
-            </div>
-        </div>
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label asp-for="ExamName" class="form-label">Tên bài kiểm tra</label>
+                        <input asp-for="ExamName" class="form-control" />
+                        <span asp-validation-for="ExamName" class="text-danger"></span>
+                    </div>
 
-        <div class="mb-3">
-            <label asp-for="CourseID" class="form-label">Khóa học</label>
-            <select asp-for="CourseID" asp-items="ViewBag.CourseList" class="form-select">
-                <option value="">-- Chọn khóa học --</option>
-            </select>
-            <span asp-validation-for="CourseID" class="text-danger"></span>
+                    <div class="col-md-6">
+                        <label asp-for="TotalMarks" class="form-label">Tổng điểm</label>
+                        <input asp-for="TotalMarks" type="number" class="form-control" />
+                        <span asp-validation-for="TotalMarks" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-12">
+                        <label asp-for="Description" class="form-label">Mô tả</label>
+                        <textarea asp-for="Description" class="form-control" rows="2"></textarea>
+                        <span asp-validation-for="Description" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label asp-for="Duration" class="form-label">Thời gian làm bài (phút)</label>
+                        <input asp-for="Duration" type="number" class="form-control" />
+                        <span asp-validation-for="Duration" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label asp-for="StartTime" class="form-label">Thời gian bắt đầu</label>
+                        <input asp-for="StartTime" type="datetime-local" class="form-control" />
+                        <span asp-validation-for="StartTime" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label asp-for="EndTime" class="form-label">Thời gian kết thúc</label>
+                        <input asp-for="EndTime" type="datetime-local" class="form-control" />
+                        <span asp-validation-for="EndTime" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label asp-for="CourseID" class="form-label">Khóa học</label>
+                        <select asp-for="CourseID" asp-items="ViewBag.CourseList" class="form-select">
+                            <option value="">-- Chọn khóa học --</option>
+                        </select>
+                        <span asp-validation-for="CourseID" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <!-- Danh sách Quiz -->
@@ -59,14 +83,14 @@
             <button type="button" class="btn btn-success mb-2" onclick="addQuiz()">
                 <i class="fas fa-plus"></i> Thêm Quiz
             </button>
-            <div id="quizList"></div>
+            <div class="accordion" id="quizAccordion"></div>
         </div>
 
         <div class="text-center mt-4">
-            <button type="submit" class="btn btn-success">
+            <button type="submit" class="btn btn-success btn-lg">
                 <i class="fas fa-save"></i> Lưu bài kiểm tra
             </button>
-            <a asp-action="ListExam" class="btn btn-secondary ms-2">
+            <a asp-action="ListExam" class="btn btn-secondary btn-lg ms-3">
                 <i class="fas fa-arrow-left"></i> Quay lại
             </a>
         </div>
@@ -76,4 +100,5 @@
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
     <script src="~/js/exam-add.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 }

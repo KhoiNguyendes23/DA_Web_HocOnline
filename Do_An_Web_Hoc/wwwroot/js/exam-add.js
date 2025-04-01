@@ -1,112 +1,159 @@
-﻿let quizCount = 0;
+﻿let quizIndex = 0;
 
-function addQuiz() {
-    const quizIndex = quizCount++;
-    const quizBox = document.createElement("div");
-    quizBox.className = "quiz-box border p-3 rounded mb-4";
-    quizBox.dataset.index = quizIndex;
+window.onload = () => {
+    const modelData = JSON.parse(document.getElementById("quiz-data-json")?.textContent || "null");
+    if (Array.isArray(modelData)) {
+        modelData.forEach((quiz, i) => {
+            addQuiz(quiz, i);
+        });
+    }
+};
 
-    quizBox.innerHTML = `
-        <div class="d-flex justify-content-between align-items-center mb-2">
-            <h5 class="text-primary mb-0">Quiz <span class="quiz-number">${quizIndex + 1}</span></h5>
-            <button type="button" class="btn btn-sm btn-danger" onclick="removeQuiz(this)">Xóa</button>
-        </div>
-        <div class="mb-3">
-            <label class="form-label">Tên Quiz</label>
-            <input name="Quizzes[${quizIndex}].QuizName" class="form-control" required />
-        </div>
-        <div class="mb-3">
-            <label class="form-label">Mô tả</label>
-            <input name="Quizzes[${quizIndex}].Description" class="form-control" />
-        </div>
-        <div class="mb-3">
-            <label class="form-label">Tổng điểm Quiz</label>
-            <input name="Quizzes[${quizIndex}].TotalMarks" class="form-control quiz-points" type="number" value="0" required oninput="updateQuizValidation()" />
-        </div>
-        <div class="mb-3">
-            <label class="form-label">Danh sách câu hỏi</label>
-            <button type="button" class="btn btn-sm btn-success mb-2" onclick="addQuestion(${quizIndex})">+ Thêm câu hỏi</button>
-            <div id="quiz-${quizIndex}-questions"></div>
-        </div>
-    `;
+function addQuiz(quizData = null, index = quizIndex) {
+    const quizHtml = `
+        <div class="card mb-4 quiz-block" data-quiz-index="${index}">
+            <div class="card-header bg-info text-white d-flex justify-content-between">
+                <span>Quiz ${index + 1}</span>
+                <button type="button" class="btn btn-sm btn-danger" onclick="this.closest('.quiz-block').remove(); updateQuizLabels();">Xóa</button>
+            </div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <label class="form-label">Tên Quiz</label>
+                    <input name="Quizzes[${index}].QuizName" class="form-control" value="${quizData?.quizName || ''}" />
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Mô tả</label>
+                    <input name="Quizzes[${index}].Description" class="form-control" value="${quizData?.description || ''}" />
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Tổng điểm Quiz</label>
+                    <input name="Quizzes[${index}].TotalMarks" class="form-control quiz-points" type="number" value="${quizData?.totalMarks || 0}" />
+                </div>
+                <div class="question-list"></div>
+                <button type="button" class="btn btn-outline-primary mt-2" onclick="addQuestion(this, ${index})">Thêm câu hỏi</button>
+            </div>
+        </div>`;
 
-    document.getElementById("quizList").appendChild(quizBox);
-    updateQuizValidation();
+    document.getElementById("quizAccordion" || "quizContainer").insertAdjacentHTML("beforeend", quizHtml);
+    if (quizData?.questions?.length) {
+        const quizBlock = document.querySelector(`[data-quiz-index='${index}']`);
+        quizData.questions.forEach((q, j) => addQuestion(quizBlock.querySelector(".btn-outline-primary"), index, q, j));
+    }
+    quizIndex++;
+    updateQuizLabels();
 }
 
-function removeQuiz(button) {
-    const box = button.closest(".quiz-box");
-    if (box) box.remove();
-    updateQuizValidation();
-}
-
-function updateQuizValidation() {
-    const totalExamMarks = parseInt(document.querySelector("[name='TotalMarks']")?.value || 0);
-    const quizBoxes = document.querySelectorAll(".quiz-box");
-    let total = 0;
-    quizBoxes.forEach(box => {
-        const pointInput = box.querySelector(".quiz-points");
-        if (pointInput) total += parseInt(pointInput.value || 0);
+function updateQuizLabels() {
+    document.querySelectorAll(".quiz-block").forEach((el, i) => {
+        el.querySelector(".card-header span").textContent = `Quiz ${i + 1}`;
     });
-
-    if (totalExamMarks > 0 && total !== totalExamMarks) {
-        alert(`Tổng điểm các Quiz (${total}) phải bằng tổng điểm bài kiểm tra (${totalExamMarks})`);
-    }
 }
 
-function addQuestion(quizIndex) {
-    const container = document.getElementById(`quiz-${quizIndex}-questions`);
-    const questionIndex = container.querySelectorAll(".question-box").length;
-    const box = document.createElement("div");
-    box.className = "question-box border p-3 rounded mb-3";
+function addQuestion(button, quizIdx, questionData = null, questionCount = null) {
+    const questionList = button.closest(".card-body").querySelector(".question-list");
+    if (questionCount === null) questionCount = questionList.querySelectorAll(".question-block").length;
 
-    box.innerHTML = `
-        <label class="form-label fw-bold">Câu hỏi ${questionIndex + 1}</label>
-        <input name="Quizzes[${quizIndex}].Questions[${questionIndex}].QuestionText" class="form-control mb-2" placeholder="Nhập nội dung câu hỏi" required>
+    const qType = questionData?.questionType || "MCQ";
+    const isMCQ = qType === "MCQ";
 
-        <label>Loại câu hỏi</label>
-        <select name="Quizzes[${quizIndex}].Questions[${questionIndex}].QuestionType" class="form-select mb-2" onchange="toggleAnswerFields(this, ${quizIndex}, ${questionIndex})" required>
-            <option value="">-- Chọn loại câu hỏi --</option>
-            <option value="Tự luận">Tự luận</option>
-            <option value="Trắc nghiệm">Trắc nghiệm</option>
-        </select>
+    const html = `
+        <div class="border p-3 rounded mb-3 question-block">
+            <label class="form-label">Câu hỏi ${questionCount + 1}</label>
+            <input name="Quizzes[${quizIdx}].Questions[${questionCount}].QuestionText" value="${questionData?.questionText || ''}" class="form-control mb-2" />
 
-        <div class="answer-area" id="answer-area-${quizIndex}-${questionIndex}"></div>
+            <label class="form-label">Ảnh minh họa (nếu có)</label>
+            <input type="file" accept="image/*" name="Quizzes[${quizIdx}].Questions[${questionCount}].QuestionImage" class="form-control mb-2" onchange="previewImage(this)" />
+            <img src="#" style="display:none; max-width: 200px; margin-bottom: 10px" class="preview-img" />
 
-        <button type="button" class="btn btn-danger mt-2" onclick="this.closest('.question-box').remove()">Xóa câu hỏi</button>
-    `;
-
-    container.appendChild(box);
-}
-
-function toggleAnswerFields(select, quizIndex, questionIndex) {
-    const area = document.getElementById(`answer-area-${quizIndex}-${questionIndex}`);
-    const type = select.value;
-
-    if (type === "Trắc nghiệm") {
-        area.innerHTML = `
-            <label>Đáp án A</label>
-            <input name="Quizzes[${quizIndex}].Questions[${questionIndex}].OptionA" class="form-control mb-2" required>
-
-            <label>Đáp án B</label>
-            <input name="Quizzes[${quizIndex}].Questions[${questionIndex}].OptionB" class="form-control mb-2" required>
-
-            <label>Đáp án C</label>
-            <input name="Quizzes[${quizIndex}].Questions[${questionIndex}].OptionC" class="form-control mb-2" required>
-
-            <label>Đáp án D</label>
-            <input name="Quizzes[${quizIndex}].Questions[${questionIndex}].OptionD" class="form-control mb-2" required>
-
-            <label>Đáp án đúng</label>
-            <select name="Quizzes[${quizIndex}].Questions[${questionIndex}].CorrectAnswer" class="form-select mb-2" required>
-                <option value="">-- Chọn đáp án đúng --</option>
-                <option value="A">A</option>
-                <option value="B">B</option>
-                <option value="C">C</option>
-                <option value="D">D</option>
+            <label class="form-label">Loại câu hỏi</label>
+            <select name="Quizzes[${quizIdx}].Questions[${questionCount}].QuestionType" class="form-select mb-3" onchange="toggleQuestionType(this, ${quizIdx}, ${questionCount})">
+                <option value="MCQ" ${qType === "MCQ" ? 'selected' : ''}>Trắc nghiệm</option>
+                <option value="Essay" ${qType === "Essay" ? 'selected' : ''}>Tự luận</option>
             </select>
-        `;
+
+            <div class="mcq-options" style="${isMCQ ? '' : 'display:none'}">
+                <label>Đáp án A</label>
+                <input name="Quizzes[${quizIdx}].Questions[${questionCount}].OptionA" value="${questionData?.optionA || ''}" class="form-control mb-2" />
+                <label>Đáp án B</label>
+                <input name="Quizzes[${quizIdx}].Questions[${questionCount}].OptionB" value="${questionData?.optionB || ''}" class="form-control mb-2" />
+                <label>Đáp án C</label>
+                <input name="Quizzes[${quizIdx}].Questions[${questionCount}].OptionC" value="${questionData?.optionC || ''}" class="form-control mb-2" />
+                <label>Đáp án D</label>
+                <input name="Quizzes[${quizIdx}].Questions[${questionCount}].OptionD" value="${questionData?.optionD || ''}" class="form-control mb-2" />
+                <label>Đáp án đúng</label>
+                <select name="Quizzes[${quizIdx}].Questions[${questionCount}].CorrectAnswer" class="form-select mb-2">
+                    <option value="">-- Chọn --</option>
+                    <option value="A" ${questionData?.correctAnswer === 'A' ? 'selected' : ''}>A</option>
+                    <option value="B" ${questionData?.correctAnswer === 'B' ? 'selected' : ''}>B</option>
+                    <option value="C" ${questionData?.correctAnswer === 'C' ? 'selected' : ''}>C</option>
+                    <option value="D" ${questionData?.correctAnswer === 'D' ? 'selected' : ''}>D</option>
+                </select>
+            </div>
+
+            <button type="button" class="btn btn-sm btn-danger mt-2" onclick="this.closest('.question-block').remove()">Xóa câu hỏi</button>
+        </div>`;
+
+    questionList.insertAdjacentHTML("beforeend", html);
+}
+
+function toggleQuestionType(select, quizIdx, questionIdx) {
+    const parent = select.closest(".question-block");
+    const mcqDiv = parent.querySelector(".mcq-options");
+    if (select.value === "MCQ") {
+        mcqDiv.style.display = "block";
     } else {
-        area.innerHTML = ''; // Tự luận không cần đáp án
+        mcqDiv.style.display = "none";
     }
 }
+
+function previewImage(input) {
+    const img = input.closest(".question-block").querySelector(".preview-img");
+    const file = input.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function (e) {
+            img.src = e.target.result;
+            img.style.display = "block";
+        };
+        reader.readAsDataURL(file);
+    } else {
+        img.src = "";
+        img.style.display = "none";
+    }
+}
+
+// ✅ Kiểm tra tổng điểm khi submit
+
+document.addEventListener("DOMContentLoaded", () => {
+    const form = document.querySelector("form");
+    form.addEventListener("submit", function (e) {
+        const examTotal = parseInt(document.querySelector("[name='TotalMarks']")?.value || 0);
+        const quizCards = document.querySelectorAll(".quiz-block");
+
+        let quizTotal = 0;
+        let valid = true;
+
+        quizCards.forEach(card => {
+            const pointsInput = card.querySelector(".quiz-points");
+            const quizPoints = parseInt(pointsInput?.value || 0);
+            quizTotal += quizPoints;
+
+            const questionList = card.querySelectorAll(".question-block");
+            if (questionList.length === 0) {
+                alert("Mỗi Quiz cần ít nhất một câu hỏi!");
+                valid = false;
+                return;
+            }
+        });
+
+        if (!valid) {
+            e.preventDefault();
+            return;
+        }
+
+        if (examTotal > 0 && quizTotal !== examTotal) {
+            e.preventDefault();
+            alert(`Tổng điểm các Quiz (${quizTotal}) phải bằng tổng điểm bài kiểm tra (${examTotal})`);
+        }
+    });
+});

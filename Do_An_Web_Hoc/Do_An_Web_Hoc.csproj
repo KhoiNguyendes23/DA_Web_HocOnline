@@ -28,6 +28,7 @@
     <Folder Include="Views\Account\" />
     <Folder Include="wwwroot\documents\" />
     <Folder Include="wwwroot\images\Avatar_images\" />
+    <Folder Include="wwwroot\images\questions\" />
     <Folder Include="wwwroot\videos\" />
   </ItemGroup>
 

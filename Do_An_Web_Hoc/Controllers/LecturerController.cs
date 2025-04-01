@@ -208,7 +208,6 @@ namespace Do_An_Web_Hoc.Controllers
                 return View(model);
             }
 
-            // 1. Tạo bài kiểm tra
             var exam = new Exams
             {
                 ExamName = model.ExamName,
@@ -224,7 +223,6 @@ namespace Do_An_Web_Hoc.Controllers
             _context.Exams.Add(exam);
             await _context.SaveChangesAsync();
 
-            // 2. Lặp và thêm Quiz + câu hỏi
             foreach (var quizVM in model.Quizzes)
             {
                 var quiz = new Quizzes
@@ -243,24 +241,45 @@ namespace Do_An_Web_Hoc.Controllers
                     {
                         QuizID = quiz.QuizID,
                         QuestionText = q.QuestionText,
-                        QuestionType = "MCQ"
+                        QuestionType = q.QuestionType
                     };
+
+                    if (q.QuestionImage != null && q.QuestionImage.Length > 0)
+                    {
+                        string ext = Path.GetExtension(q.QuestionImage.FileName).ToLower();
+                        string[] allowed = { ".jpg", ".png", ".jpeg", ".gif" };
+                        if (allowed.Contains(ext))
+                        {
+                            var fileName = Guid.NewGuid() + ext;
+                            var path = Path.Combine("wwwroot/images/questions", fileName);
+
+                            using (var stream = new FileStream(path, FileMode.Create))
+                            {
+                                await q.QuestionImage.CopyToAsync(stream);
+                            }
+                            question.ImagePath = "/images/questions/" + fileName;
+                        }
+                    }
+
                     _context.Questions.Add(question);
                     await _context.SaveChangesAsync();
 
-                    string[] options = { q.OptionA, q.OptionB, q.OptionC, q.OptionD };
-                    string[] labels = { "A", "B", "C", "D" };
-
-                    for (int i = 0; i < 4; i++)
+                    if (q.QuestionType == "MCQ")
                     {
-                        _context.Answers.Add(new Answers
+                        string[] options = { q.OptionA, q.OptionB, q.OptionC, q.OptionD };
+                        string[] labels = { "A", "B", "C", "D" };
+
+                        for (int i = 0; i < 4; i++)
                         {
-                            QuestionID = question.QuestionID,
-                            AnswerText = options[i],
-                            IsCorrect = q.CorrectAnswer == labels[i]
-                        });
+                            _context.Answers.Add(new Answers
+                            {
+                                QuestionID = question.QuestionID,
+                                AnswerText = options[i],
+                                IsCorrect = (q.CorrectAnswer == labels[i])
+                            });
+                        }
+                        await _context.SaveChangesAsync();
                     }
-                    await _context.SaveChangesAsync();
                 }
             }
 
@@ -274,6 +293,12 @@ namespace Do_An_Web_Hoc.Controllers
         public async Task<IActionResult> EditExam(int id)
         {
             SetLecturerViewData();
+
+            ViewBag.CourseList = _context.Courses.Select(c => new SelectListItem
+            {
+                Value = c.CourseID.ToString(),
+                Text = c.CourseName
+            }).ToList();
 
             var exam = await _context.Exams.FindAsync(id);
             if (exam == null) return NotFound();
@@ -303,10 +328,9 @@ namespace Do_An_Web_Hoc.Controllers
                 {
                     QuizName = quiz.QuizName,
                     Description = quiz.Description,
-                    TotalMarks = quiz.TotalMarks, // ✅ Lấy điểm số từ DB
+                    TotalMarks = quiz.TotalMarks,
                     Questions = new List<QuestionViewModel>()
                 };
-
 
                 foreach (var question in questions)
                 {
@@ -314,27 +338,37 @@ namespace Do_An_Web_Hoc.Controllers
                         .Where(a => a.QuestionID == question.QuestionID)
                         .ToListAsync();
 
-                    var correctAnswer = answers.FirstOrDefault(a => a.IsCorrect == true)?.AnswerText;
+                    string correctOption = "";
+                    string? optionA = "", optionB = "", optionC = "", optionD = "";
+                    string? correctAnswer = "";
 
-
-                    // Tìm lựa chọn đúng là A/B/C/D
-                    string correctOption = answers.FirstOrDefault(a => a.IsCorrect == true) switch
+                    if (question.QuestionType == "MCQ" && answers.Count >= 4)
                     {
-                        var a when a?.AnswerText == answers[0].AnswerText => "A",
-                        var a when a?.AnswerText == answers[1].AnswerText => "B",
-                        var a when a?.AnswerText == answers[2].AnswerText => "C",
-                        var a when a?.AnswerText == answers[3].AnswerText => "D",
-                        _ => "A"
-                    };
+                        optionA = answers.ElementAtOrDefault(0)?.AnswerText ?? "";
+                        optionB = answers.ElementAtOrDefault(1)?.AnswerText ?? "";
+                        optionC = answers.ElementAtOrDefault(2)?.AnswerText ?? "";
+                        optionD = answers.ElementAtOrDefault(3)?.AnswerText ?? "";
+
+                        var correct = answers.FirstOrDefault(a => a.IsCorrect == true);
+                        if (correct != null)
+                        {
+                            if (correct.AnswerText == optionA) correctOption = "A";
+                            else if (correct.AnswerText == optionB) correctOption = "B";
+                            else if (correct.AnswerText == optionC) correctOption = "C";
+                            else if (correct.AnswerText == optionD) correctOption = "D";
+                            correctAnswer = correctOption;
+                        }
+                    }
 
                     quizVM.Questions.Add(new QuestionViewModel
                     {
                         QuestionText = question.QuestionText,
-                        OptionA = answers.ElementAtOrDefault(0)?.AnswerText ?? "",
-                        OptionB = answers.ElementAtOrDefault(1)?.AnswerText ?? "",
-                        OptionC = answers.ElementAtOrDefault(2)?.AnswerText ?? "",
-                        OptionD = answers.ElementAtOrDefault(3)?.AnswerText ?? "",
-                        CorrectAnswer = correctOption
+                        OptionA = optionA,
+                        OptionB = optionB,
+                        OptionC = optionC,
+                        OptionD = optionD,
+                        CorrectAnswer = correctAnswer,
+                        QuestionType = question.QuestionType
                     });
                 }
 
@@ -343,16 +377,22 @@ namespace Do_An_Web_Hoc.Controllers
 
             return View(model);
         }
+
+
         [HttpPost]
         public async Task<IActionResult> EditExam(ExamEditViewModel model)
         {
             if (!ModelState.IsValid)
             {
                 SetLecturerViewData();
+                ViewBag.CourseList = _context.Courses.Select(c => new SelectListItem
+                {
+                    Value = c.CourseID.ToString(),
+                    Text = c.CourseName
+                }).ToList();
                 return View(model);
             }
 
-            // 1. Cập nhật bài kiểm tra
             var exam = await _context.Exams.FindAsync(model.ExamID);
             if (exam == null) return NotFound();
 
@@ -364,11 +404,9 @@ namespace Do_An_Web_Hoc.Controllers
             exam.StartTime = model.StartTime;
             exam.EndTime = model.EndTime;
             exam.Status = 1;
-            exam.CreatedAt = exam.CreatedAt ?? DateTime.Now;
 
             await _context.SaveChangesAsync();
 
-            // 2. Xóa toàn bộ quiz cũ (và câu hỏi + đáp án liên quan)
             var oldQuizzes = _context.Quizzes.Where(q => q.ExamID == exam.ExamID).ToList();
             foreach (var quiz in oldQuizzes)
             {
@@ -383,7 +421,6 @@ namespace Do_An_Web_Hoc.Controllers
             _context.Quizzes.RemoveRange(oldQuizzes);
             await _context.SaveChangesAsync();
 
-            // 3. Thêm lại danh sách quiz và câu hỏi mới
             foreach (var quizVM in model.Quizzes)
             {
                 var quiz = new Quizzes
@@ -391,7 +428,7 @@ namespace Do_An_Web_Hoc.Controllers
                     ExamID = exam.ExamID,
                     QuizName = quizVM.QuizName,
                     Description = quizVM.Description,
-                    TotalMarks = quizVM.TotalMarks // ✅ Dùng điểm số từ ViewModel
+                    TotalMarks = quizVM.TotalMarks
                 };
 
                 _context.Quizzes.Add(quiz);
@@ -403,30 +440,52 @@ namespace Do_An_Web_Hoc.Controllers
                     {
                         QuizID = quiz.QuizID,
                         QuestionText = q.QuestionText,
-                        QuestionType = "MCQ"
+                        QuestionType = q.QuestionType
                     };
+
+                    if (q.QuestionImage != null && q.QuestionImage.Length > 0)
+                    {
+                        string ext = Path.GetExtension(q.QuestionImage.FileName).ToLower();
+                        string[] allowed = { ".jpg", ".png", ".jpeg", ".gif" };
+                        if (allowed.Contains(ext))
+                        {
+                            var fileName = Guid.NewGuid() + ext;
+                            var path = Path.Combine("wwwroot/images/questions", fileName);
+
+                            using (var stream = new FileStream(path, FileMode.Create))
+                            {
+                                await q.QuestionImage.CopyToAsync(stream);
+                            }
+                            question.ImagePath = "/images/questions/" + fileName;
+                        }
+                    }
+
                     _context.Questions.Add(question);
                     await _context.SaveChangesAsync();
 
-                    string[] options = { q.OptionA, q.OptionB, q.OptionC, q.OptionD };
-                    string[] labels = { "A", "B", "C", "D" };
-
-                    for (int i = 0; i < 4; i++)
+                    if (q.QuestionType == "MCQ")
                     {
-                        _context.Answers.Add(new Answers
+                        string[] options = { q.OptionA, q.OptionB, q.OptionC, q.OptionD };
+                        string[] labels = { "A", "B", "C", "D" };
+
+                        for (int i = 0; i < 4; i++)
                         {
-                            QuestionID = question.QuestionID,
-                            AnswerText = options[i],
-                            IsCorrect = (q.CorrectAnswer == labels[i])
-                        });
+                            _context.Answers.Add(new Answers
+                            {
+                                QuestionID = question.QuestionID,
+                                AnswerText = options[i],
+                                IsCorrect = q.CorrectAnswer == labels[i]
+                            });
+                        }
+                        await _context.SaveChangesAsync();
                     }
-                    await _context.SaveChangesAsync();
                 }
             }
 
             TempData["SuccessMessage"] = "Đã cập nhật bài kiểm tra thành công!";
             return RedirectToAction("ListExam");
         }
+
 
 
         public async Task<IActionResult> DeleteExam(int id)
