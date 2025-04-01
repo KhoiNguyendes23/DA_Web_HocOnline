@@ -491,14 +491,37 @@ namespace Do_An_Web_Hoc.Controllers
         public async Task<IActionResult> DeleteExam(int id)
         {
             SetLecturerViewData();
+
             var exam = await _examsRepository.GetExamByIdAsync(id);
+
+            if (exam == null)
+            {
+                return NotFound();
+            }
+
+            // Lấy thêm danh sách Quiz và Question để hiển thị thông tin chi tiết nếu cần
+            var quizzes = await _context.Quizzes.Where(q => q.ExamID == id).ToListAsync();
+            var quizIds = quizzes.Select(q => q.QuizID).ToList();
+            var questions = await _context.Questions.Where(q => quizIds.Contains(q.QuizID ?? 0)).ToListAsync();
+
+            ViewBag.Quizzes = quizzes;
+            ViewBag.Questions = questions;
+
             return View(exam);
         }
         [HttpPost, ActionName("DeleteExam")]
         public async Task<IActionResult> ConfirmDeleteExam(int id)
         {
-            await _examsRepository.SoftDeleteExamAsync(id); // ✔ gọi đúng hàm có sẵn
-            return RedirectToAction("ListExam");
+            var exam = await _examsRepository.GetExamByIdAsync(id);
+            if (exam == null)
+            {
+                return NotFound();
+            }
+
+            await _examsRepository.SoftDeleteExamAsync(id);
+
+            TempData["SuccessMessage"] = "Đã xóa bài kiểm tra thành công!";
+            return RedirectToAction("ListExam", "Lecturer");
         }
 
 

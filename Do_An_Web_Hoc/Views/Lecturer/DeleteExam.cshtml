@@ -1,4 +1,4 @@
-﻿@{
+﻿@* @{
     Layout = "~/Views/Shared/_LayoutLecturer.cshtml";
 }
 
@@ -37,3 +37,46 @@
         }
     </script>
 }
+ *@
+ @model Do_An_Web_Hoc.Models.Exams
+@{
+    Layout = "~/Views/Shared/_LayoutLecturer.cshtml";
+    ViewData["Title"] = "Xóa bài kiểm tra";
+}
+
+<div class="container mt-5">
+    <h2 class="text-danger text-center mb-4"><i class="fas fa-trash-alt"></i> Xóa Bài Kiểm Tra</h2>
+
+    <div class="card mx-auto" style="max-width: 600px;">
+        <div class="card-body">
+            <h5 class="card-title"><i class="fas fa-file-alt"></i> Bài Kiểm Tra: @Model.ExamName</h5>
+            <p><strong>Ngày Kiểm Tra:</strong> @Model.StartTime?.ToString("dd/MM/yyyy")</p>
+            <p><strong>Khóa Học:</strong> @Model.CourseID</p>
+            <p><strong>Thời Gian Làm Bài:</strong> @Model.Duration phút</p>
+            <p><strong>Số Câu Hỏi:</strong> (Hiển thị nếu cần)</p>
+            <p>
+                <strong>Trạng Thái:</strong>
+                <span class="badge bg-@(Model.Status == 1 ? "success" : "danger")">
+                    @(Model.Status == 1 ? "Hoạt động" : "Ngừng")
+                </span>
+            </p>
+        </div>
+    </div>
+
+    <div class="alert alert-warning text-center mt-4">
+        <p><strong>Bạn có chắc chắn muốn xóa bài kiểm tra này không?</strong></p>
+        <p>Hành động này không thể hoàn tác!</p>
+    </div>
+
+    <div class="text-center">
+        <form asp-action="DeleteExam" asp-controller="Lecturer" method="post">
+            <input type="hidden" asp-for="ExamID" />
+            <a asp-action="ListExam" asp-controller="Lecturer" class="btn btn-secondary">
+                <i class="fas fa-arrow-left"></i> Hủy
+            </a>
+            <button type="submit" class="btn btn-danger">
+                <i class="fas fa-trash-alt"></i> Xóa
+            </button>
+        </form>
+    </div>
+</div>
