@@ -4,6 +4,7 @@ using Do_An_Web_Hoc.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Do_An_Web_Hoc.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250331204640_FixedEnrollmentRelation")]
+    partial class FixedEnrollmentRelation
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -241,6 +244,9 @@ namespace Do_An_Web_Hoc.Migrations
                     b.Property<int>("CourseID")
                         .HasColumnType("int");
 
+                    b.Property<int?>("CoursesCourseID")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("EnrollmentDate")
                         .HasColumnType("datetime2");
 
@@ -259,6 +265,8 @@ namespace Do_An_Web_Hoc.Migrations
                     b.HasKey("EnrollmentID");
 
                     b.HasIndex("CourseID");
+
+                    b.HasIndex("CoursesCourseID");
 
                     b.HasIndex("UserID");
 
@@ -723,13 +731,17 @@ namespace Do_An_Web_Hoc.Migrations
             modelBuilder.Entity("Do_An_Web_Hoc.Models.Enrollments", b =>
                 {
                     b.HasOne("Do_An_Web_Hoc.Models.Courses", "Course")
-                        .WithMany("Enrollments")
+                        .WithMany()
                         .HasForeignKey("CourseID")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("Do_An_Web_Hoc.Models.UserAccount", "User")
+                    b.HasOne("Do_An_Web_Hoc.Models.Courses", null)
                         .WithMany("Enrollments")
+                        .HasForeignKey("CoursesCourseID");
+
+                    b.HasOne("Do_An_Web_Hoc.Models.UserAccount", "User")
+                        .WithMany()
                         .HasForeignKey("UserID")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
@@ -858,11 +870,6 @@ namespace Do_An_Web_Hoc.Migrations
                 });
 
             modelBuilder.Entity("Do_An_Web_Hoc.Models.Courses", b =>
-                {
-                    b.Navigation("Enrollments");
-                });
-
-            modelBuilder.Entity("Do_An_Web_Hoc.Models.UserAccount", b =>
                 {
                     b.Navigation("Enrollments");
                 });

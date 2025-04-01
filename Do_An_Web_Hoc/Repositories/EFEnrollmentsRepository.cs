@@ -63,5 +63,32 @@ namespace Do_An_Web_Hoc.Repositories
             return await _context.Enrollments
                 .CountAsync(e => e.CourseID == courseId);
         }
+        // Thống Kê Doanh Thu
+
+        public async Task<IEnumerable<RevenueStatisticViewModel>> GetMonthlyRevenueStatisticsAsync()
+        {
+            var data = await _context.Enrollments
+                .Where(e => e.IsPaid && e.PaymentDate.HasValue)
+                .Include(e => e.Course) // <- dùng Include để lấy luôn khóa học
+                .GroupBy(e => new
+                {
+                    Year = e.PaymentDate.Value.Year,
+                    Month = e.PaymentDate.Value.Month
+                })
+                .Select(g => new RevenueStatisticViewModel
+                {
+                    Year = g.Key.Year,
+                    Month = g.Key.Month,
+                    TotalEnrollments = g.Count(),
+                    TotalRevenue = g.Sum(e => e.Course.Price ?? 0) // lấy giá từ navigation property
+                })
+                .OrderByDescending(x => x.Year)
+                .ThenByDescending(x => x.Month)
+                .ToListAsync();
+
+            return data;
+        }
+
+
     }
 }

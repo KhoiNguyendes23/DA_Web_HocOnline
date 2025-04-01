@@ -21,13 +21,15 @@ namespace Do_An_Web_Hoc.Controllers
         private readonly IExamsRepository _examsRepo;
         private readonly ILogger<AdminController> _logger;
         private readonly ICatogoriesRepository _catogoriesRepository;
-        public AdminController(IUserAccountRepository userRepo, ICoursesRepository coursesRepo, IExamsRepository examsRepo, ILogger<AdminController> logger, ICatogoriesRepository catogoriesRepository)
+        private readonly IEnrollmentsRepository _enrollmentRepo;
+        public AdminController(IUserAccountRepository userRepo, ICoursesRepository coursesRepo, IExamsRepository examsRepo, ILogger<AdminController> logger, ICatogoriesRepository catogoriesRepository, IEnrollmentsRepository enrollmentRepo)
         {
             _userRepo = userRepo;
             _coursesRepo = coursesRepo;
             _examsRepo = examsRepo;
             _logger = logger;
             _catogoriesRepository = catogoriesRepository;
+            _enrollmentRepo = enrollmentRepo;
         }
         public IActionResult Dashboard()
         {
@@ -120,6 +122,7 @@ namespace Do_An_Web_Hoc.Controllers
             var lecturers = await _userRepo.GetUsersByRoleAsync(2);
             return View(lecturers);
         }
+
         //public IActionResult ListExam()
         //{
         //    return View();
@@ -144,13 +147,26 @@ namespace Do_An_Web_Hoc.Controllers
         //{
         //    return View();
         //}
-        public IActionResult StatisticalCourse()
+        public async Task<IActionResult> StatisticalCourse()
         {
-            return View();
+            var allCourses = await _coursesRepo.GetAllCoursesAsync();
+
+            var result = allCourses
+                .Select(course => new StatisticalCourseViewModel
+                {
+                    CourseName = course.CourseName,
+                    EnrollmentCount = course.Enrollments?.Count(e => e.IsPaid) ?? 0
+                })
+                .ToList();
+
+            return View(result);
         }
-        public IActionResult StatisticalRevenue()
+
+
+        public async Task<IActionResult> StatisticalRevenue()
         {
-            return View();
+            var revenueData = await _enrollmentRepo.GetMonthlyRevenueStatisticsAsync();
+            return View(revenueData);
         }
         public async Task<IActionResult> PersonalPage()
         {

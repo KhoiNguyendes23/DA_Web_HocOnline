@@ -12,5 +12,8 @@ namespace Do_An_Web_Hoc.Models
         public int? CategoryID { get; set; }
         public int? Status { get; set; }
         public string? ImageUrl { get; set; }
+
+        public virtual ICollection<Enrollments> Enrollments { get; set; } = new List<Enrollments>();
+
     }
 }
