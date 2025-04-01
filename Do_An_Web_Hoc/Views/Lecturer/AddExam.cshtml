@@ -1,156 +1,104 @@
-﻿@model Do_An_Web_Hoc.Models.Exams
+﻿@model Do_An_Web_Hoc.ViewModels.ExamEditViewModel
 
 @{
     Layout = "~/Views/Shared/_LayoutLecturer.cshtml";
     ViewData["Title"] = "Thêm bài kiểm tra";
 }
 
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" />
+<link rel="stylesheet" href="~/css/exam-form.css" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+<link rel="stylesheet" href="~/css/exam-form.css" />
+
 <div class="container mt-4">
-    <h2 class="text-primary text-center mb-4">Thêm bài kiểm tra</h2>
+    <h2 class="text-center text-primary mb-4">
+        <i class="fas fa-plus-circle"></i> Thêm bài kiểm tra mới
+    </h2>
 
     @if (!ViewData.ModelState.IsValid)
     {
-        <div class="alert alert-danger">Vui lòng kiểm tra lại thông tin!</div>
+        <div class="alert alert-danger">
+            <i class="fas fa-exclamation-triangle"></i> Vui lòng kiểm tra lại thông tin!
+        </div>
     }
 
-    <form asp-action="AddExam" method="post" enctype="multipart/form-data">
-        <div class="mb-3">
-            <label asp-for="ExamName" class="form-label">Tên bài kiểm tra</label>
-            <input asp-for="ExamName" class="form-control" />
-            <span asp-validation-for="ExamName" class="text-danger"></span>
-        </div>
-
-        <div class="mb-3">
-            <label asp-for="Description" class="form-label">Mô tả</label>
-            <textarea asp-for="Description" class="form-control" rows="3"></textarea>
-            <span asp-validation-for="Description" class="text-danger"></span>
-        </div>
-
-        <div class="mb-3">
-            <label asp-for="TotalMarks" class="form-label">Tổng điểm</label>
-            <input asp-for="TotalMarks" type="number" class="form-control" />
-            <span asp-validation-for="TotalMarks" class="text-danger"></span>
-        </div>
-
-        <div class="mb-3">
-            <select asp-for="CourseID" asp-items="ViewBag.CourseList" class="form-select">
-                <option value="">-- Chọn khóa học --</option>
-            </select>
-            <span asp-validation-for="CourseID" class="text-danger"></span>
-
-            
-        </div>
-        <div class="mb-3">
-            <div class="mb-3">
-                <label class="form-label">Danh sách Quiz</label>
-                <button type="button" class="btn btn-success mb-2" onclick="addQuiz()">+ Thêm Quiz</button>
-                <div id="quizList"></div>
+    <form asp-action="AddExam" method="post" enctype="multipart/form-data" id="examForm">
+        <!-- Thông tin bài kiểm tra -->
+        <div class="card shadow mb-4 border-left-primary">
+            <div class="card-header bg-primary text-white">
+                <strong><i class="fas fa-info-circle"></i> Thông tin bài kiểm tra</strong>
             </div>
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label asp-for="ExamName" class="form-label">Tên bài kiểm tra</label>
+                        <input asp-for="ExamName" class="form-control" />
+                        <span asp-validation-for="ExamName" class="text-danger"></span>
+                    </div>
 
+                    <div class="col-md-6">
+                        <label asp-for="TotalMarks" class="form-label">Tổng điểm</label>
+                        <input asp-for="TotalMarks" type="number" class="form-control" />
+                        <span asp-validation-for="TotalMarks" class="text-danger"></span>
+                    </div>
 
+                    <div class="col-12">
+                        <label asp-for="Description" class="form-label">Mô tả</label>
+                        <textarea asp-for="Description" class="form-control" rows="2"></textarea>
+                        <span asp-validation-for="Description" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label asp-for="Duration" class="form-label">Thời gian làm bài (phút)</label>
+                        <input asp-for="Duration" type="number" class="form-control" />
+                        <span asp-validation-for="Duration" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label asp-for="StartTime" class="form-label">Thời gian bắt đầu</label>
+                        <input asp-for="StartTime" type="datetime-local" class="form-control" />
+                        <span asp-validation-for="StartTime" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label asp-for="EndTime" class="form-label">Thời gian kết thúc</label>
+                        <input asp-for="EndTime" type="datetime-local" class="form-control" />
+                        <span asp-validation-for="EndTime" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label asp-for="CourseID" class="form-label">Khóa học</label>
+                        <select asp-for="CourseID" asp-items="ViewBag.CourseList" class="form-select">
+                            <option value="">-- Chọn khóa học --</option>
+                        </select>
+                        <span asp-validation-for="CourseID" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
         </div>
-        @* <div class="mb-3">
-            <label class="form-label">Danh sách câu hỏi</label>
-            <button type="button" class="btn btn-sm btn-success mb-2" onclick="addQuestion()">+ Thêm câu hỏi</button>
-            <div id="questionList"></div>
-        </div> *@
 
-       
+        <!-- Danh sách Quiz -->
+        <div class="mb-3">
+            <label class="form-label">Danh sách Quiz</label>
+            <button type="button" class="btn btn-success mb-2" onclick="addQuiz()">
+                <i class="fas fa-plus"></i> Thêm Quiz
+            </button>
+            <div class="accordion" id="quizAccordion"></div>
+        </div>
+
         <div class="text-center mt-4">
-            <button type="submit" class="btn btn-success">
+            <button type="submit" class="btn btn-success btn-lg">
                 <i class="fas fa-save"></i> Lưu bài kiểm tra
             </button>
-            <a asp-action="ListExam" class="btn btn-secondary ms-2">
+            <a asp-action="ListExam" class="btn btn-secondary btn-lg ms-3">
                 <i class="fas fa-arrow-left"></i> Quay lại
             </a>
         </div>
     </form>
 </div>
 
-
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
-    <script>
-        function addQuiz() {
-            const quizIndex = document.querySelectorAll(".quiz-box").length;
-            const quizBox = document.createElement("div");
-            quizBox.className = "quiz-box border p-3 rounded mb-4";
-
-            quizBox.innerHTML = `
-                <h5 class="text-primary">Quiz ${quizIndex + 1}</h5>
-                <div class="mb-3">
-                    <label class="form-label">Tên Quiz</label>
-                    <input name="Quizzes[${quizIndex}].QuizName" class="form-control" required />
-                </div>
-                <div class="mb-3">
-                    <label class="form-label">Mô tả</label>
-                    <input name="Quizzes[${quizIndex}].Description" class="form-control" />
-                </div>
-                <div class="mb-3">
-                    <label class="form-label">Danh sách câu hỏi</label>
-                    <button type="button" class="btn btn-sm btn-success mb-2" onclick="addQuestion(${quizIndex})">+ Thêm câu hỏi</button>
-                    <div id="quiz-${quizIndex}-questions"></div>
-                </div>
-            `;
-
-            document.getElementById("quizList").appendChild(quizBox);
-        }
-
-        function addQuestion(quizIndex) {
-            const container = document.getElementById(`quiz-${quizIndex}-questions`);
-            const questionIndex = container.querySelectorAll(".question-box").length;
-            const box = document.createElement("div");
-            box.className = "question-box border p-3 rounded mb-3";
-
-            box.innerHTML = `
-                <label class="form-label fw-bold">Câu hỏi ${questionIndex + 1}</label>
-                <input name="Quizzes[${quizIndex}].Questions[${questionIndex}].QuestionText" class="form-control mb-2" placeholder="Nhập nội dung câu hỏi" required>
-
-                <label>Loại câu hỏi</label>
-                <select name="Quizzes[${quizIndex}].Questions[${questionIndex}].QuestionType" class="form-select mb-2" onchange="toggleAnswerFields(this, ${quizIndex}, ${questionIndex})" required>
-                    <option value="">-- Chọn loại câu hỏi --</option>
-                    <option value="Tự luận">Tự luận</option>
-                    <option value="Trắc nghiệm">Trắc nghiệm</option>
-                </select>
-
-                <div class="answer-area" id="answer-area-${quizIndex}-${questionIndex}"></div>
-
-                <button type="button" class="btn btn-danger mt-2" onclick="this.closest('.question-box').remove()">Xóa câu hỏi</button>
-            `;
-
-            container.appendChild(box);
-        }
-
-        function toggleAnswerFields(select, quizIndex, questionIndex) {
-            const area = document.getElementById(`answer-area-${quizIndex}-${questionIndex}`);
-            const type = select.value;
-
-            if (type === "Trắc nghiệm") {
-                area.innerHTML = `
-                    <label>Đáp án A</label>
-                    <input name="Quizzes[${quizIndex}].Questions[${questionIndex}].OptionA" class="form-control mb-2" required>
-
-                    <label>Đáp án B</label>
-                    <input name="Quizzes[${quizIndex}].Questions[${questionIndex}].OptionB" class="form-control mb-2" required>
-
-                    <label>Đáp án C</label>
-                    <input name="Quizzes[${quizIndex}].Questions[${questionIndex}].OptionC" class="form-control mb-2" required>
-
-                    <label>Đáp án D</label>
-                    <input name="Quizzes[${quizIndex}].Questions[${questionIndex}].OptionD" class="form-control mb-2" required>
-
-                    <label>Đáp án đúng</label>
-                    <select name="Quizzes[${quizIndex}].Questions[${questionIndex}].CorrectAnswer" class="form-select mb-2" required>
-                        <option value="">-- Chọn đáp án đúng --</option>
-                        <option value="A">A</option>
-                        <option value="B">B</option>
-                        <option value="C">C</option>
-                        <option value="D">D</option>
-                    </select>
-                `;
-            } else {
-                area.innerHTML = ''; // Tự luận không cần đáp án
-            }
-        }
-    </script>
+    <script src="~/js/exam-add.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 }

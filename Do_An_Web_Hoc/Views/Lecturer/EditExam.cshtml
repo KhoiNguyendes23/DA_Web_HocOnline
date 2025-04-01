@@ -1,100 +1,110 @@
-﻿@{
+﻿@model Do_An_Web_Hoc.ViewModels.ExamEditViewModel
+
+@{
     Layout = "~/Views/Shared/_LayoutLecturer.cshtml";
+    ViewData["Title"] = "Chỉnh sửa bài kiểm tra";
 }
 
-<div class="container mt-5">
-    <h2 class="text-primary text-center mb-4">Chỉnh Sửa Bài Kiểm Tra</h2>
-    <form action="#" method="POST">
-        <div class="mb-3">
-            <label for="examTitle" class="form-label">Tiêu đề bài kiểm tra</label>
-            <input type="text" class="form-control" id="examTitle" name="examTitle" value="Bài kiểm tra Python cơ bản" required>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" />
+<link rel="stylesheet" href="~/css/exam-form.css" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+<link rel="stylesheet" href="~/css/exam-form.css" />
+
+<div class="container mt-4">
+    <h2 class="text-center text-primary mb-4">
+        <i class="fas fa-edit"></i> Chỉnh sửa bài kiểm tra
+    </h2>
+
+    @if (!ViewData.ModelState.IsValid)
+    {
+        <div class="alert alert-danger">
+            <i class="fas fa-exclamation-triangle"></i> Vui lòng kiểm tra lại thông tin!
         </div>
-        <div class="mb-3">
-            <label for="examDuration" class="form-label">Thời gian làm bài (phút)</label>
-            <input type="number" class="form-control" id="examDuration" name="examDuration" value="60" required>
-        </div>
-        <div class="mb-3">
-            <label class="form-label">Danh sách câu hỏi</label>
-            <div class="btn-add mb-2">
-                <button type="button" class="btn btn-success" onclick="addQuestion()"><i class="fas fa-plus"></i> Thêm câu hỏi</button>
+    }
+
+    <form asp-action="EditExam" method="post" enctype="multipart/form-data" id="editExamForm">
+        <input asp-for="ExamID" type="hidden" />
+
+        <!-- Thông tin bài kiểm tra -->
+        <div class="card shadow mb-4 border-left-primary">
+            <div class="card-header bg-primary text-white">
+                <strong><i class="fas fa-info-circle"></i> Thông tin bài kiểm tra</strong>
             </div>
-            <div id="questionList">
-                <!-- Câu hỏi mẫu -->
-                <div class="question-box border rounded p-3 mb-3">
-                    <label class="form-label">Câu hỏi</label>
-                    <input type="text" class="form-control mb-2" name="questions[]" value="Python là gì?" required>
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label asp-for="ExamName" class="form-label">Tên bài kiểm tra</label>
+                        <input asp-for="ExamName" class="form-control" />
+                        <span asp-validation-for="ExamName" class="text-danger"></span>
+                    </div>
 
-                    <label class="form-label">Lựa chọn A</label>
-                    <input type="text" class="form-control mb-2" name="optionA[]" value="Ngôn ngữ lập trình" required>
+                    <div class="col-md-6">
+                        <label asp-for="TotalMarks" class="form-label">Tổng điểm</label>
+                        <input asp-for="TotalMarks" type="number" class="form-control" />
+                        <span asp-validation-for="TotalMarks" class="text-danger"></span>
+                    </div>
 
-                    <label class="form-label">Lựa chọn B</label>
-                    <input type="text" class="form-control mb-2" name="optionB[]" value="Một loại rắn" required>
+                    <div class="col-12">
+                        <label asp-for="Description" class="form-label">Mô tả</label>
+                        <textarea asp-for="Description" class="form-control" rows="2"></textarea>
+                        <span asp-validation-for="Description" class="text-danger"></span>
+                    </div>
 
-                    <label class="form-label">Lựa chọn C</label>
-                    <input type="text" class="form-control mb-2" name="optionC[]" value="Hệ điều hành" required>
+                    <div class="col-md-4">
+                        <label asp-for="Duration" class="form-label">Thời gian làm bài (phút)</label>
+                        <input asp-for="Duration" type="number" class="form-control" />
+                        <span asp-validation-for="Duration" class="text-danger"></span>
+                    </div>
 
-                    <label class="form-label">Lựa chọn D</label>
-                    <input type="text" class="form-control mb-2" name="optionD[]" value="Trình duyệt web" required>
+                    <div class="col-md-4">
+                        <label asp-for="StartTime" class="form-label">Thời gian bắt đầu</label>
+                        <input asp-for="StartTime" class="form-control" type="datetime-local" />
+                        <span asp-validation-for="StartTime" class="text-danger"></span>
+                    </div>
 
-                    <label class="form-label">Đáp án đúng</label>
-                    <select class="form-select mb-2" name="correctAnswer[]" required>
-                        <option value="A" selected>A</option>
-                        <option value="B">B</option>
-                        <option value="C">C</option>
-                        <option value="D">D</option>
-                    </select>
+                    <div class="col-md-4">
+                        <label asp-for="EndTime" class="form-label">Thời gian kết thúc</label>
+                        <input asp-for="EndTime" class="form-control" type="datetime-local" />
+                        <span asp-validation-for="EndTime" class="text-danger"></span>
+                    </div>
 
-                    <button type="button" class="btn btn-danger btn-remove" onclick="removeQuestion(this)">
-                        <i class="fas fa-trash-alt"></i> Xóa
-                    </button>
+                    <div class="col-md-6">
+                        <label asp-for="CourseID" class="form-label">Khóa học</label>
+                        <select asp-for="CourseID" asp-items="ViewBag.CourseList" class="form-select">
+                            <option value="">-- Chọn khóa học --</option>
+                        </select>
+                        <span asp-validation-for="CourseID" class="text-danger"></span>
+                    </div>
                 </div>
             </div>
         </div>
-        <div class="text-center">
-            <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Lưu Chỉnh Sửa</button>
-            <a href="ListExam" class="btn btn-secondary"><i class="fas fa-times"></i> Hủy</a>
+
+        <!-- Danh sách Quiz -->
+        <div class="mb-3">
+            <label class="form-label">Danh sách Quiz</label>
+            <button type="button" class="btn btn-success mb-2" onclick="addQuiz()">
+                <i class="fas fa-plus"></i> Thêm Quiz
+            </button>
+            <div class="accordion" id="quizAccordion"></div>
+        </div>
+
+        <div class="text-center mt-4">
+            <button type="submit" class="btn btn-primary btn-lg">
+                <i class="fas fa-save"></i> Lưu thay đổi
+            </button>
+            <a asp-action="ListExam" class="btn btn-secondary btn-lg ms-3">
+                <i class="fas fa-times"></i> Hủy
+            </a>
         </div>
     </form>
 </div>
 
 @section Scripts {
-    <script>
-        function addQuestion() {
-            let questionContainer = document.createElement("div");
-            questionContainer.classList.add("question-box", "border", "rounded", "p-3", "mb-3");
-            questionContainer.innerHTML = `
-                <label class="form-label">Câu hỏi</label>
-                <input type="text" class="form-control mb-2" name="questions[]" placeholder="Nhập câu hỏi" required>
-
-                <label class="form-label">Lựa chọn A</label>
-                <input type="text" class="form-control mb-2" name="optionA[]" placeholder="Nhập lựa chọn A" required>
-
-                <label class="form-label">Lựa chọn B</label>
-                <input type="text" class="form-control mb-2" name="optionB[]" placeholder="Nhập lựa chọn B" required>
-
-                <label class="form-label">Lựa chọn C</label>
-                <input type="text" class="form-control mb-2" name="optionC[]" placeholder="Nhập lựa chọn C" required>
-
-                <label class="form-label">Lựa chọn D</label>
-                <input type="text" class="form-control mb-2" name="optionD[]" placeholder="Nhập lựa chọn D" required>
-
-                <label class="form-label">Đáp án đúng</label>
-                <select class="form-select mb-2" name="correctAnswer[]" required>
-                    <option value="A">A</option>
-                    <option value="B">B</option>
-                    <option value="C">C</option>
-                    <option value="D">D</option>
-                </select>
-
-                <button type="button" class="btn btn-danger btn-remove mt-2" onclick="removeQuestion(this)">
-                    <i class="fas fa-trash-alt"></i> Xóa
-                </button>
-            `;
-            document.getElementById("questionList").appendChild(questionContainer);
-        }
-
-        function removeQuestion(button) {
-            button.parentElement.remove();
-        }
+    <partial name="_ValidationScriptsPartial" />
+    <script id="quiz-data-json" type="application/json">
+        @Html.Raw(Json.Serialize(Model.Quizzes))
     </script>
+    <script src="~/js/exam-edit.js"></script>
+   
 }
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>

@@ -8,6 +8,7 @@ using System.Security.Claims;
 using Microsoft.Extensions.Logging;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Do_An_Web_Hoc.ViewModels;
 
 namespace Do_An_Web_Hoc.Controllers
 {
@@ -23,7 +24,7 @@ namespace Do_An_Web_Hoc.Controllers
         private readonly IQuestionsRepository _questionsRepository;
         private readonly IQuizzesRepository _quizzesRepository;
         private readonly ApplicationDbContext _context;
-       
+
 
         public LecturerController(
             ILecturesRepository lecturesRepository,
@@ -34,7 +35,7 @@ namespace Do_An_Web_Hoc.Controllers
             ILogger<LecturerController> logger,
             IQuestionsRepository questionsRepository,
             IQuizzesRepository quizzesRepository,
-          
+
             ApplicationDbContext context)
 
         {
@@ -46,7 +47,7 @@ namespace Do_An_Web_Hoc.Controllers
             _logger = logger;
             _questionsRepository = questionsRepository;
             _quizzesRepository = quizzesRepository;
-           
+
             _context = context;
         }
 
@@ -150,18 +151,141 @@ namespace Do_An_Web_Hoc.Controllers
             return RedirectToAction("Profile");
         }
 
-        public async Task<IActionResult> ListExam()
+        public async Task<IActionResult> ListExam(string searchTerm, string statusFilter)
         {
             SetLecturerViewData();
             var exams = await _examsRepository.GetAllExamsAsync();
+
+            if (!string.IsNullOrEmpty(searchTerm))
+            {
+                exams = exams.Where(e => e.ExamName.Contains(searchTerm, StringComparison.OrdinalIgnoreCase));
+                ViewBag.SearchTerm = searchTerm;
+            }
+
+            if (!string.IsNullOrEmpty(statusFilter) && int.TryParse(statusFilter, out int status))
+            {
+                exams = exams.Where(e => e.Status == status);
+                ViewBag.StatusFilter = statusFilter;
+            }
+
             return View(exams);
         }
 
-        //public IActionResult AddExam()
-        //{
-        //    SetLecturerViewData();
-        //    return View();
-        //}
+        public async Task<IActionResult> RestoreExam(int id)
+        {
+            await _examsRepository.RestoreExamAsync(id);
+            return RedirectToAction("ListExam");
+        }
+
+
+        [HttpGet]
+        public IActionResult AddExam()
+        {
+            SetLecturerViewData();
+
+            ViewBag.CourseList = _context.Courses
+                .Select(c => new SelectListItem
+                {
+                    Value = c.CourseID.ToString(),
+                    Text = c.CourseName
+                }).ToList();
+
+            return View(new ExamEditViewModel());
+        }
+
+
+        [HttpPost]
+        public async Task<IActionResult> AddExam(ExamEditViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                SetLecturerViewData();
+                ViewBag.CourseList = _context.Courses.Select(c => new SelectListItem
+                {
+                    Value = c.CourseID.ToString(),
+                    Text = c.CourseName
+                }).ToList();
+                return View(model);
+            }
+
+            var exam = new Exams
+            {
+                ExamName = model.ExamName,
+                Description = model.Description,
+                TotalMarks = model.TotalMarks,
+                CourseID = model.CourseID,
+                Duration = model.Duration,
+                StartTime = model.StartTime,
+                EndTime = model.EndTime,
+                CreatedAt = DateTime.Now,
+                Status = 1
+            };
+            _context.Exams.Add(exam);
+            await _context.SaveChangesAsync();
+
+            foreach (var quizVM in model.Quizzes)
+            {
+                var quiz = new Quizzes
+                {
+                    QuizName = quizVM.QuizName,
+                    Description = quizVM.Description,
+                    ExamID = exam.ExamID,
+                    TotalMarks = quizVM.TotalMarks
+                };
+                _context.Quizzes.Add(quiz);
+                await _context.SaveChangesAsync();
+
+                foreach (var q in quizVM.Questions)
+                {
+                    var question = new Questions
+                    {
+                        QuizID = quiz.QuizID,
+                        QuestionText = q.QuestionText,
+                        QuestionType = q.QuestionType
+                    };
+
+                    if (q.QuestionImage != null && q.QuestionImage.Length > 0)
+                    {
+                        string ext = Path.GetExtension(q.QuestionImage.FileName).ToLower();
+                        string[] allowed = { ".jpg", ".png", ".jpeg", ".gif" };
+                        if (allowed.Contains(ext))
+                        {
+                            var fileName = Guid.NewGuid() + ext;
+                            var path = Path.Combine("wwwroot/images/questions", fileName);
+
+                            using (var stream = new FileStream(path, FileMode.Create))
+                            {
+                                await q.QuestionImage.CopyToAsync(stream);
+                            }
+                            question.ImagePath = "/images/questions/" + fileName;
+                        }
+                    }
+
+                    _context.Questions.Add(question);
+                    await _context.SaveChangesAsync();
+
+                    if (q.QuestionType == "MCQ")
+                    {
+                        string[] options = { q.OptionA, q.OptionB, q.OptionC, q.OptionD };
+                        string[] labels = { "A", "B", "C", "D" };
+
+                        for (int i = 0; i < 4; i++)
+                        {
+                            _context.Answers.Add(new Answers
+                            {
+                                QuestionID = question.QuestionID,
+                                AnswerText = options[i],
+                                IsCorrect = (q.CorrectAnswer == labels[i])
+                            });
+                        }
+                        await _context.SaveChangesAsync();
+                    }
+                }
+            }
+
+            TempData["SuccessMessage"] = "Thêm bài kiểm tra thành công!";
+            return RedirectToAction("ListExam");
+        }
 
 
 
@@ -169,16 +293,237 @@ namespace Do_An_Web_Hoc.Controllers
         public async Task<IActionResult> EditExam(int id)
         {
             SetLecturerViewData();
-            var exam = await _examsRepository.GetExamByIdAsync(id);
-            return View(exam);
+
+            ViewBag.CourseList = _context.Courses.Select(c => new SelectListItem
+            {
+                Value = c.CourseID.ToString(),
+                Text = c.CourseName
+            }).ToList();
+
+            var exam = await _context.Exams.FindAsync(id);
+            if (exam == null) return NotFound();
+
+            var quizzes = await _context.Quizzes.Where(q => q.ExamID == id).ToListAsync();
+
+            var model = new ExamEditViewModel
+            {
+                ExamID = exam.ExamID,
+                ExamName = exam.ExamName,
+                Description = exam.Description,
+                TotalMarks = exam.TotalMarks,
+                CourseID = exam.CourseID,
+                Duration = exam.Duration,
+                StartTime = exam.StartTime,
+                EndTime = exam.EndTime,
+                Quizzes = new List<QuizViewModel>()
+            };
+
+            foreach (var quiz in quizzes)
+            {
+                var questions = await _context.Questions
+                    .Where(q => q.QuizID == quiz.QuizID)
+                    .ToListAsync();
+
+                var quizVM = new QuizViewModel
+                {
+                    QuizName = quiz.QuizName,
+                    Description = quiz.Description,
+                    TotalMarks = quiz.TotalMarks,
+                    Questions = new List<QuestionViewModel>()
+                };
+
+                foreach (var question in questions)
+                {
+                    var answers = await _context.Answers
+                        .Where(a => a.QuestionID == question.QuestionID)
+                        .ToListAsync();
+
+                    string correctOption = "";
+                    string? optionA = "", optionB = "", optionC = "", optionD = "";
+                    string? correctAnswer = "";
+
+                    if (question.QuestionType == "MCQ" && answers.Count >= 4)
+                    {
+                        optionA = answers.ElementAtOrDefault(0)?.AnswerText ?? "";
+                        optionB = answers.ElementAtOrDefault(1)?.AnswerText ?? "";
+                        optionC = answers.ElementAtOrDefault(2)?.AnswerText ?? "";
+                        optionD = answers.ElementAtOrDefault(3)?.AnswerText ?? "";
+
+                        var correct = answers.FirstOrDefault(a => a.IsCorrect == true);
+                        if (correct != null)
+                        {
+                            if (correct.AnswerText == optionA) correctOption = "A";
+                            else if (correct.AnswerText == optionB) correctOption = "B";
+                            else if (correct.AnswerText == optionC) correctOption = "C";
+                            else if (correct.AnswerText == optionD) correctOption = "D";
+                            correctAnswer = correctOption;
+                        }
+                    }
+
+                    quizVM.Questions.Add(new QuestionViewModel
+                    {
+                        QuestionText = question.QuestionText,
+                        OptionA = optionA,
+                        OptionB = optionB,
+                        OptionC = optionC,
+                        OptionD = optionD,
+                        CorrectAnswer = correctAnswer,
+                        QuestionType = question.QuestionType
+                    });
+                }
+
+                model.Quizzes.Add(quizVM);
+            }
+
+            return View(model);
         }
+
+
+        [HttpPost]
+        public async Task<IActionResult> EditExam(ExamEditViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                SetLecturerViewData();
+                ViewBag.CourseList = _context.Courses.Select(c => new SelectListItem
+                {
+                    Value = c.CourseID.ToString(),
+                    Text = c.CourseName
+                }).ToList();
+                return View(model);
+            }
+
+            var exam = await _context.Exams.FindAsync(model.ExamID);
+            if (exam == null) return NotFound();
+
+            exam.ExamName = model.ExamName;
+            exam.Description = model.Description;
+            exam.TotalMarks = model.TotalMarks;
+            exam.CourseID = model.CourseID;
+            exam.Duration = model.Duration;
+            exam.StartTime = model.StartTime;
+            exam.EndTime = model.EndTime;
+            exam.Status = 1;
+
+            await _context.SaveChangesAsync();
+
+            var oldQuizzes = _context.Quizzes.Where(q => q.ExamID == exam.ExamID).ToList();
+            foreach (var quiz in oldQuizzes)
+            {
+                var questions = _context.Questions.Where(q => q.QuizID == quiz.QuizID).ToList();
+                foreach (var question in questions)
+                {
+                    var answers = _context.Answers.Where(a => a.QuestionID == question.QuestionID);
+                    _context.Answers.RemoveRange(answers);
+                }
+                _context.Questions.RemoveRange(questions);
+            }
+            _context.Quizzes.RemoveRange(oldQuizzes);
+            await _context.SaveChangesAsync();
+
+            foreach (var quizVM in model.Quizzes)
+            {
+                var quiz = new Quizzes
+                {
+                    ExamID = exam.ExamID,
+                    QuizName = quizVM.QuizName,
+                    Description = quizVM.Description,
+                    TotalMarks = quizVM.TotalMarks
+                };
+
+                _context.Quizzes.Add(quiz);
+                await _context.SaveChangesAsync();
+
+                foreach (var q in quizVM.Questions)
+                {
+                    var question = new Questions
+                    {
+                        QuizID = quiz.QuizID,
+                        QuestionText = q.QuestionText,
+                        QuestionType = q.QuestionType
+                    };
+
+                    if (q.QuestionImage != null && q.QuestionImage.Length > 0)
+                    {
+                        string ext = Path.GetExtension(q.QuestionImage.FileName).ToLower();
+                        string[] allowed = { ".jpg", ".png", ".jpeg", ".gif" };
+                        if (allowed.Contains(ext))
+                        {
+                            var fileName = Guid.NewGuid() + ext;
+                            var path = Path.Combine("wwwroot/images/questions", fileName);
+
+                            using (var stream = new FileStream(path, FileMode.Create))
+                            {
+                                await q.QuestionImage.CopyToAsync(stream);
+                            }
+                            question.ImagePath = "/images/questions/" + fileName;
+                        }
+                    }
+
+                    _context.Questions.Add(question);
+                    await _context.SaveChangesAsync();
+
+                    if (q.QuestionType == "MCQ")
+                    {
+                        string[] options = { q.OptionA, q.OptionB, q.OptionC, q.OptionD };
+                        string[] labels = { "A", "B", "C", "D" };
+
+                        for (int i = 0; i < 4; i++)
+                        {
+                            _context.Answers.Add(new Answers
+                            {
+                                QuestionID = question.QuestionID,
+                                AnswerText = options[i],
+                                IsCorrect = q.CorrectAnswer == labels[i]
+                            });
+                        }
+                        await _context.SaveChangesAsync();
+                    }
+                }
+            }
+
+            TempData["SuccessMessage"] = "Đã cập nhật bài kiểm tra thành công!";
+            return RedirectToAction("ListExam");
+        }
+
+
 
         public async Task<IActionResult> DeleteExam(int id)
         {
             SetLecturerViewData();
+
             var exam = await _examsRepository.GetExamByIdAsync(id);
+
+            if (exam == null)
+            {
+                return NotFound();
+            }
+
+            // Lấy thêm danh sách Quiz và Question để hiển thị thông tin chi tiết nếu cần
+            var quizzes = await _context.Quizzes.Where(q => q.ExamID == id).ToListAsync();
+            var quizIds = quizzes.Select(q => q.QuizID).ToList();
+            var questions = await _context.Questions.Where(q => quizIds.Contains(q.QuizID ?? 0)).ToListAsync();
+
+            ViewBag.Quizzes = quizzes;
+            ViewBag.Questions = questions;
+
             return View(exam);
         }
+        [HttpPost, ActionName("DeleteExam")]
+        public async Task<IActionResult> ConfirmDeleteExam(int id)
+        {
+            var exam = await _examsRepository.GetExamByIdAsync(id);
+            if (exam == null)
+            {
+                return NotFound();
+            }
+
+            await _examsRepository.SoftDeleteExamAsync(id);
+
+            TempData["SuccessMessage"] = "Đã xóa bài kiểm tra thành công!";
+            return RedirectToAction("ListExam", "Lecturer");
+        }
+
 
         public IActionResult ViewExam(int id)
         {
@@ -225,107 +570,7 @@ namespace Do_An_Web_Hoc.Controllers
             return View();
         }
 
-        [HttpGet]
-        public IActionResult AddExam()
-        {
-            SetLecturerViewData();
-
-            var courses = _context.Courses
-                .Select(c => new SelectListItem
-                {
-                    Value = c.CourseID.ToString(),
-                    Text = c.CourseName
-                }).ToList();
-
-            ViewBag.CourseList = courses;
-
-            return View();
-        }
-
-
-        // Hiển thị form thêm bài kiểm tra
-        [HttpPost]
-        public IActionResult AddExam(Exams exam)
-        {
-            if (!ModelState.IsValid)
-                return View(exam);
-
-            // 1. Thêm bài kiểm tra
-            exam.CreatedAt = DateTime.Now;
-            exam.Status = 1;
-            _context.Exams.Add(exam);
-            _context.SaveChanges();
-
-            // 2. Lặp qua các quiz được gửi lên từ form
-            int quizIndex = 0;
-            while (true)
-            {
-                var quizName = Request.Form[$"Quizzes[{quizIndex}].QuizName"];
-                if (string.IsNullOrWhiteSpace(quizName)) break;
-
-                var quiz = new Quizzes
-                {
-                    QuizName = quizName,
-                    Description = Request.Form[$"Quizzes[{quizIndex}].Description"],
-                    ExamID = exam.ExamID,
-                    TotalMarks = 50
-                };
-                _context.Quizzes.Add(quiz);
-                _context.SaveChanges();
-
-                // 3. Lặp các câu hỏi trong mỗi quiz
-                int questionIndex = 0;
-                while (true)
-                {
-                    var questionText = Request.Form[$"Quizzes[{quizIndex}].Questions[{questionIndex}].QuestionText"];
-                    if (string.IsNullOrWhiteSpace(questionText)) break;
-
-                    var questionType = Request.Form[$"Quizzes[{quizIndex}].Questions[{questionIndex}].QuestionType"];
-                    var question = new Questions
-                    {
-                        QuizID = quiz.QuizID,
-                        QuestionText = questionText,
-                        QuestionType = questionType == "Trắc nghiệm" ? "MCQ" : "Essay"
-                    };
-                    _context.Questions.Add(question);
-                    _context.SaveChanges();
-
-                    // Nếu là trắc nghiệm → thêm 4 đáp án
-                    if (questionType == "Trắc nghiệm")
-                    {
-                        string[] options = { "A", "B", "C", "D" };
-                        var correctAnswer = Request.Form[$"Quizzes[{quizIndex}].Questions[{questionIndex}].CorrectAnswer"];
-
-                        foreach (var opt in options)
-                        {
-                            var text = Request.Form[$"Quizzes[{quizIndex}].Questions[{questionIndex}].Option{opt}"];
-                            var answer = new Answers
-                            {
-                                QuestionID = question.QuestionID,
-                                AnswerText = text,
-                                IsCorrect = (opt == correctAnswer)
-                            };
-                            _context.Answers.Add(answer);
-                        }
-                        _context.SaveChanges();
-                    }
-
-                    questionIndex++;
-                }
-
-                quizIndex++;
-            }
-
-            return RedirectToAction("ListExam");
-        }
-
-
-
-
-
-
-
-
+ 
         public async Task<IActionResult> EditLecture(int id)
         {
             SetLecturerViewData();
@@ -354,8 +599,133 @@ namespace Do_An_Web_Hoc.Controllers
         [HttpPost, ActionName("DeleteLecture")]
         public async Task<IActionResult> ConfirmDeleteLecture(int id)
         {
+           
+
             await _lecturesRepository.DeleteLectureAsync(id);
+            TempData["SuccessMessage"] = "Đã xóa bài kiểm tra (tạm thời).";
             return RedirectToAction("ListLecture");
         }
+        public async Task<IActionResult> ListCourse()
+        {
+            SetLecturerViewData();
+            var courses = await _coursesRepository.GetAllCoursesAsync();
+            return View(courses);
+        }
+        public async Task<IActionResult> AddCourse()
+        {
+            SetLecturerViewData();
+            return View();
+        }
+        public async Task<IActionResult> EditCourse(int id)
+        {
+            SetLecturerViewData();
+            var course = await _coursesRepository.GetCourseByIdAsync(id);
+            return View(course);
+        }
+        public async Task<IActionResult> DeleteCourse(int id)
+        {
+            SetLecturerViewData();
+            var course = await _coursesRepository.GetCourseByIdAsync(id);
+            return View(course);
+        }
+        public async Task<IActionResult> ListQuiz()
+        {
+            SetLecturerViewData();
+            var quizzes = await _quizzesRepository.GetAllQuizzesAsync();
+            return View(quizzes);
+        }
+        public async Task<IActionResult> AddQuiz()
+        {
+            SetLecturerViewData();
+            return View();
+        }
+        public async Task<IActionResult> EditQuiz(int id)
+        {
+            SetLecturerViewData();
+            var quiz = await _quizzesRepository.GetQuizByIdAsync(id);
+            return View(quiz);
+        }
+        public async Task<IActionResult> DeleteQuiz(int id)
+        {
+            SetLecturerViewData();
+            var quiz = await _quizzesRepository.GetQuizByIdAsync(id);
+            return View(quiz);
+        }
+        public async Task<IActionResult> ListQuestion()
+        {
+            SetLecturerViewData();
+            var questions = await _questionsRepository.GetAllQuestionsAsync();
+            return View(questions);
+        }
+        public async Task<IActionResult> AddQuestion()
+        {
+            SetLecturerViewData();
+            return View();
+        }
+        public async Task<IActionResult> EditQuestion(int id)
+        {
+            SetLecturerViewData();
+            var question = await _questionsRepository.GetQuestionByIdAsync(id);
+            return View(question);
+        }
+        public async Task<IActionResult> DeleteQuestion(int id)
+        {
+            SetLecturerViewData();
+            var question = await _questionsRepository.GetQuestionByIdAsync(id);
+            return View(question);
+        }
+        public async Task<IActionResult> ListResult()
+        {
+            SetLecturerViewData();
+
+            // Lấy ID của giảng viên từ session
+            var userId = HttpContext.Session.GetInt32("LecturerID") ?? 0;
+
+            // RoleID của giảng viên
+            var roleId = 2;
+
+            // Lấy kết quả theo giảng viên hiện tại
+            var results = await _resultsRepository.GetResultsByUserIdAsync(userId, roleId);
+
+            return View(results);
+        }
+
+
+        public async Task<IActionResult> AddResult()
+        {
+            SetLecturerViewData();
+            return View();
+        }
+        public async Task<IActionResult> EditResult(int id)
+        {
+            SetLecturerViewData();
+            var result = await _resultsRepository.GetResultByIdAsync(id);
+            return View(result);
+        }
+        public async Task<IActionResult> DeleteResult(int id)
+        {
+            SetLecturerViewData();
+            var result = await _resultsRepository.GetResultByIdAsync(id);
+            return View(result);
+        }
+        // ✅ Hiển thị thông tin chi tiết học viên theo ID
+        public async Task<IActionResult> ViewStudent(int id)
+        {
+            SetLecturerViewData();
+
+            // Gọi repository để lấy học viên theo ID
+            var student = await _userAccountRepository.GetByIdAsync(id);
+
+            // Nếu không tìm thấy → trả về 404
+            if (student == null)
+            {
+                return NotFound(); // hoặc return View("Error");
+            }
+
+            // Trả về view với model là đối tượng học viên
+            return View(student); // Views/Lecturer/ViewStudent.cshtml
+        }
+
+
     }
 }
