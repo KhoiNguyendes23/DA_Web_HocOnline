@@ -47,6 +47,13 @@
                         <strong>Câu hỏi:</strong> @q.QuestionText
                         <span class="badge bg-info">@q.QuestionType</span>
 
+                        @if (!string.IsNullOrEmpty(q.ImagePath))
+                        {
+                            <div class="mt-2">
+                                <img src="@q.ImagePath" alt="Ảnh câu hỏi" style="max-width: 300px;" class="img-fluid rounded shadow" />
+                            </div>
+                        }
+
                         <ul class="mt-2">
                             @foreach (var a in answers.Where(a => a.QuestionID == q.QuestionID))
                             {
@@ -71,3 +78,5 @@
         <a href="@Url.Action("DeleteExam", "Lecturer", new { id = Model.ExamID })" class="btn btn-danger"><i class="fas fa-trash"></i> Xóa</a>
     </div>
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>

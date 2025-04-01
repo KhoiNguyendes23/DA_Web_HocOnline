@@ -1,0 +1,35 @@
+﻿<style >
+body {
+    background: linear-gradient(135deg, #e0f7fa, #fff);
+}
+
+.card {
+    border: none;
+    border-radius: 1rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.card-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #007bff;
+}
+
+.card p {
+    font-size: 1.1rem;
+    margin-bottom: 0.6rem;
+}
+
+.btn-secondary {
+    background-color: #6c757d;
+    border: none;
+    border-radius: 25px;
+    padding: 10px 25px;
+    transition: 0.3s;
+}
+
+    .btn-secondary:hover {
+        background-color: #495057;
+    }
+
+</style >
