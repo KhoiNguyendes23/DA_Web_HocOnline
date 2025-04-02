@@ -9,7 +9,8 @@ using System.Security.Claims;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Identity;
-
+using ClosedXML.Excel;
+using System.IO;
 
 namespace Do_An_Web_Hoc.Controllers
 {
@@ -161,7 +162,43 @@ namespace Do_An_Web_Hoc.Controllers
 
             return View(result);
         }
+        // Xuất Excel
+        public async Task<IActionResult> ExportRevenueToExcel()
+        {
+            var data = await _enrollmentRepo.GetMonthlyRevenueStatisticsAsync();
 
+
+            using (var workbook = new XLWorkbook())
+            {
+                var worksheet = workbook.Worksheets.Add("Thống kê doanh thu");
+
+                // Header
+                worksheet.Cell(1, 1).Value = "Năm";
+                worksheet.Cell(1, 2).Value = "Tháng";
+                worksheet.Cell(1, 3).Value = "Lượt đăng ký";
+                worksheet.Cell(1, 4).Value = "Tổng doanh thu (VNĐ)";
+                worksheet.Range("A1:D1").Style.Font.Bold = true;
+
+                int row = 2;
+                foreach (var item in data)
+                {
+                    worksheet.Cell(row, 1).Value = item.Year;
+                    worksheet.Cell(row, 2).Value = item.Month;
+                    worksheet.Cell(row, 3).Value = item.TotalEnrollments;
+                    worksheet.Cell(row, 4).Value = item.TotalRevenue;
+                    row++;
+                }
+
+                using (var stream = new MemoryStream())
+                {
+                    workbook.SaveAs(stream);
+                    stream.Seek(0, SeekOrigin.Begin);
+                    return File(stream.ToArray(),
+                        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                        $"ThongKeDoanhThu_{DateTime.Now:yyyyMMdd}.xlsx");
+                }
+            }
+        }
 
         public async Task<IActionResult> StatisticalRevenue()
         {
@@ -302,11 +339,26 @@ namespace Do_An_Web_Hoc.Controllers
             }
         }
 
-
-        public IActionResult ViewCourse()
+        public async Task<IActionResult> ViewCourse(int id)
         {
-            return View();
+            var course = await _coursesRepo.GetCourseByIdAsync(id);
+            if (course == null)
+            {
+                return NotFound();
+            }
+
+            // Lấy tên danh mục
+            var category = await _catogoriesRepository.GetCategoryByIdAsync(course.CategoryID ?? 0);
+
+            ViewData["CategoryName"] = category?.CategoryName ?? "Không xác định";
+            ViewData["Status"] = course.Status == 1 ? "Hoạt động" : "Ngừng hoạt động";
+            ViewData["Price"] = string.Format("{0:N0} VNĐ", course.Price);
+
+            return View(course);
         }
+
+
+
         [HttpGet]
         public async Task<IActionResult> UpdateCourse(int id)
         {
@@ -405,6 +457,7 @@ namespace Do_An_Web_Hoc.Controllers
 
             return View(student);
         }
+
         [HttpPost]
         public async Task<IActionResult> DeleteStudent(int id, int statusId)
         {

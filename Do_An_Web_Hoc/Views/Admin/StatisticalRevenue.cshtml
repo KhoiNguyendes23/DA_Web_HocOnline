@@ -1,59 +1,102 @@
-﻿@{
+﻿@model IEnumerable<Do_An_Web_Hoc.Models.RevenueStatisticViewModel>
+@{
+    ViewData["Title"] = "Thống kê doanh thu";
     Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+
+    var labels = Model.Select(m => $"Tháng {m.Month}/{m.Year}").ToList();
+    var revenues = Model.Select(m => m.TotalRevenue).ToList();
 }
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Báo cáo doanh thu</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
-    <link href="~/css/Admin.css" rel="stylesheet" />
-</head>
-<body>
-    
 
-    <div class="content">
-        <h2 class="mb-4 text-primary">Báo cáo doanh thu</h2>
-        <button class="btn btn-success mb-3" onclick="exportReport()"><i class="fas fa-file-download"></i> Xuất báo cáo</button>
+<div class="container mt-5">
+    <h2 class="text-primary mb-4">💰 Thống kê doanh thu theo tháng</h2>
 
-        <table class="table table-bordered table-striped">
-            <thead class="table-primary">
-                <tr>
-                    <th>#</th>
-                    <th>Tên khóa học</th>
-                    <th>Số học viên</th>
-                    <th>Giá (VND)</th>
-                    <th>Tổng doanh thu (VND)</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr><td>1</td><td>Python cơ bản</td><td>30</td><td>500,000</td><td>15,000,000</td></tr>
-                <tr><td>2</td><td>Java nâng cao</td><td>25</td><td>700,000</td><td>17,500,000</td></tr>
-                <tr><td>3</td><td>JavaScript cơ bản</td><td>20</td><td>600,000</td><td>12,000,000</td></tr>
-            </tbody>
-        </table>
+    <div class="mb-3">
+        <a asp-action="ExportRevenueToExcel" class="btn btn-success">
+            <i class="fa fa-file-excel"></i> Xuất Excel
+        </a>
+    </div>
 
-        <div class="mt-4">
-            <h4>Tổng doanh thu: <strong>44,500,000 VND</strong></h4>
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <canvas id="barChart"></canvas>
+        </div>
+        <div class="col-md-6">
+            <canvas id="pieChart"></canvas>
         </div>
     </div>
 
-    <script>
-        function exportReport() {
-            let reportContent = "Báo cáo doanh thu\n\n" +
-                "# | Tên khóa học | Số học viên | Giá (VND) | Tổng doanh thu (VND)\n" +
-                "1 | Python cơ bản | 30 | 500,000 | 15,000,000\n" +
-                "2 | Java nâng cao | 25 | 700,000 | 17,500,000\n" +
-                "3 | JavaScript cơ bản | 20 | 600,000 | 12,000,000\n" +
-                "\nTổng doanh thu: 44,500,000 VND\n";
+    <table class="table table-bordered table-hover">
+        <thead class="table-dark">
+            <tr>
+                <th>Năm</th>
+                <th>Tháng</th>
+                <th>Số lượt đăng ký</th>
+                <th>Tổng doanh thu (VNĐ)</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.Year</td>
+                    <td>@item.Month</td>
+                    <td>@item.TotalEnrollments</td>
+                    <td>@String.Format("{0:N0} ₫", item.TotalRevenue)</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
 
-            let blob = new Blob([reportContent], { type: "text/plain;charset=utf-8" });
-            saveAs(blob, "BaoCao_DoanhThu.txt");
-        }
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        const labels = @Html.Raw(Json.Serialize(labels));
+        const revenues = @Html.Raw(Json.Serialize(revenues));
+
+        const backgroundColors = labels.map(() => {
+            const r = Math.floor(Math.random() * 255);
+            const g = Math.floor(Math.random() * 255);
+            const b = Math.floor(Math.random() * 255);
+            return `rgba(${r}, ${g}, ${b}, 0.6)`;
+        });
+
+        new Chart(document.getElementById('barChart'), {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Doanh thu (VNĐ)',
+                    data: revenues,
+                    backgroundColor: backgroundColors,
+                    borderColor: 'rgba(0,0,0,0.2)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { display: false },
+                    title: { display: true, text: 'Biểu đồ cột - Doanh thu theo tháng' }
+                }
+            }
+        });
+
+        new Chart(document.getElementById('pieChart'), {
+            type: 'pie',
+            data: {
+                labels: labels,
+                datasets: [{
+                    data: revenues,
+                    backgroundColor: backgroundColors
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    title: { display: true, text: 'Biểu đồ tròn - Tỷ lệ doanh thu' }
+                }
+            }
+        });
     </script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-</html>
+}
