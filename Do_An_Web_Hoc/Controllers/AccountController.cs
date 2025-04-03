@@ -108,9 +108,10 @@ namespace Do_An_Web_Hoc.Controllers
         }
 
         // Đăng xuất
-        public IActionResult Logout()
+        public async Task<IActionResult> Logout()
         {
-            HttpContext.Session.Clear();
+            await HttpContext.SignOutAsync();              // Hủy xác thực cookie
+            HttpContext.Session.Clear();                   // Xóa session
             return RedirectToAction("Index");
         }
         // Trang yêu cầu gửi OTP
