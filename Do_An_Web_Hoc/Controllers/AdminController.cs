@@ -69,13 +69,11 @@ namespace Do_An_Web_Hoc.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> AddCourse(Courses course)
+        public async Task<IActionResult> AddCourse(Courses course, IFormFile image)
         {
             if (!ModelState.IsValid)
             {
-                // Load lại dropdown nếu có lỗi
                 var categories = await _catogoriesRepository.GetAllCategoriesAsync();
-
                 ViewBag.Categories = categories.Select(c => new SelectListItem
                 {
                     Value = c.CategoryId.ToString(),
@@ -91,9 +89,28 @@ namespace Do_An_Web_Hoc.Controllers
                 return View(course);
             }
 
+            if (image != null && image.Length > 0)
+            {
+                var ext = Path.GetExtension(image.FileName).ToLower();
+                var allowedExts = new[] { ".jpg", ".jpeg", ".png", ".gif" };
+                if (allowedExts.Contains(ext))
+                {
+                    var fileName = Guid.NewGuid().ToString() + ext;
+                    var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", "Course_images", fileName);
+
+                    using (var stream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await image.CopyToAsync(stream);
+                    }
+
+                    course.ImageUrl = "/images/Course_images/" + fileName;
+                }
+            }
+
             await _coursesRepo.AddCourseAsync(course);
             return RedirectToAction("ListCourse");
         }
+
         // thêm danh mục
         [HttpPost]
         public async Task<IActionResult> AddCategory(string CategoryName, int Status)
@@ -384,11 +401,10 @@ namespace Do_An_Web_Hoc.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> UpdateCourse(Courses updatedCourse)
+        public async Task<IActionResult> UpdateCourse(Courses updatedCourse, IFormFile image)
         {
             if (!ModelState.IsValid)
             {
-                // Load lại dữ liệu dropdown nếu có lỗi form
                 var categories = await _catogoriesRepository.GetAllCategoriesAsync();
                 ViewBag.Categories = categories.Select(c => new SelectListItem
                 {
@@ -402,21 +418,50 @@ namespace Do_An_Web_Hoc.Controllers
             new SelectListItem { Value = "2", Text = "Ngừng hoạt động" }
         };
 
-                return View(updatedCourse); // Trả về form có lỗi
+                return View(updatedCourse);
             }
 
             var course = await _coursesRepo.GetCourseByIdAsync(updatedCourse.CourseID);
             if (course == null) return NotFound();
 
-            // Cập nhật các trường
+            // Cập nhật dữ liệu
             course.CourseName = updatedCourse.CourseName;
             course.Description = updatedCourse.Description;
             course.Price = updatedCourse.Price;
             course.CategoryID = updatedCourse.CategoryID;
             course.Status = updatedCourse.Status;
 
-            await _coursesRepo.UpdateCourseAsync(course);
+            // Xử lý hình ảnh mới
+            if (image != null && image.Length > 0)
+            {
+                var ext = Path.GetExtension(image.FileName).ToLower();
+                var allowedExts = new[] { ".jpg", ".jpeg", ".png", ".gif" };
 
+                if (allowedExts.Contains(ext))
+                {
+                    // Xóa ảnh cũ nếu tồn tại và không phải ảnh mặc định
+                    if (!string.IsNullOrEmpty(course.ImageUrl) && course.ImageUrl != "/images/default-course.png")
+                    {
+                        var oldPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", course.ImageUrl.TrimStart('/'));
+                        if (System.IO.File.Exists(oldPath))
+                        {
+                            System.IO.File.Delete(oldPath);
+                        }
+                    }
+
+                    var fileName = Guid.NewGuid().ToString() + ext;
+                    var newPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", "Course_images", fileName);
+
+                    using (var stream = new FileStream(newPath, FileMode.Create))
+                    {
+                        await image.CopyToAsync(stream);
+                    }
+
+                    course.ImageUrl = "/images/Course_images/" + fileName;
+                }
+            }
+
+            await _coursesRepo.UpdateCourseAsync(course);
             return RedirectToAction("ListCourse");
         }
 

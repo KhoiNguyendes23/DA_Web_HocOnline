@@ -11,11 +11,13 @@ namespace Do_An_Web_Hoc.Controllers
     {
         private readonly ICoursesRepository _coursesRepo;
         private readonly IEnrollmentsRepository _enrollmentsRepo;
+        private readonly ILecturesRepository _lecturesRepo;
 
-        public UserController(ICoursesRepository coursesRepo, IEnrollmentsRepository enrollmentsRepo)
+        public UserController(ICoursesRepository coursesRepo, IEnrollmentsRepository enrollmentsRepo, ILecturesRepository lecturesRepo)
         {
             _coursesRepo = coursesRepo;
             _enrollmentsRepo = enrollmentsRepo;
+            _lecturesRepo = lecturesRepo;
         }
         public async Task<IActionResult> Dashboard(string keyword)
         {
@@ -141,6 +143,19 @@ namespace Do_An_Web_Hoc.Controllers
             ViewBag.Course = course;
             return View();
         }
+
+        public async Task<IActionResult> LearnCourse(int id)
+        {
+            var course = await _coursesRepo.GetCourseByIdAsync(id);
+            if (course == null) return NotFound();
+
+            var lectures = await _lecturesRepo.GetLecturesByCourseIdAsync(id);
+            ViewBag.CourseName = course.CourseName;
+            ViewBag.CourseId = course.CourseID;
+
+            return View(lectures);
+        }
+
 
 
         public IActionResult SecuritySettings()

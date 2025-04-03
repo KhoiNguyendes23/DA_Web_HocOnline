@@ -8,7 +8,7 @@
 <div class="container mt-4">
     <h3 class="mb-4 text-primary">Thêm Khóa Học</h3>
 
-    <form asp-action="AddCourse" method="post" class="needs-validation" novalidate>
+    <form asp-action="AddCourse" method="post" enctype="multipart/form-data" class="needs-validation" novalidate>
         <div class="row g-3">
 
             <div class="col-md-6">
@@ -39,6 +39,11 @@
                 <select asp-for="Status" class="form-select" asp-items="@(new SelectList(ViewBag.StatusOptions, "Value", "Text"))">
                     <option value="">-- Chọn trạng thái --</option>
                 </select>
+            </div>
+
+            <div class="col-md-12">
+                <label for="image" class="form-label">Ảnh khóa học</label>
+                <input type="file" name="image" id="image" class="form-control" />
             </div>
         </div>
 
@@ -73,7 +78,7 @@
     </div>
 </form>
 
-
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
 }
+

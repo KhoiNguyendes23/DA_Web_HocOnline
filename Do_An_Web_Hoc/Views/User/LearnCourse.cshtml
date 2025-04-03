@@ -1,0 +1,68 @@
+﻿@model IEnumerable<Do_An_Web_Hoc.Models.Lectures>
+
+@{
+    Layout = "~/Views/Shared/_LayoutUsers.cshtml";
+    ViewData["Title"] = "Học khóa học";
+    var courseName = ViewBag.CourseName;
+    var courseId = ViewBag.CourseId;
+}
+
+<div class="container-fluid px-4 mt-4">
+    <h2 class="mb-4 text-primary">Khóa học: @courseName</h2>
+
+    <div class="row">
+        <!-- Vùng hiển thị nội dung bài giảng -->
+        <div class="col-md-8 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-body" id="lecture-content">
+                    <h5 class="card-title">Chọn một bài giảng để bắt đầu học</h5>
+                    <p class="text-muted">Video, mô tả hoặc tài liệu sẽ hiển thị ở đây.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Vùng danh sách bài giảng -->
+        <div class="col-md-4 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-header bg-light fw-bold">
+                    Danh sách bài giảng
+                </div>
+                <ul class="list-group list-group-flush">
+                    @foreach (var lecture in Model)
+                    {
+                        <li class="list-group-item lecture-item"
+                            data-title="@lecture.Title"
+                            data-content="@lecture.Content"
+                            data-video="@lecture.VideoUrl"
+                            data-doc="@lecture.DocumentURL"
+                            style="cursor:pointer;">
+                            <i class="fas fa-play-circle text-primary me-2"></i> @lecture.Title
+                        </li>
+                    }
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.querySelectorAll('.lecture-item').forEach(item => {
+            item.addEventListener('click', function () {
+                const title = this.dataset.title;
+                const content = this.dataset.content;
+                const video = this.dataset.video;
+                const doc = this.dataset.doc;
+
+                const container = document.getElementById('lecture-content');
+
+                container.innerHTML = `
+                    <h5 class="card-title">${title}</h5>
+                    <p>${content}</p>
+                    ${video ? `<video src="${video}" controls class="w-100 mb-3" style="max-height: 400px;"></video>` : ''}
+                    ${doc ? `<a href="${doc}" class="btn btn-success" download><i class="fas fa-file-download"></i> Tải tài liệu</a>` : ''}
+                `;
+            });
+        });
+    </script>
+}

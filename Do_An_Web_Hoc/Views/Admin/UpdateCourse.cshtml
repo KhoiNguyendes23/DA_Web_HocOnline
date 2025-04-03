@@ -7,7 +7,7 @@
 <div class="container mt-5">
     <h2 class="text-primary mb-4"><i class="fas fa-edit"></i> Cập Nhật Khóa Học</h2>
 
-    <form asp-action="UpdateCourse" method="post">
+    <form asp-action="UpdateCourse" method="post" enctype="multipart/form-data">
         <input type="hidden" asp-for="CourseID" />
 
         <div class="mb-3">
@@ -39,6 +39,19 @@
                 <option value="">-- Chọn trạng thái --</option>
             </select>
         </div>
+
+        <div class="mb-3">
+            <label for="image" class="form-label">Chọn ảnh</label>
+            <input type="file" name="image" id="image" class="form-control" />
+        </div>
+
+        @if (!string.IsNullOrEmpty(Model.ImageUrl))
+        {
+            <div class="mb-3">
+                <label class="form-label">Ảnh hiện tại:</label><br />
+                <img src="@Model.ImageUrl" width="220" class="img-thumbnail shadow" />
+            </div>
+        }
 
         <button type="submit" class="btn btn-success"><i class="fas fa-save"></i> Cập nhật</button>
         <a asp-action="ListCourse" class="btn btn-secondary ms-2"><i class="fas fa-arrow-left"></i> Quay lại</a>
