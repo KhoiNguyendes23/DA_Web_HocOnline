@@ -1,0 +1,19 @@
+﻿@model Do_An_Web_Hoc.Models.Courses
+
+@{
+    ViewData["Title"] = "Chi tiết khóa học";
+}
+
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-6">
+            <img src="@Model.ImageUrl" class="img-fluid rounded" alt="@Model.CourseName">
+        </div>
+        <div class="col-md-6">
+            <h2>@Model.CourseName</h2>
+            <p class="mt-3">@Model.Description</p>
+            <h4 class="text-success">Giá: @Model.Price?.ToString("N0") VNĐ</h4>
+            <a href="#" class="btn btn-primary mt-3">Đăng ký học</a> <!-- Có thể chuyển sang Enroll sau -->
+        </div>
+    </div>
+</div>

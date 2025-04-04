@@ -1,0 +1,44 @@
+﻿@model IEnumerable<Do_An_Web_Hoc.Models.Courses>
+
+@{
+    ViewData["Title"] = "Khóa học theo danh mục";
+}
+
+<section class="py-5">
+    <div class="container px-4 px-lg-5 mt-5">
+        <h2 class="mb-4">Danh mục: @ViewBag.CategoryName</h2>
+        <div class="row gx-4 gx-lg-5 row-cols-1 row-cols-md-3 row-cols-xl-3 justify-content-center">
+            @foreach (var course in Model)
+            {
+                <div class="col mb-5">
+                    <div class="card h-100 shadow-sm">
+                        <!-- Hình ảnh khóa học -->
+                        <img class="card-img-top course-img" src="@course.ImageUrl" alt="@course.CourseName" />
+
+                        <!-- Nội dung -->
+                        <div class="card-body p-4">
+                            <div class="text-center">
+                                <h5 class="fw-bolder">@course.CourseName</h5>
+                                <p class="card-text">@course.Description</p>
+                            </div>
+                        </div>
+
+                        <!-- Nút hành động -->
+                        <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
+                            <div class="text-center">
+                                <a class="btn btn-outline-primary mt-auto" asp-action="CourseDetails" asp-route-id="@course.CourseID">Xem Chi Tiết</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</section>
+
+<style>
+    .course-img {
+        height: 200px;
+        object-fit: cover;
+    }
+</style>

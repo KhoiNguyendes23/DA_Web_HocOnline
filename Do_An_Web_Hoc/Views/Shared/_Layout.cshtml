@@ -58,12 +58,14 @@
                             @foreach (var category in categories.Where(c => c.Status == 1))
                             {
                                 <li class="dropdown-menu-item has-submenu">
-                                    <a href="#">@category.CategoryName <i class="fa fa-angle-right float-end"></i></a>
+                                    <a asp-controller="Home" asp-action="CoursesByCategory" asp-route-id="@category.CategoryId">
+                                        @category.CategoryName <i class="fa fa-angle-right float-end"></i>
+                                    </a>
                                     <ul class="sub-dropdown-menu">
                                         @foreach (var course in courses.Where(c => c.CategoryID == category.CategoryId && c.Status == 1))
                                         {
                                             <li>
-                                                <a asp-controller="Courses" asp-action="Details" asp-route-id="@course.CourseID">
+                                                <a asp-controller="Home" asp-action="CourseDetails" asp-route-id="@course.CourseID">
                                                     @course.CourseName
                                                 </a>
                                             </li>
