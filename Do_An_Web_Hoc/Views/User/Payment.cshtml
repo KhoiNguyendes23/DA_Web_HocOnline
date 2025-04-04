@@ -14,10 +14,10 @@
             <p>@course.Description</p>
             <p><strong>Giá:</strong> @course.Price?.ToString("N0") VNĐ</p>
 
-            @if (TempData["Message"] != null)
-            {
-                <div class="alert alert-warning">@TempData["Message"]</div>
-            }
+            @* @if (TempData["Message"] != null) *@
+            @* { *@
+            @*     <div class="alert alert-warning">@TempData["Message"]</div> *@
+            @* } *@
 
             <!-- Gửi đến controller PaymentController, action CreatePaymentUrl -->
             <form method="post" asp-controller="Payment" asp-action="CreatePaymentUrl">
