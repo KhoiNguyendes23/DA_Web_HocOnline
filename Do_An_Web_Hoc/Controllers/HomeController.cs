@@ -1,4 +1,4 @@
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using Do_An_Web_Hoc.Models;
 using Do_An_Web_Hoc.Repositories.Interfaces;
@@ -33,10 +33,36 @@ public class HomeController : Controller
         return View();
     }
 
+    // ✅ Xem danh sách khóa học theo danh mục
+    public async Task<IActionResult> CoursesByCategory(int id)
+    {
+        var category = await _catogoriesRepository.GetCategoryByIdAsync(id);
+        if (category == null || category.Status != 1)
+        {
+            return NotFound();
+        }
+
+        var courses = await _coursesRepo.GetCoursesByCategoryAsync(id);
+        courses = courses.Where(c => c.Status == 1).ToList(); // chỉ lấy các khóa học đang hoạt động
+
+        ViewBag.CategoryName = category.CategoryName;
+        return View(courses);
+    }
+
+    // ✅ Xem chi tiết khóa học
+    public async Task<IActionResult> CourseDetails(int id)
+    {
+        var course = await _coursesRepo.GetCourseByIdAsync(id);
+        if (course == null || course.Status != 1)
+        {
+            return NotFound();
+        }
+        return View(course);
+    }
+
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
     public IActionResult Error()
     {
         return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
     }
-
 }
