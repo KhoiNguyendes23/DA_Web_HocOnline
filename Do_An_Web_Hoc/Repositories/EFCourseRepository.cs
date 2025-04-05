@@ -40,9 +40,25 @@ namespace Do_An_Web_Hoc.Repositories
         // Cập nhật thông tin khóa học
         public async Task<bool> UpdateCourseAsync(Courses course)
         {
-            _context.Courses.Update(course);
-            return await _context.SaveChangesAsync() > 0;
+            var existingCourse = await _context.Courses.FindAsync(course.CourseID);
+            if (existingCourse == null)
+            {
+                return false; // Không tìm thấy khóa học để cập nhật
+            }
+
+            // Cập nhật thông tin khóa học từ đối tượng `course` mới
+            existingCourse.CourseName = course.CourseName;
+            existingCourse.Description = course.Description;
+            existingCourse.Price = course.Price;
+            existingCourse.CategoryID = course.CategoryID;
+            existingCourse.Status = course.Status;
+            existingCourse.ImageUrl = course.ImageUrl; // Nếu có thay đổi hình ảnh
+
+            // Nếu có thay đổi, thực hiện lưu lại
+            await _context.SaveChangesAsync();
+            return true;
         }
+
 
         // Xóa khóa học theo ID
         public async Task DeleteCourseAsync(int courseId)

@@ -56,13 +56,39 @@
 
                 const container = document.getElementById('lecture-content');
 
+                let videoEmbed = '';
+                if (video) {
+                    if (video.includes('drive.google.com')) {
+                        const fileIdMatch = video.match(/[-\w]{25,}/);
+                        if (fileIdMatch) {
+                            const fileId = fileIdMatch[0];
+                            videoEmbed = `
+                                <iframe src="https://drive.google.com/file/d/${fileId}/preview"
+                                        class="w-100 mb-3"
+                                        style="height: 500px;"
+                                        allowfullscreen frameborder="0"></iframe>`;
+                        }
+                    } else if (video.includes('youtube.com')) {
+                        const videoId = new URL(video).searchParams.get("v");
+                        videoEmbed = `
+                            <iframe src="https://www.youtube.com/embed/${videoId}"
+                                    class="w-100 mb-3"
+                                    style="height: 500px;"
+                                    allowfullscreen frameborder="0"></iframe>`;
+                    } else {
+                        videoEmbed = `
+                            <video src="${video}" controls class="w-100 mb-3" style="height: 500px;"></video>`;
+                    }
+                }
+
                 container.innerHTML = `
                     <h5 class="card-title">${title}</h5>
                     <p>${content}</p>
-                    ${video ? `<video src="${video}" controls class="w-100 mb-3" style="max-height: 400px;"></video>` : ''}
-                    ${doc ? `<a href="${doc}" class="btn btn-success" download><i class="fas fa-file-download"></i> Tải tài liệu</a>` : ''}
+                    ${videoEmbed}
+                    ${doc ? `<a href="${doc}" class="btn btn-success" target="_blank"><i class="fas fa-file-download"></i> Tải tài liệu</a>` : ''}
                 `;
             });
         });
     </script>
 }
+

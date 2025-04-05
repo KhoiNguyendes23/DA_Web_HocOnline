@@ -390,7 +390,7 @@ namespace Do_An_Web_Hoc.Controllers
                 Text = c.CategoryName
             }).ToList();
 
-            //Load trạng thái
+            // Load trạng thái
             ViewBag.StatusOptions = new List<SelectListItem>
     {
         new SelectListItem { Value = "1", Text = "Hoạt động" },
@@ -403,67 +403,142 @@ namespace Do_An_Web_Hoc.Controllers
         [HttpPost]
         public async Task<IActionResult> UpdateCourse(Courses updatedCourse, IFormFile image)
         {
+            // Kiểm tra ModelState trước
             if (!ModelState.IsValid)
             {
-                var categories = await _catogoriesRepository.GetAllCategoriesAsync();
-                ViewBag.Categories = categories.Select(c => new SelectListItem
-                {
-                    Value = c.CategoryId.ToString(),
-                    Text = c.CategoryName
-                }).ToList();
-
-                ViewBag.StatusOptions = new List<SelectListItem>
-        {
-            new SelectListItem { Value = "1", Text = "Hoạt động" },
-            new SelectListItem { Value = "2", Text = "Ngừng hoạt động" }
-        };
-
+                // Load lại các danh mục và trạng thái nếu có lỗi validation
+                await LoadCategoriesAndStatusAsync();
                 return View(updatedCourse);
             }
 
+            // Lấy thông tin khóa học cần cập nhật
             var course = await _coursesRepo.GetCourseByIdAsync(updatedCourse.CourseID);
             if (course == null) return NotFound();
 
-            // Cập nhật dữ liệu
+            // Cập nhật các trường dữ liệu của khóa học ngay cả khi không có ảnh mới
             course.CourseName = updatedCourse.CourseName;
             course.Description = updatedCourse.Description;
             course.Price = updatedCourse.Price;
             course.CategoryID = updatedCourse.CategoryID;
             course.Status = updatedCourse.Status;
 
-            // Xử lý hình ảnh mới
+            // Xử lý hình ảnh mới nếu có
             if (image != null && image.Length > 0)
+            {
+                var updateResult = await UpdateCourseImageAsync(course, image);
+                if (!updateResult)
+                {
+                    ModelState.AddModelError("Image", "Lỗi khi tải lên hình ảnh.");
+                    await LoadCategoriesAndStatusAsync();
+                    return View(updatedCourse);
+                }
+            }
+            else
+            {
+                // Nếu không có ảnh mới, giữ lại ảnh cũ
+                // Đảm bảo rằng giá trị ImageUrl không bị null
+                if (string.IsNullOrEmpty(course.ImageUrl))
+                {
+                    course.ImageUrl = "/images/default-course.png"; // Hoặc giữ giá trị mặc định nếu cần
+                }
+            }
+
+            // Cập nhật khóa học vào cơ sở dữ liệu
+            try
+            {
+                var updateSuccessful = await _coursesRepo.UpdateCourseAsync(course);
+                if (!updateSuccessful)
+                {
+                    ModelState.AddModelError("", "Cập nhật khóa học không thành công.");
+                    await LoadCategoriesAndStatusAsync();
+                    return View(updatedCourse);
+                }
+            }
+            catch (Exception ex)
+            {
+                // Xử lý lỗi khi cập nhật khóa học
+                Console.WriteLine($"Error updating course: {ex.Message}");
+                ModelState.AddModelError("", "Có lỗi xảy ra khi cập nhật khóa học.");
+                await LoadCategoriesAndStatusAsync();
+                return View(updatedCourse);
+            }
+
+            // Chuyển hướng tới danh sách khóa học
+            return RedirectToAction("ListCourse");
+        }
+
+        private async Task LoadCategoriesAndStatusAsync()
+        {
+            // Load danh mục
+            var categories = await _catogoriesRepository.GetAllCategoriesAsync();
+            ViewBag.Categories = categories.Select(c => new SelectListItem
+            {
+                Value = c.CategoryId.ToString(),
+                Text = c.CategoryName
+            }).ToList();
+
+            // Load trạng thái
+            ViewBag.StatusOptions = new List<SelectListItem>
+    {
+        new SelectListItem { Value = "1", Text = "Hoạt động" },
+        new SelectListItem { Value = "2", Text = "Ngừng hoạt động" }
+    };
+        }
+
+        private async Task<bool> UpdateCourseImageAsync(Courses course, IFormFile image)
+        {
+            try
             {
                 var ext = Path.GetExtension(image.FileName).ToLower();
                 var allowedExts = new[] { ".jpg", ".jpeg", ".png", ".gif" };
 
-                if (allowedExts.Contains(ext))
+                // Kiểm tra xem file có hợp lệ không
+                if (!allowedExts.Contains(ext))
                 {
-                    // Xóa ảnh cũ nếu tồn tại và không phải ảnh mặc định
-                    if (!string.IsNullOrEmpty(course.ImageUrl) && course.ImageUrl != "/images/default-course.png")
+                    return false; // File không hợp lệ
+                }
+
+                // Xóa ảnh cũ nếu có và không phải ảnh mặc định
+                if (!string.IsNullOrEmpty(course.ImageUrl) && course.ImageUrl != "/images/default-course.png")
+                {
+                    var oldPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", course.ImageUrl.TrimStart('/'));
+                    if (System.IO.File.Exists(oldPath))
                     {
-                        var oldPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", course.ImageUrl.TrimStart('/'));
-                        if (System.IO.File.Exists(oldPath))
+                        try
                         {
-                            System.IO.File.Delete(oldPath);
+                            System.IO.File.Delete(oldPath); // Xóa ảnh cũ
+                        }
+                        catch (Exception ex)
+                        {
+                            // Log lỗi nếu có
+                            Console.WriteLine($"Error deleting old image: {ex.Message}");
+                            return false; // Nếu có lỗi xóa ảnh cũ, trả về false
                         }
                     }
-
-                    var fileName = Guid.NewGuid().ToString() + ext;
-                    var newPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", "Course_images", fileName);
-
-                    using (var stream = new FileStream(newPath, FileMode.Create))
-                    {
-                        await image.CopyToAsync(stream);
-                    }
-
-                    course.ImageUrl = "/images/Course_images/" + fileName;
                 }
-            }
 
-            await _coursesRepo.UpdateCourseAsync(course);
-            return RedirectToAction("ListCourse");
+                // Tạo tên mới cho tệp hình ảnh
+                var fileName = Guid.NewGuid().ToString() + ext;
+                var newPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", "Course_images", fileName);
+
+                // Lưu ảnh mới
+                using (var stream = new FileStream(newPath, FileMode.Create))
+                {
+                    await image.CopyToAsync(stream);
+                }
+
+                // Cập nhật ImageUrl trong khóa học
+                course.ImageUrl = "/images/Course_images/" + fileName;
+                return true;
+            }
+            catch (Exception ex)
+            {
+                // Log lỗi nếu có
+                Console.WriteLine($"Error saving new image: {ex.Message}");
+                return false; // Trả về false nếu có lỗi
+            }
         }
+
 
 
 
