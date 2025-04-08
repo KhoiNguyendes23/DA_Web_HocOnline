@@ -94,5 +94,19 @@ namespace Do_An_Web_Hoc.Repositories
                 .Where(e => e.Status == 1 && e.ExamName.Contains(examName))
                 .ToListAsync();
         }
+
+        public async Task<IEnumerable<Exams>> GetExamsByEnrolledUserAsync(int userId)
+        {
+            // Lấy danh sách CourseID mà user đã đăng ký
+            var enrolledCourseIds = await _context.Enrollments
+                .Where(e => e.UserID == userId)
+                .Select(e => e.CourseID)
+                .ToListAsync();
+
+            // Lấy các bài thi thuộc các CourseID đó
+            return await _context.Exams
+                .Where(exam => enrolledCourseIds.Contains(exam.CourseID))
+                .ToListAsync();
+        }
     }
 }

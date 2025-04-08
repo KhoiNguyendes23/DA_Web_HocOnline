@@ -1,34 +1,33 @@
 ﻿@{
     Layout = "~/Views/Shared/_LayoutUsers.cshtml";
+    ViewData["Title"] = "Lịch sử thanh toán";
+    var paidCourses = ViewBag.PaidCourses as IEnumerable<dynamic>;
 }
 
 <div class="container mt-5">
-    <div class="card p-4 shadow-sm">
-        <h4 class="text-success fw-bold mb-4">Lịch sử thanh toán</h4>
-        <table class="table table-bordered table-striped">
-            <thead class="table-success">
-                <tr>
-                    <th>Ngày</th>
-                    <th>Khóa học</th>
-                    <th>Số tiền</th>
-                    <th>Trạng thái</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>2025-03-10</td>
-                    <td>ReactJS nâng cao</td>
-                    <td>600.000đ</td>
-                    <td>Đã thanh toán</td>
-                </tr>
-                <tr>
-                    <td>2025-02-25</td>
-                    <td>SQL nâng cao</td>
-                    <td>300.000đ</td>
-                    <td>Đã thanh toán</td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
-</div>
+    <h3 class="mb-4 text-primary">Lịch sử thanh toán khóa học</h3>
 
+    @if (paidCourses == null || !paidCourses.Any())
+    {
+        <div class="alert alert-info">Bạn chưa thanh toán khóa học nào.</div>
+    }
+    else
+    {
+        <div class="row">
+            @foreach (var course in paidCourses)
+            {
+                <div class="col-md-4 mb-4">
+                    <div class="card shadow-sm h-100">
+                        <img src="@course.ImageUrl" class="card-img-top" style="height:200px; object-fit:cover;" alt="Ảnh khóa học" />
+                        <div class="card-body">
+                            <h5 class="card-title">@course.CourseName</h5>
+                            <p class="mb-1"><strong>Giá:</strong> @String.Format("{0:N0}", course.Price) VNĐ</p>
+                            <p class="mb-1"><strong>Phương thức:</strong> @course.PaymentMethod</p>
+                            <p class="mb-1"><strong>Ngày thanh toán:</strong> @(((DateTime)course.PaymentDate).ToString("dd/MM/yyyy HH:mm"))</p>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>

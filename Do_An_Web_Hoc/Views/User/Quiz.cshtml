@@ -1,12 +1,107 @@
 ﻿@{
     Layout = "~/Views/Shared/_LayoutUsers.cshtml";
+    ViewData["Title"] = "Làm bài kiểm tra";
 }
 
-<div class="container mt-5">
-    <div class="card p-4 shadow-sm">
-        <h4 class="text-primary fw-bold mb-4">Trắc nghiệm kiến thức</h4>
-        <p>Bạn có thể làm nhanh các câu hỏi trắc nghiệm theo từng chủ đề.</p>
-        <button class="btn btn-outline-primary">Bắt đầu trắc nghiệm</button>
-    </div>
+@* Lấy dữ liệu từ ViewBag *@
+@{
+    var examList = ViewBag.Exams as List<Do_An_Web_Hoc.Models.Exams>;
+    var selectedQuiz = ViewBag.Quiz as Do_An_Web_Hoc.Models.Quizzes;
+    var questions = ViewBag.Questions as List<Do_An_Web_Hoc.Models.Questions>;
+    var answers = ViewBag.Answers as List<Do_An_Web_Hoc.Models.Answers>;
+}
+
+<div class="container mt-4">
+    <h3 class="text-center text-primary mb-4">📝 Làm bài kiểm tra</h3>
+
+    @* Chọn bài kiểm tra *@
+    <form method="get" asp-action="Quiz" asp-controller="User" class="mb-4">
+        <div class="input-group">
+            <select name="examId" class="form-select" required>
+                <option value="">-- Chọn bài kiểm tra --</option>
+                @foreach (var exam in examList)
+                {
+                    <option value="@exam.ExamID" selected="@(selectedQuiz != null && exam.ExamID == selectedQuiz.ExamID)">
+                        @exam.ExamName
+                    </option>
+                }
+            </select>
+            <button type="submit" class="btn btn-primary">Làm bài</button>
+        </div>
+    </form>
+
+    @* Hiển thị nếu có bài kiểm tra được chọn *@
+    @if (selectedQuiz != null && questions != null && questions.Any())
+    {
+        <form method="post" asp-action="SubmitQuiz" asp-controller="User">
+            @* Hidden để gửi QuizID *@
+            <input type="hidden" name="QuizID" value="@selectedQuiz.QuizID" />
+            @* Đồng hồ đếm ngược nếu có thời lượng *@
+            @if (selectedQuiz.Duration != null && selectedQuiz.Duration > 0)
+            {
+                <div class="text-danger text-end fw-bold mb-2" id="timer"></div>
+            }
+
+            @* Câu hỏi *@
+            @for (int i = 0; i < questions.Count; i++)
+            {
+                var question = questions[i];
+                var questionAnswers = answers.Where(a => a.QuestionID == question.QuestionID).ToList();
+
+                <div class="mb-4 border p-3 rounded shadow-sm">
+                    <h5 class="fw-bold">Câu @((i + 1)): @question.QuestionText</h5>
+
+                    @if (question.QuestionType == "MCQ")
+                    {
+                        foreach (var answer in questionAnswers)
+                        {
+                            <div class="form-check">
+                                <input type="radio"
+                                       name="Question_@question.QuestionID"
+                                       class="form-check-input"
+                                       value="@answer.AnswerID"
+                                       id="answer_@answer.AnswerID" />
+                                <label class="form-check-label" for="answer_@answer.AnswerID">@answer.AnswerText</label>
+                            </div>
+                        }
+                    }
+                    else if (question.QuestionType == "Essay")
+                    {
+                        <textarea name="Question_@question.QuestionID"
+                                  class="form-control mt-2"
+                                  placeholder="Nhập câu trả lời..."
+                                  rows="3"></textarea>
+                    }
+                </div>
+            }
+
+            <div class="text-center">
+                <button type="submit" class="btn btn-success">Nộp bài</button>
+                <a asp-action="Dashboard" asp-controller="User" class="btn btn-secondary">Quay lại</a>
+            </div>
+        </form>
+    }
+    else if (selectedQuiz != null)
+    {
+        <div class="alert alert-warning">Không có câu hỏi nào cho bài kiểm tra này.</div>
+    }
 </div>
 
+@* Script đếm ngược thời gian nếu có *@
+@if (selectedQuiz != null && selectedQuiz.Duration != null && selectedQuiz.Duration > 0)
+{
+    <script>
+        let seconds = @selectedQuiz.Duration * 60;
+        let timer = setInterval(function () {
+            let min = Math.floor(seconds / 60);
+            let sec = seconds % 60;
+            document.getElementById("timer").innerText = `⏳ Còn lại: ${min} phút ${sec} giây`;
+            seconds--;
+            if (seconds < 0) {
+                clearInterval(timer);
+                alert("⏰ Hết giờ! Bài sẽ được nộp.");
+                document.forms[1].submit();
+            }
+        }, 1000);
+    </script>
+}

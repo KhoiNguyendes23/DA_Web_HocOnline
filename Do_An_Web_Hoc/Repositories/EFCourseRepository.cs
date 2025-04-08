@@ -110,6 +110,15 @@ namespace Do_An_Web_Hoc.Repositories
             await _context.SaveChangesAsync();
             return true;
         }
+        public async Task<bool> IsUserEnrolledInExamCourseAsync(int userId, int examId)
+        {
+            var exam = await _context.Exams.FindAsync(examId);
+            if (exam == null) return false;
+
+            return await _context.Enrollments
+                .AnyAsync(e => e.UserID == userId && e.CourseID == exam.CourseID);
+        }
+
     }
 }
 

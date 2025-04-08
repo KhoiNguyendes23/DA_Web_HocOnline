@@ -88,7 +88,12 @@ namespace Do_An_Web_Hoc.Repositories
 
             return data;
         }
-
-
+        public async Task<IEnumerable<Enrollments>> GetPaidEnrollmentsByUserAsync(int userId)
+        {
+            return await _context.Enrollments
+                .Include(e => e.Course) // lấy luôn thông tin khóa học
+                .Where(e => e.UserID == userId && e.IsPaid && e.PaymentDate.HasValue)
+                .ToListAsync();
+        }
     }
 }

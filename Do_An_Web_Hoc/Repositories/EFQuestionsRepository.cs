@@ -69,5 +69,24 @@ namespace Do_An_Web_Hoc.Repositories
                 .Where(q => q.QuestionText.Contains(questionText))
                 .ToListAsync();
         }
+        public async Task<IEnumerable<Questions>> GetQuestionsByExamIdAsync(int examId)
+        {
+            var questionsWithAnswers = await (
+                from qz in _context.Quizzes
+                join q in _context.Questions on qz.QuizID equals q.QuizID
+                where qz.ExamID == examId
+                select new Questions
+                {
+                    QuestionID = q.QuestionID,
+                    QuizID = q.QuizID,
+                    QuestionText = q.QuestionText,
+                    QuestionType = q.QuestionType,
+                    ImagePath = q.ImagePath,
+                    // Bạn có thể bỏ Answers nếu không cần trả về
+                }
+            ).ToListAsync();
+
+            return questionsWithAnswers;
+        }
     }
 }

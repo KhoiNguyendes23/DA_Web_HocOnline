@@ -67,7 +67,8 @@ builder.Services.AddScoped<IResultsRepository, EFResultsRepository>();
 builder.Services.AddScoped<IQuizzesRepository, EFQuizzesRepository>();
 builder.Services.AddScoped<IQuestionsRepository, EFQuestionsRepository>();
 builder.Services.AddScoped<IEnrollmentsRepository, EFEnrollmentsRepository>();
-
+builder.Services.AddScoped<IAnswersRepository, EFAnswersRepository>();
+builder.Services.AddScoped<IUserAnswersRepository, EFUserAnswersRepository>();
 
 
 

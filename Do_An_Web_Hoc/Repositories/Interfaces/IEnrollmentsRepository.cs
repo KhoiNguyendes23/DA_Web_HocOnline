@@ -8,19 +8,20 @@ namespace Do_An_Web_Hoc.Repositories.Interfaces
 
         Task<bool> IsUserEnrolledAsync(int userId, int courseId);
 
-        // 📌 Lấy danh sách khóa học người dùng đã đăng ký
+        // Lấy danh sách khóa học người dùng đã đăng ký
         Task<IEnumerable<Enrollments>> GetEnrollmentsByUserAsync(int userId);
 
-        // 📌 Hủy đăng ký (nếu cho phép)
+        // Hủy đăng ký (nếu cho phép)
         Task RemoveEnrollmentAsync(int userId, int courseId);
 
-        // 📌 Cập nhật trạng thái hoàn thành
+        // Cập nhật trạng thái hoàn thành
         Task UpdateCompletionStatusAsync(int enrollmentId, bool isCompleted);
 
-        // 📌 Thống kê tổng số người đăng ký một khóa học
+        //  Thống kê tổng số người đăng ký một khóa học
         Task<int> CountEnrollmentsForCourseAsync(int courseId);
         // Doanh Thu
         Task<IEnumerable<RevenueStatisticViewModel>> GetMonthlyRevenueStatisticsAsync();
-
+        //  Lấy danh sách các khóa học đã thanh toán của người dùng
+        Task<IEnumerable<Enrollments>> GetPaidEnrollmentsByUserAsync(int userId);
     }
 }
