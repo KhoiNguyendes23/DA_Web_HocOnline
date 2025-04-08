@@ -1,24 +1,76 @@
-﻿@{
+﻿@model Do_An_Web_Hoc.ViewModels.ChangePasswordViewModel
+@{
     Layout = "~/Views/Shared/_LayoutUsers.cshtml";
+    ViewData["Title"] = "Cài đặt bảo mật";
 }
 
 <div class="container mt-5">
     <div class="card p-4 shadow-sm">
-        <h4 class="text-danger fw-bold mb-4">Cài đặt bảo mật</h4>
-        <form>
-            <div class="mb-3">
-                <label class="form-label">Mật khẩu hiện tại</label>
-                <input type="password" class="form-control">
+        <h4 class="text-danger fw-bold mb-4">
+            <i class="fas fa-lock"></i> Cài đặt bảo mật
+        </h4>
+
+        @* Thông báo thành công *@
+        @if (TempData["Success"] != null)
+        {
+            <div class="alert alert-success">@TempData["Success"]</div>
+        }
+
+        @* Thông báo lỗi *@
+        @if (TempData["Error"] != null)
+        {
+            <div class="alert alert-danger">@TempData["Error"]</div>
+        }
+
+        <form asp-action="SecuritySettings" method="post">
+            <div class="mb-3 position-relative">
+                <label asp-for="CurrentPassword" class="form-label"></label>
+                <input asp-for="CurrentPassword" class="form-control pe-5" type="password" id="currentPassword" />
+                <span asp-validation-for="CurrentPassword" class="text-danger"></span>
+                <i class="fas fa-eye toggle-password"
+                   onclick="togglePassword('currentPassword', this)"
+                   style="position:absolute; top:38px; right:15px; cursor:pointer;"></i>
             </div>
-            <div class="mb-3">
-                <label class="form-label">Mật khẩu mới</label>
-                <input type="password" class="form-control">
+
+            <div class="mb-3 position-relative">
+                <label asp-for="NewPassword" class="form-label"></label>
+                <input asp-for="NewPassword" class="form-control pe-5" type="password" id="newPassword" />
+                <span asp-validation-for="NewPassword" class="text-danger"></span>
+                <i class="fas fa-eye toggle-password"
+                   onclick="togglePassword('newPassword', this)"
+                   style="position:absolute; top:38px; right:15px; cursor:pointer;"></i>
             </div>
-            <div class="mb-3">
-                <label class="form-label">Xác nhận mật khẩu mới</label>
-                <input type="password" class="form-control">
+
+            <div class="mb-3 position-relative">
+                <label asp-for="ConfirmPassword" class="form-label"></label>
+                <input asp-for="ConfirmPassword" class="form-control pe-5" type="password" id="confirmPassword" />
+                <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+                <i class="fas fa-eye toggle-password"
+                   onclick="togglePassword('confirmPassword', this)"
+                   style="position:absolute; top:38px; right:15px; cursor:pointer;"></i>
             </div>
-            <button class="btn btn-danger">Cập nhật mật khẩu</button>
+
+            <button type="submit" class="btn btn-danger">
+                <i class="fas fa-key"></i> Cập nhật mật khẩu
+            </button>
         </form>
     </div>
 </div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        function togglePassword(inputId, icon) {
+            const input = document.getElementById(inputId);
+            if (input.type === "password") {
+                input.type = "text";
+                icon.classList.remove("fa-eye");
+                icon.classList.add("fa-eye-slash");
+            } else {
+                input.type = "password";
+                icon.classList.remove("fa-eye-slash");
+                icon.classList.add("fa-eye");
+            }
+        }
+    </script>
+}

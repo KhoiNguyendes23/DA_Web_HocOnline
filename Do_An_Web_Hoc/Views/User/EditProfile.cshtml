@@ -1,22 +1,24 @@
 ﻿@model Do_An_Web_Hoc.Models.UserAccount
-
 @{
-    Layout = "~/Views/Shared/_LayoutLecturer.cshtml";
-    ViewData["Title"] = "Chỉnh sửa hồ sơ giảng viên";
+    Layout = "~/Views/Shared/_LayoutUsers.cshtml";
+    ViewData["Title"] = "Chỉnh sửa hồ sơ cá nhân";
 }
 
 <div class="container mt-5">
-    <h2 class="text-primary text-center mb-4">✏️ Cập nhật hồ sơ cá nhân</h2>
+    <h2 class="text-primary text-center mb-4">✏️ Chỉnh sửa thông tin cá nhân</h2>
 
-    <form asp-action="EditProfile" asp-controller="Lecturer" method="post" enctype="multipart/form-data">
+    <form asp-action="EditProfile" asp-controller="User" method="post" enctype="multipart/form-data">
         <div class="row">
+            <!-- Avatar -->
             <div class="col-md-4 text-center">
-                <img src="@(string.IsNullOrEmpty(Model.Image) ? "/images/default-avatar.png" : Model.Image)"
+                <img src="@(string.IsNullOrEmpty(Model.Image) ? "/images/Avatar_images/default-avatar.png" : Model.Image)"
+                     alt="Ảnh đại diện"
                      class="img-thumbnail mb-3"
-                     style="max-height: 200px; object-fit: cover;" alt="Avatar" />
+                     style="max-height: 200px;" />
                 <input type="file" name="image" class="form-control" />
             </div>
 
+            <!-- Thông tin cá nhân -->
             <div class="col-md-8">
                 <div class="mb-3">
                     <label class="form-label">Họ tên</label>
@@ -39,8 +41,8 @@
                 </div>
 
                 <div class="text-center">
-                    <button type="submit" class="btn btn-success px-4">💾 Lưu thay đổi</button>
-                    <a asp-action="Profile" asp-controller="Lecturer" class="btn btn-secondary ms-2">Quay lại</a>
+                    <button type="submit" class="btn btn-success px-4">💾 Lưu</button>
+                    <a asp-action="Profile" asp-controller="User" class="btn btn-secondary ms-2">Quay lại</a>
                 </div>
             </div>
         </div>

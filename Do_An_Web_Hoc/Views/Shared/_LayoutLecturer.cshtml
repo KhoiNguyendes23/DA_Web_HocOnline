@@ -1,7 +1,16 @@
 ﻿@{
-    var fullName = ViewData["FullName"]?.ToString() ?? User.Identity?.Name ?? "Giảng viên";
-    var role = ViewData["RoleName"]?.ToString() ?? User.FindFirst(System.Security.Claims.ClaimTypes.Role)?.Value ?? "Giảng viên";
-    var imagePath = Url.Content(ViewData["ImagePath"]?.ToString() ?? "~/images/default-avatar.png");
+    var fullName = ViewData["FullName"]?.ToString() ?? "Giảng viên";
+    var role = ViewData["RoleName"]?.ToString() ?? "Giảng viên";
+
+    // Xử lý ảnh đại diện từ ViewData
+    var rawImage = ViewData["ImagePath"]?.ToString();
+    var imagePath = Url.Content(
+        string.IsNullOrEmpty(rawImage)
+            ? "~/images/Avatar_images/default-avatar.png"
+            : rawImage.StartsWith("~") || rawImage.StartsWith("/")
+                ? rawImage
+                : "~/images/Avatar_images/" + rawImage
+    );
 }
 
 <!DOCTYPE html>
@@ -15,7 +24,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" rel="stylesheet" />
 
-    <!-- Giao diện hiện đại -->
+    <!-- Giao diện -->
     <link rel="stylesheet" href="~/css/Lecturer.css" />
 </head>
 <body>
@@ -26,10 +35,12 @@
                 <i class="fas fa-chevron-left"></i>
             </button>
 
-            <!-- Thông tin người dùng -->
+            <!-- Thông tin giảng viên -->
             <div class="profile-section">
                 <div class="d-flex align-items-center">
-                    <img src="@imagePath" style="height:60px" class="rounded-circle" alt="Profile">
+                    <img src="@imagePath"
+                         onerror="this.onerror=null; this.src='@Url.Content("~/images/Avatar_images/default-avatar.png")';"
+                         style="height:60px" class="rounded-circle" alt="Avatar" />
                     <div class="ms-3 profile-info">
                         <h6 class="text-white mb-0">@fullName</h6>
                         <small class="text-muted">@role</small>
@@ -37,10 +48,10 @@
                 </div>
             </div>
 
-            <!-- Menu -->
+            <!-- Sidebar menu -->
             <div class="nav flex-column">
-                <!-- Quản lý bài giảng -->
-                <a href="#" class="sidebar-link text-decoration-none p-3" onclick="toggleMenu('lecture-menu')">
+                <!-- Bài giảng -->
+                <a href="#" class="sidebar-link p-3" onclick="toggleMenu('lecture-menu')">
                     <i class="fas fa-chalkboard-teacher"></i>
                     <span class="hide-on-collapse">Quản lý bài giảng</span>
                     <i class="fas fa-chevron-down dropdown-icon"></i>
@@ -50,8 +61,8 @@
                     <a href="@Url.Action("AddLecture", "Lecturer")" class="submenu-link">Thêm bài giảng</a>
                 </div>
 
-                <!-- Quản lý khóa học -->
-                <a href="#" class="sidebar-link text-decoration-none p-3" onclick="toggleMenu('course-menu')">
+                <!-- Khóa học -->
+                <a href="#" class="sidebar-link p-3" onclick="toggleMenu('course-menu')">
                     <i class="fas fa-book"></i>
                     <span class="hide-on-collapse">Quản lý khóa học</span>
                     <i class="fas fa-chevron-down dropdown-icon"></i>
@@ -60,8 +71,8 @@
                     <a href="@Url.Action("ListCourse", "Lecturer")" class="submenu-link">Danh sách khóa học</a>
                 </div>
 
-                <!-- Quản lý học viên -->
-                <a href="#" class="sidebar-link text-decoration-none p-3" onclick="toggleMenu('student-menu')">
+                <!-- Học viên -->
+                <a href="#" class="sidebar-link p-3" onclick="toggleMenu('student-menu')">
                     <i class="fas fa-users"></i>
                     <span class="hide-on-collapse">Quản lý học viên</span>
                     <i class="fas fa-chevron-down dropdown-icon"></i>
@@ -70,8 +81,8 @@
                     <a href="@Url.Action("ListStudent", "Lecturer")" class="submenu-link">Danh sách học viên</a>
                 </div>
 
-                <!-- Quản lý bài kiểm tra -->
-                <a href="#" class="sidebar-link text-decoration-none p-3" onclick="toggleMenu('exam-menu')">
+                <!-- Bài kiểm tra -->
+                <a href="#" class="sidebar-link p-3" onclick="toggleMenu('exam-menu')">
                     <i class="fas fa-question-circle"></i>
                     <span class="hide-on-collapse">Quản lý bài kiểm tra</span>
                     <i class="fas fa-chevron-down dropdown-icon"></i>
@@ -82,20 +93,20 @@
                     <a href="@Url.Action("ResultExam", "Lecturer")" class="submenu-link">Kết quả bài kiểm tra</a>
                 </div>
 
-               @*  <!-- Diễn đàn -->
-                <a href="#" class="sidebar-link text-decoration-none p-3">
-                    <i class="fas fa-comments"></i>
-                    <span class="hide-on-collapse">Diễn đàn khóa học</span>
-                </a> *@
-
-                <!-- Hồ sơ -->
-                <a href="@Url.Action("Profile", "Lecturer")" class="sidebar-link text-decoration-none p-3">
+                <!-- Hồ sơ cá nhân -->
+                <a href="@Url.Action("Profile", "Lecturer")" class="sidebar-link p-3">
                     <i class="fas fa-user-circle"></i>
                     <span class="hide-on-collapse">Hồ sơ cá nhân</span>
                 </a>
 
+                <!-- Trang chủ -->
+                <a href="@Url.Action("Dashboard", "Lecturer")" class="sidebar-link">
+                    <i class="fas fa-home me-2"></i>
+                    <span class="hide-on-collapse">Trang chủ</span>
+                </a>
+
                 <!-- Đăng xuất -->
-                <a href="@Url.Action("Logout", "Account")" class="sidebar-link logout-btn text-decoration-none p-3">
+                <a href="@Url.Action("Logout", "Account")" class="sidebar-link logout-btn p-3">
                     <i class="fas fa-sign-out-alt me-3"></i>
                     <span class="hide-on-collapse">Đăng xuất</span>
                 </a>
@@ -107,15 +118,14 @@
             </div>
         </nav>
 
-        <!-- Nội dung chính -->
+        <!-- Nội dung -->
         <div class="main-content w-100">
             @RenderBody()
         </div>
     </div>
 
-    <!-- Scripts -->\
+    <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/script.js"></script>
     @RenderSection("Scripts", required: false)
 </body>

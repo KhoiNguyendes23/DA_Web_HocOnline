@@ -9,14 +9,12 @@
 
     <!-- Hiển thị ảnh đại diện -->
     <div class="text-center">
-        @if (!string.IsNullOrEmpty(Model.Image))
-        {
-            <img src="~/images/@Model.Image" alt="Profile Picture" class="profile-pic img-fluid rounded-circle mb-3" style="width: 150px;" />
-        }
-        else
-        {
-            <img src="~/images/default-avatar.png" alt="Profile Picture" class="profile-pic img-fluid rounded-circle mb-3" style="width: 150px;" />
-        }
+        <img src="@Url.Content(string.IsNullOrEmpty(Model.Image)
+            ? "~/images/Avatar_images/default-avatar.png"
+             : "~" + Model.Image)"
+             alt="Profile Picture"
+             class="profile-pic img-fluid rounded-circle mb-3"
+             style="width: 150px;" />
     </div>
 
     <!-- Hiển thị thông tin người dùng -->

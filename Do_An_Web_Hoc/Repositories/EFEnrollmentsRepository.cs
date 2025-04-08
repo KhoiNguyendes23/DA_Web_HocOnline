@@ -22,8 +22,9 @@ namespace Do_An_Web_Hoc.Repositories
         public async Task<bool> IsUserEnrolledAsync(int userId, int courseId)
         {
             return await _context.Enrollments
-                .AnyAsync(e => e.UserID == userId && e.CourseID == courseId);
+                .AnyAsync(e => e.UserID == userId && e.CourseID == courseId && e.IsPaid == true);
         }
+
 
         // ✅ Lấy danh sách khóa học người dùng đã đăng ký
         public async Task<IEnumerable<Enrollments>> GetEnrollmentsByUserAsync(int userId)

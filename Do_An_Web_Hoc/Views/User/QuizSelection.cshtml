@@ -1,0 +1,33 @@
+﻿@{
+    Layout = "~/Views/Shared/_LayoutUsers.cshtml";
+    ViewData["Title"] = "Chọn Quiz";
+
+    var quizzes = ViewBag.Quizzes as List<Do_An_Web_Hoc.Models.Quizzes>;
+    var examName = ViewBag.ExamName as string;
+}
+
+<div class="container mt-5">
+    <h3 class="text-center text-success mb-4">📚 @examName - Chọn phần Quiz</h3>
+
+    @if (quizzes != null && quizzes.Any())
+    {
+        <div class="row">
+            @foreach (var quiz in quizzes)
+            {
+                <div class="col-md-6 mb-3">
+                    <div class="card shadow-sm border-0">
+                        <div class="card-body">
+                            <h5 class="card-title">@quiz.QuizName</h5>
+                            <p class="card-text">Tổng điểm: @quiz.TotalMarks</p>
+                            <a asp-action="TakeQuiz" asp-route-quizId="@quiz.QuizID" class="btn btn-outline-primary">Bắt đầu</a>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-warning">Không có quiz nào trong bài kiểm tra này.</div>
+    }
+</div

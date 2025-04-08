@@ -29,9 +29,18 @@ namespace Do_An_Web_Hoc.Repositories
         // Tìm người dùng theo email.
         public async Task<UserAccount> GetByEmailAsync(string email)
         {
-            return await _context.UserAccounts
+            var user = await _context.UserAccounts
+                .AsNoTracking() // Tránh cache thay đổi nếu có
                 .FirstOrDefaultAsync(u => u.Email == email);
+
+            if (user != null)
+            {
+                Console.WriteLine($"[DEBUG] Email: {user.Email}, Password Hash: {user.Password}");
+            }
+
+            return user;
         }
+
         public async Task UpdateAsync(UserStatus user)
         {
             _context.UserStatus.Update(user);
@@ -112,8 +121,8 @@ namespace Do_An_Web_Hoc.Repositories
                 UserName = user.UserName,
                 Email = user.Email,
                 RoleID = user.RoleID,
-                Status = user.Status
-
+                Status = user.Status,
+                Password = user.Password
             };
         }
 
@@ -212,6 +221,7 @@ namespace Do_An_Web_Hoc.Repositories
                 existingUser.Status = user.Status;
                 existingUser.Address = user.Address;
                 existingUser.Image = user.Image;
+                existingUser.Password = user.Password;
                 await _context.SaveChangesAsync();
             }
         }

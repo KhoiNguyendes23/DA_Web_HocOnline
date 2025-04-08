@@ -1,0 +1,23 @@
+﻿@{
+    Layout = "~/Views/Shared/_LayoutUsers.cshtml";
+    ViewData["Title"] = "Chọn bài kiểm tra";
+
+    var examList = ViewBag.Exams as List<Do_An_Web_Hoc.Models.Exams>;
+}
+
+<div class="container mt-5">
+    <h3 class="text-center text-primary mb-4">📋 Chọn bài kiểm tra</h3>
+
+    <form method="get" asp-action="QuizSelection" asp-controller="User">
+        <div class="input-group w-50 mx-auto">
+            <select name="examId" class="form-select" required>
+                <option value="">-- Chọn bài kiểm tra --</option>
+                @foreach (var exam in examList)
+                {
+                    <option value="@exam.ExamID">@exam.ExamName</option>
+                }
+            </select>
+            <button type="submit" class="btn btn-primary">Tiếp tục</button>
+        </div>
+    </form>
+</div>

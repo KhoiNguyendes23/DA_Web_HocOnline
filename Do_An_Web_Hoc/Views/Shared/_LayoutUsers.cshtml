@@ -1,9 +1,16 @@
 ﻿@{
     Layout = null;
+
+    var fullName = ViewData["FullName"]?.ToString() ?? User.Identity?.Name ?? "User";
+    var role = ViewData["RoleName"]?.ToString() ?? "Học viên";
+    var imageValue = ViewData["ImagePath"]?.ToString();
+    var imagePath = Url.Content(string.IsNullOrEmpty(imageValue)
+        ? "~/images/Avatar_images/default-avatar.png"
+        : imageValue.StartsWith("/") ? "~" + imageValue : "~/images/Avatar_images/" + imageValue);
 }
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
 <head>
     <meta charset="utf-8" />
     <title>@ViewBag.Title - NexusFlow</title>
@@ -28,10 +35,12 @@
 
             <div class="profile-section">
                 <div class="d-flex align-items-center">
-                    <img src="https://randomuser.me/api/portraits/women/70.jpg" class="rounded-circle" style="height: 60px" />
+                    <img src="@imagePath"
+                         onerror="this.src='@Url.Content("~/images/Avatar_images/default-avatar.png")';"
+                         class="rounded-circle" style="height: 60px" />
                     <div class="ms-3 profile-info">
-                        <h6 class="text-white mb-0">Alex Morgan</h6>
-                        <small class="text-muted">User</small>
+                        <h6 class="text-white mb-0">@fullName</h6>
+                        <small class="text-muted">@role</small>
                     </div>
                 </div>
             </div>
@@ -49,26 +58,14 @@
                     </div>
                 </div>
 
-                <!-- DANH MỤC KHÓA HỌC -->
-                @* <div class="menu-item"> *@
-                @*     <a href="#" class="sidebar-link" onclick="toggleMenu('all-courses-menu')"> *@
-                @*         <i class="fas fa-th-list"></i> <span class="hide-on-collapse">Danh mục khóa học</span> *@
-                @*         <i class="fas fa-chevron-down dropdown-icon ms-auto"></i> *@
-                @*     </a> *@
-                @*     <div id="all-courses-menu" class="submenu"> *@
-                @*         <a href="@Url.Action("FreeCourses", "User")" class="submenu-link">Khóa học miễn phí</a> *@
-                @*         <a href="@Url.Action("PaidCourses", "User")" class="submenu-link">Khóa học trả phí</a> *@
-                @*     </div> *@
-                @* </div> *@
-
-                <!-- LUYỆN TẬP -->
+                <!-- LUYỆN TẮP -->
                 <div class="menu-item">
                     <a href="#" class="sidebar-link" onclick="toggleMenu('practice-menu')">
                         <i class="fas fa-pen-nib"></i> <span class="hide-on-collapse">Luyện tập</span>
                         <i class="fas fa-chevron-down dropdown-icon ms-auto"></i>
                     </a>
                     <div id="practice-menu" class="submenu">
-                        <a href="@Url.Action("Quiz", "User")" class="submenu-link">Trắc nghiệm</a>
+                        <a href="@Url.Action("QuizSelection", "User")" class="submenu-link">Trắc nghiệm</a>
                         <a href="@Url.Action("Practice", "User")" class="submenu-link">Luyện đề</a>
                         <a href="@Url.Action("Ranking", "User")" class="submenu-link">Xếp hạng</a>
                     </div>
@@ -81,10 +78,9 @@
                         <i class="fas fa-chevron-down dropdown-icon ms-auto"></i>
                     </a>
                     <div id="support-menu" class="submenu">
-                        <a href="@Url.Action("Support", "User")" class="submenu-link">Trợ giúp</a>
+                        <a href="@Url.Action("Support", "User")" class="submenu-link">Trợ giúc</a>
                         <a href="@Url.Action("ContactLecturer", "User")" class="submenu-link">Liên hệ giảng viên</a>
                         <a href="@Url.Action("Community", "User")" class="submenu-link">Cộng đồng</a>
-
                     </div>
                 </div>
 
@@ -98,12 +94,14 @@
                         <a href="@Url.Action("Profile", "User")" class="submenu-link">Hồ sơ</a>
                         <a href="@Url.Action("PaymentHistory", "User")" class="submenu-link">Lịch sử thanh toán</a>
                         <a href="@Url.Action("SecuritySettings", "User")" class="submenu-link">Cài đặt bảo mật</a>
-
                     </div>
-                    <a href="@Url.Action("Dashboard", "User")" class="sidebar-link">
-                        <i class="fas fa-home me-2"></i>
-                        <span class="hide-on-collapse">Quay về trang chủ</span>
-                    </a>
+                </div>
+
+                <a href="@Url.Action("Dashboard", "User")" class="sidebar-link">
+                    <i class="fas fa-home me-2"></i>
+                    <span class="hide-on-collapse">Quay về trang chủ</span>
+                </a>
+
                 <a href="@Url.Action("Logout", "Account")" class="sidebar-link logout-btn">
                     <i class="fas fa-sign-out-alt me-2"></i>
                     <span class="hide-on-collapse">Đăng xuất</span>
@@ -111,7 +109,7 @@
             </div>
 
             <div class="mt-auto p-4">
-                <h4 class="logo-text fw-bold mb-0"></h4>
+                <h4 class="logo-text fw-bold mb-0">NexusFlow</h4>
             </div>
         </nav>
 
@@ -125,8 +123,5 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/LayoutUser.js" asp-append-version="true"></script>
     @RenderSection("Scripts", required: false)
-
-
-
 </body>
 </html>

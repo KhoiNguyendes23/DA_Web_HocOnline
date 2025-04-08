@@ -51,6 +51,10 @@ namespace Do_An_Web_Hoc.Controllers
             _context = context;
         }
 
+
+        /// <summary>
+        /// Lấy thông tin giảng viên từ session/email và truyền vào ViewData để dùng trong layout
+        /// </summary>
         private void SetLecturerViewData()
         {
             var email = HttpContext.Session.GetString("UserEmail");
@@ -62,9 +66,20 @@ namespace Do_An_Web_Hoc.Controllers
                 {
                     ViewData["FullName"] = user.FullName;
                     ViewData["RoleName"] = "Giảng viên";
-                    ViewData["ImagePath"] = string.IsNullOrEmpty(user.Image)
-                        ? "~/images/default-avatar.png"
-                        : "~/images/" + user.Image;
+
+                    // Xử lý ảnh: nếu null → dùng ảnh mặc định
+                    if (string.IsNullOrEmpty(user.Image))
+                    {
+                        ViewData["ImagePath"] = "/images/Avatar_images/default-avatar.png";
+                    }
+                    else
+                    {
+                        // Nếu Image đã có sẵn dấu "/" ở đầu, không cần thêm nữa
+                        ViewData["ImagePath"] = user.Image.StartsWith("/")
+                            ? user.Image
+                            : "/images/Avatar_images/" + user.Image;
+                    }
+
                     HttpContext.Session.SetInt32("LecturerID", user.UserID);
                 }
             }
@@ -72,9 +87,10 @@ namespace Do_An_Web_Hoc.Controllers
             {
                 ViewData["FullName"] = "Giảng viên";
                 ViewData["RoleName"] = "Giảng viên";
-                ViewData["ImagePath"] = "~/images/default-avatar.png";
+                ViewData["ImagePath"] = "/images/Avatar_images/default-avatar.png";
             }
         }
+
 
         public IActionResult Dashboard()
         {
@@ -91,65 +107,109 @@ namespace Do_An_Web_Hoc.Controllers
             var userAccount = await _userAccountRepository.GetByEmailAsync(currentUserEmail);
             if (userAccount == null) return View("Error");
 
+            // Gọi hàm để gán ViewData cho layout
+            SetLecturerViewData();
+
             return View(userAccount);
         }
 
         [HttpGet]
         public async Task<IActionResult> EditProfile()
         {
-            var currentUserEmail = User.FindFirstValue(ClaimTypes.Email);
-            if (string.IsNullOrEmpty(currentUserEmail)) return RedirectToAction("Login", "Account");
+            var currentUserEmail = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value;
+            if (string.IsNullOrEmpty(currentUserEmail))
+            {
+                _logger.LogWarning("Giảng viên chưa đăng nhập.");
+                return RedirectToAction("Login", "Account");
+            }
 
             var userAccount = await _userAccountRepository.GetByEmailAsync(currentUserEmail);
-            if (userAccount == null) return View("Error");
+            if (userAccount == null)
+            {
+                _logger.LogWarning($"Không tìm thấy người dùng với email: {currentUserEmail}");
+                return View("Error");
+            }
+            // Gọi hàm để gán ViewData cho layout
+            SetLecturerViewData();
 
             return View(userAccount);
         }
 
+
         [HttpPost]
         public async Task<IActionResult> EditProfile(UserAccount updatedUser, IFormFile image)
         {
-            var currentUserEmail = User.FindFirstValue(ClaimTypes.Email);
-            if (string.IsNullOrEmpty(currentUserEmail)) return RedirectToAction("Login", "Account");
-
-            var userAccount = await _userAccountRepository.GetByEmailAsync(currentUserEmail);
-            if (userAccount == null) return View("Error");
-
-            userAccount.FullName = updatedUser.FullName;
-            userAccount.PhoneNumber = updatedUser.PhoneNumber;
-            userAccount.Birthday = updatedUser.Birthday;
-            userAccount.Address = updatedUser.Address;
-
-            if (image != null && image.Length > 0)
+            var currentUserEmail = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value;
+            if (string.IsNullOrEmpty(currentUserEmail))
             {
-                var extension = Path.GetExtension(image.FileName).ToLower();
-                var allowed = new[] { ".jpg", ".jpeg", ".png", ".gif" };
-                if (!allowed.Contains(extension))
-                {
-                    ModelState.AddModelError("", "Chỉ chấp nhận ảnh .jpg, .jpeg, .png, .gif");
-                    return View(userAccount);
-                }
-
-                var oldPath = Path.Combine("wwwroot", userAccount.Image?.TrimStart('/') ?? "");
-                if (!string.IsNullOrEmpty(userAccount.Image) && System.IO.File.Exists(oldPath))
-                {
-                    System.IO.File.Delete(oldPath);
-                }
-
-                var fileName = Guid.NewGuid().ToString() + extension;
-                var path = Path.Combine("wwwroot/images", fileName);
-                using var stream = new FileStream(path, FileMode.Create);
-                await image.CopyToAsync(stream);
-
-                userAccount.Image = "/images/" + fileName;
+                _logger.LogWarning("Giảng viên chưa đăng nhập.");
+                return RedirectToAction("Login", "Account");
             }
 
-            if (string.IsNullOrEmpty(userAccount.Image))
-                userAccount.Image = "/images/default-avatar.png";
+            try
+            {
+                var userAccount = await _userAccountRepository.GetByEmailAsync(currentUserEmail);
+                if (userAccount == null)
+                {
+                    _logger.LogWarning($"Không tìm thấy người dùng với email: {currentUserEmail}");
+                    return View("Error");
+                }
 
-            await _userAccountRepository.UpdateAsync(userAccount);
-            return RedirectToAction("Profile");
+                // Cập nhật thông tin cơ bản
+                userAccount.FullName = updatedUser.FullName;
+                userAccount.PhoneNumber = updatedUser.PhoneNumber;
+                userAccount.Birthday = updatedUser.Birthday;
+                userAccount.Address = updatedUser.Address;
+
+                // Xử lý ảnh đại diện
+                if (image != null && image.Length > 0)
+                {
+                    var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".gif" };
+                    var ext = Path.GetExtension(image.FileName).ToLower();
+
+                    if (!allowedExtensions.Contains(ext))
+                    {
+                        ModelState.AddModelError("", "Chỉ cho phép ảnh có định dạng .jpg, .jpeg, .png, .gif.");
+                        return View(updatedUser);
+                    }
+
+                    // Xóa ảnh cũ nếu không phải mặc định
+                    if (!string.IsNullOrEmpty(userAccount.Image) && userAccount.Image != "/images/default-avatar.png")
+                    {
+                        var oldPath = Path.Combine("wwwroot", userAccount.Image.TrimStart('/'));
+                        if (System.IO.File.Exists(oldPath)) System.IO.File.Delete(oldPath);
+                    }
+
+                    // Lưu ảnh mới
+                    var fileName = Guid.NewGuid().ToString() + ext;
+                    var savePath = Path.Combine("wwwroot/images/Avatar_images", fileName);
+                    using (var stream = new FileStream(savePath, FileMode.Create))
+                    {
+                        await image.CopyToAsync(stream);
+                    }
+
+                    userAccount.Image = "/images/Avatar_images/" + fileName;
+                }
+
+                // Nếu chưa có ảnh thì đặt mặc định
+                if (string.IsNullOrEmpty(userAccount.Image))
+                {
+                    userAccount.Image = "/images/default-avatar.png";
+                }
+
+                // Lưu
+                await _userAccountRepository.UpdateAsync(userAccount);
+                _logger.LogInformation($"Giảng viên {currentUserEmail} đã cập nhật hồ sơ thành công.");
+
+                return RedirectToAction("Profile");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Lỗi khi cập nhật hồ sơ giảng viên {currentUserEmail}: {ex.Message}");
+                return StatusCode(500, "Có lỗi xảy ra khi cập nhật hồ sơ.");
+            }
         }
+
 
         public async Task<IActionResult> ListExam(string searchTerm, string statusFilter)
         {
