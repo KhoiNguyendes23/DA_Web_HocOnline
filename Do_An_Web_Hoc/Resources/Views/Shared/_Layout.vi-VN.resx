@@ -129,6 +129,9 @@
   <data name="English" xml:space="preserve">
     <value>Tiếng Anh</value>
   </data>
+  <data name="FooterSub" xml:space="preserve">
+    <value>Website học tập trực tuyến với những khóa học chất lượng và tốt nhất.</value>
+  </data>
   <data name="French" xml:space="preserve">
     <value>Tiếng Pháp</value>
   </data>

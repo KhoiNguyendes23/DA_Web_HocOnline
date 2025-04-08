@@ -1,4 +1,11 @@
-﻿@{
+﻿@using Microsoft.AspNetCore.Localization
+@using Microsoft.AspNetCore.Http
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@inject IHttpContextAccessor HttpContextAccessor
+
+
+@{
     ViewData["Title"] = "Liên hệ";
 }
 
@@ -6,18 +13,18 @@
 <link rel="stylesheet" href="~/css/contact.css" />
 
 <div class="container mt-5">
-    <h2 class="text-center text-primary">Liên hệ với chúng tôi</h2>
+    <h2 class="text-center text-primary">@Localizer["ContactUs"]</h2>
 
     <div class="row mt-4">
         <div class="col-md-6">
             <div class="card shadow-sm p-4">
-                <h4>Thông tin liên hệ</h4>
+                <h4>@Localizer["ContactInformation"]</h4>
                 <div class="contact-info">
                     <div class="contact-item">
                         <div class="icon-circle">
                             <i class="fas fa-map-marker-alt"></i>
                         </div>
-                        <span>TP. Hồ Chí Minh</span>
+                        <span>@Localizer["HCMCity"]</span>
                     </div>
                     <div class="contact-item">
                         <div class="icon-circle">
@@ -36,21 +43,21 @@
         </div>
         <div class="col-md-6">
             <div class="card shadow-sm p-4">
-                <h4>Gửi tin nhắn</h4>
+                <h4>@Localizer["SendMessage"]</h4>
                 <form>
                     <div class="mb-3">
-                        <label class="form-label">Họ tên *</label>
+                        <label class="form-label">@Localizer["FullName"] *</label>
                         <input type="text" class="form-control" required>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label">Số điện thoại *</label>
+                        <label class="form-label">@Localizer["PhoneNumber"] *</label>
                         <input type="tel" class="form-control" required>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label">Nội dung</label>
+                        <label class="form-label">@Localizer["Content"]</label>
                         <textarea class="form-control" rows="4"></textarea>
                     </div>
-                    <button type="submit" class="btn btn-primary w-100">Gửi Tin Nhắn</button>
+                    <button type="submit" class="btn btn-primary w-100">@Localizer["SendMessage"]</button>
                 </form>
             </div>
         </div>
@@ -58,7 +65,7 @@
 
     <!-- Bản đồ kéo dài toàn bộ trang -->
     <div class="map-container mt-4">
-        <h4 class="text-center text-secondary">Vị trí của chúng tôi</h4>
+        <h4 class="text-center text-secondary">@Localizer["OurLocation"]</h4>
         <div id="map"></div>
     </div>
 </div>
@@ -78,7 +85,7 @@
 
         // Thêm marker
         L.marker([10.762622, 106.660172]).addTo(map)
-            .bindPopup('Chúng tôi ở đây!')
+            .bindPopup('@Localizer["WeAreHere!"]')
             .openPopup();
     });
 </script>

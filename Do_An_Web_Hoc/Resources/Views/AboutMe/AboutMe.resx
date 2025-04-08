@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -117,37 +117,79 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="AboutUs" xml:space="preserve">
-    <value>About Us</value>
+  <data name="AboutSub" xml:space="preserve">
+    <value />
   </data>
-  <data name="Contact" xml:space="preserve">
-    <value>Contact</value>
+  <data name="ContinuousGrowth" xml:space="preserve">
+    <value />
   </data>
-  <data name="Courses" xml:space="preserve">
-    <value>Courses</value>
+  <data name="CreativeSolutions" xml:space="preserve">
+    <value />
   </data>
-  <data name="English" xml:space="preserve">
-    <value>English</value>
+  <data name="DescriptionCourse1" xml:space="preserve">
+    <value />
   </data>
-  <data name="FooterSub" xml:space="preserve">
-    <value>Online learning website with the best quality courses.</value>
+  <data name="DescriptionCourse2" xml:space="preserve">
+    <value />
   </data>
-  <data name="French" xml:space="preserve">
-    <value>French</value>
+  <data name="DescriptionCourse3" xml:space="preserve">
+    <value />
   </data>
-  <data name="Home" xml:space="preserve">
-    <value>Home</value>
+  <data name="FeaturedCourses" xml:space="preserve">
+    <value />
   </data>
-  <data name="Login" xml:space="preserve">
-    <value>Login</value>
+  <data name="GlobalReach" xml:space="preserve">
+    <value />
   </data>
-  <data name="Vietnamese" xml:space="preserve">
-    <value>Vietnamese</value>
+  <data name="GroupMembers" xml:space="preserve">
+    <value />
   </data>
-  <data name="ViewProducts" xml:space="preserve">
-    <value>View Products</value>
+  <data name="IndustryLeader" xml:space="preserve">
+    <value />
+  </data>
+  <data name="LearnNow" xml:space="preserve">
+    <value />
+  </data>
+  <data name="MemberInformation" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Mission" xml:space="preserve">
+    <value />
+  </data>
+  <data name="MoreCourses" xml:space="preserve">
+    <value />
+  </data>
+  <data name="NameCourse1" xml:space="preserve">
+    <value />
+  </data>
+  <data name="NameCourse2" xml:space="preserve">
+    <value />
+  </data>
+  <data name="NameCourse3" xml:space="preserve">
+    <value />
+  </data>
+  <data name="OurVision" xml:space="preserve">
+    <value />
+  </data>
+  <data name="StartLearning" xml:space="preserve">
+    <value />
+  </data>
+  <data name="StudentSatisfaction" xml:space="preserve">
+    <value />
+  </data>
+  <data name="SustainablePractices" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TitleAboutUs" xml:space="preserve">
+    <value />
   </data>
   <data name="WelcomeText" xml:space="preserve">
-    <value>Welcome to our website!</value>
+    <value />
+  </data>
+  <data name="WelcomeText_p1" xml:space="preserve">
+    <value />
+  </data>
+  <data name="WelcomeText_p2" xml:space="preserve">
+    <value />
   </data>
 </root>
