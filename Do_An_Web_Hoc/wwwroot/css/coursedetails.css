@@ -1,0 +1,24 @@
+﻿.text-primary {
+    color: #007bff !important;
+}
+
+.list-group-item {
+    padding-top: 0.75rem;
+    padding-bottom: 0.75rem;
+}
+
+.card-header h5 i {
+    vertical-align: middle;
+    font-size: 1.3rem;
+}
+
+.list-group-item {
+    padding-top: 0.75rem;
+    padding-bottom: 0.75rem;
+    font-size: 1rem;
+}
+
+.text-muted {
+    font-size: 0.95rem;
+    line-height: 1.5;
+}
