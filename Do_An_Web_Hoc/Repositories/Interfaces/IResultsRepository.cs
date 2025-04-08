@@ -1,6 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using Do_An_Web_Hoc.Models;
+using ModelsResults = Do_An_Web_Hoc.Models.Results;
+using Do_An_Web_Hoc.Models.ViewModels;
+
+
 
 namespace Do_An_Web_Hoc.Repositories.Interfaces
 {
@@ -26,5 +29,8 @@ namespace Do_An_Web_Hoc.Repositories.Interfaces
 
         // Xóa kết quả (Chỉ Admin mới có thể xóa)
         Task DeleteResultAsync(int resultId, int userRoleId);
+        Task SaveResultFromUserAsync(ModelsResults result);
+
+        Task<IEnumerable<RankingViewModel>> GetUserRankingAsync();
     }
 }

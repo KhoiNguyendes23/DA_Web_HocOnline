@@ -19,7 +19,7 @@
         </div>
 
         <div class="mb-3">
-            <label class="form-label">Link Video (YouTube, MP4...)</label>
+            <label class="form-label">Link Video (MP4...)</label>
             <input asp-for="VideoUrl" class="form-control" />
         </div>
 
@@ -29,8 +29,10 @@
         </div>
 
         <div class="mb-3">
-            <label class="form-label">Mã khóa học</label>
-            <input asp-for="CourseID" class="form-control" required />
+            <label class="form-label">Khóa Học</label>
+            <select asp-for="CourseID" class="form-select" asp-items="ViewBag.CourseList">
+                <option value="">-- Chọn khóa học --</option>
+            </select>
         </div>
 
         <div class="text-center">

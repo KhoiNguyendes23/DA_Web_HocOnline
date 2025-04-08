@@ -10,12 +10,26 @@
         <div class="col-12">
             <h2 class="mb-4">@ViewData["Title"]</h2>
 
-            <!-- FORM TÌM KIẾM KHÓA HỌC -->
-            <form method="get" asp-action="Dashboard" class="mb-4 d-flex flex-wrap" style="max-width: 500px;">
-                <div class="input-group w-100">
+            <!-- FORM LỌC KHÓA HỌC -->
+            <form method="get" asp-action="Dashboard" class="row g-2 mb-4">
+                <div class="col-md-4">
                     <input type="text" name="keyword" class="form-control" placeholder="Tìm kiếm khóa học..." value="@ViewBag.Keyword" />
-                    <button class="btn btn-primary" type="submit">
-                        <i class="fas fa-search"></i> Tìm
+                </div>
+
+                <div class="col-md-3">
+                    <select name="priceType" class="form-select">
+                        <option value="">-- Tất cả khóa học --</option>
+                        <option value="free" selected="@(ViewBag.PriceType == "free" ? "selected" : null)">Miễn phí</option>
+                        <option value="paid" selected="@(ViewBag.PriceType == "paid" ? "selected" : null)">Trả phí</option>
+                    </select>
+                </div>
+
+                <div class="col-md-3">
+                    <input type="number" name="maxPrice" class="form-control" placeholder="Giá tối đa (VNĐ)" value="@ViewBag.MaxPrice" min="0" />
+                </div>
+                <div class="col-md-2">
+                    <button class="btn btn-primary w-100" type="submit">
+                        <i class="fas fa-filter"></i> Lọc
                     </button>
                 </div>
             </form>
@@ -40,7 +54,7 @@
                         <div class="card-body">
                             <h5 class="card-title">@course.CourseName</h5>
                             <p class="card-text">@course.Description</p>
-                            <p class="card-text"><strong>Giá:</strong> @course.Price?.ToString("N0") VNĐ</p>
+                            <p class="card-text"><strong>Giá:</strong> @(course.Price.HasValue && course.Price.Value > 0 ? course.Price.Value.ToString("N0") + " VNĐ" : "Miễn phí")</p>
                         </div>
                         <div class="card-footer bg-transparent text-end border-0">
                             <a asp-action="LearnCourse" asp-route-id="@course.CourseID" class="btn btn-primary btn-sm mt-2">

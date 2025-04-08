@@ -31,6 +31,7 @@ namespace Do_An_Web_Hoc.Repositories.Interfaces
         // Tìm kiếm bài thi theo tên (ExamName) trong danh sách bài thi đang hoạt động
         Task<IEnumerable<Exams>> SearchExamsByNameAsync(string examName);
 
-        
+        Task<IEnumerable<Exams>> GetExamsByEnrolledUserAsync(int userId);
+
     }
 }

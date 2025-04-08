@@ -4,7 +4,8 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Do_An_Web_Hoc.Models;
 using Do_An_Web_Hoc.Repositories.Interfaces;
-using ModelsResults = Do_An_Web_Hoc.Models.Results; // Khắc phục lỗi xung đột namespace
+using ModelsResults = Do_An_Web_Hoc.Models.Results;
+using Do_An_Web_Hoc.Models.ViewModels; // Khắc phục lỗi xung đột namespace
 
 namespace Do_An_Web_Hoc.Repositories
 {
@@ -93,6 +94,29 @@ namespace Do_An_Web_Hoc.Repositories
             {
                 throw new UnauthorizedAccessException("Bạn không có quyền xóa kết quả.");
             }
+        }
+        public async Task SaveResultFromUserAsync(ModelsResults result)
+        {
+            await _context.Results.AddAsync(result);
+            await _context.SaveChangesAsync();
+        }
+        public async Task<IEnumerable<RankingViewModel>> GetUserRankingAsync()
+        {
+            var rankings = await (from r in _context.Results
+                                  join u in _context.UserAccounts on r.UserID equals u.UserID
+                                  group r by new { r.UserID, u.FullName } into g
+                                  select new RankingViewModel
+                                  {
+                                      UserID = g.Key.UserID ?? 0, // ép kiểu int? → int
+                                      FullName = g.Key.FullName,
+                                      TotalScore = (int)(g.Sum(x => x.Score ?? 0)), // xử lý null + ép float? → int
+                                      QuizCount = g.Count()
+                                  })
+                                 .OrderByDescending(r => r.TotalScore)
+                                 .ThenBy(r => r.FullName)
+                                 .ToListAsync();
+
+            return rankings;
         }
     }
 }

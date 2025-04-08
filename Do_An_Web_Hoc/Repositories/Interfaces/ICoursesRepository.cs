@@ -26,6 +26,9 @@ namespace Do_An_Web_Hoc.Repositories.Interfaces
         Task<IEnumerable<Courses>> SearchCoursesByNameAsync(string keyword);
         // Xóa Mềm khóa học
         Task<bool> SoftDeleteCourseAsync(int courseId);
+        // Kiểm tra học viên đã đăng ký khóa học chứa bài kiểm tra chưa
+        Task<bool> IsUserEnrolledInExamCourseAsync(int userId, int examId);
+
     }
 }
 

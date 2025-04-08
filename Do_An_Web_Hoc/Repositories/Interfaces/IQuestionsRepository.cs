@@ -27,5 +27,8 @@ namespace Do_An_Web_Hoc.Repositories.Interfaces
 
         // Tìm kiếm câu hỏi theo nội dung (QuestionText)
         Task<IEnumerable<Questions>> SearchQuestionsByTextAsync(string questionText);
+
+        Task<IEnumerable<Questions>> GetQuestionsByExamIdAsync(int examId);
+
     }
 }

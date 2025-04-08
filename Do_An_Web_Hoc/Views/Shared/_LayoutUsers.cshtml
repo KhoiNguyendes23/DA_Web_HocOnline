@@ -50,16 +50,16 @@
                 </div>
 
                 <!-- DANH MỤC KHÓA HỌC -->
-                <div class="menu-item">
-                    <a href="#" class="sidebar-link" onclick="toggleMenu('all-courses-menu')">
-                        <i class="fas fa-th-list"></i> <span class="hide-on-collapse">Danh mục khóa học</span>
-                        <i class="fas fa-chevron-down dropdown-icon ms-auto"></i>
-                    </a>
-                    <div id="all-courses-menu" class="submenu">
-                        <a href="@Url.Action("FreeCourses", "User")" class="submenu-link">Khóa học miễn phí</a>
-                        <a href="@Url.Action("PaidCourses", "User")" class="submenu-link">Khóa học trả phí</a>
-                    </div>
-                </div>
+                @* <div class="menu-item"> *@
+                @*     <a href="#" class="sidebar-link" onclick="toggleMenu('all-courses-menu')"> *@
+                @*         <i class="fas fa-th-list"></i> <span class="hide-on-collapse">Danh mục khóa học</span> *@
+                @*         <i class="fas fa-chevron-down dropdown-icon ms-auto"></i> *@
+                @*     </a> *@
+                @*     <div id="all-courses-menu" class="submenu"> *@
+                @*         <a href="@Url.Action("FreeCourses", "User")" class="submenu-link">Khóa học miễn phí</a> *@
+                @*         <a href="@Url.Action("PaidCourses", "User")" class="submenu-link">Khóa học trả phí</a> *@
+                @*     </div> *@
+                @* </div> *@
 
                 <!-- LUYỆN TẬP -->
                 <div class="menu-item">
@@ -100,8 +100,10 @@
                         <a href="@Url.Action("SecuritySettings", "User")" class="submenu-link">Cài đặt bảo mật</a>
 
                     </div>
-                </div>
-
+                    <a href="@Url.Action("Dashboard", "User")" class="sidebar-link">
+                        <i class="fas fa-home me-2"></i>
+                        <span class="hide-on-collapse">Quay về trang chủ</span>
+                    </a>
                 <a href="@Url.Action("Logout", "Account")" class="sidebar-link logout-btn">
                     <i class="fas fa-sign-out-alt me-2"></i>
                     <span class="hide-on-collapse">Đăng xuất</span>

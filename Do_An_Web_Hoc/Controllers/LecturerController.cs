@@ -567,10 +567,58 @@ namespace Do_An_Web_Hoc.Controllers
         public IActionResult AddLecture()
         {
             SetLecturerViewData();
+
+            // Đổ dropdown danh sách khóa học
+            ViewBag.CourseList = _context.Courses
+                .Select(c => new SelectListItem
+                {
+                    Value = c.CourseID.ToString(),
+                    Text = c.CourseName
+                }).ToList();
+
             return View();
         }
 
- 
+        [HttpPost]
+        public async Task<IActionResult> AddLecture(Lectures lecture)
+        {
+            if (ModelState.IsValid)
+            {
+                lecture.CreateAt = DateTime.Now;
+
+                // Nếu có xử lý link Google Drive thì thêm đoạn này
+                if (!string.IsNullOrEmpty(lecture.VideoUrl))
+                {
+                    if (lecture.VideoUrl.Contains("drive.google.com") && lecture.VideoUrl.Contains("/view"))
+                    {
+                        lecture.VideoUrl = lecture.VideoUrl.Replace("/view", "/preview");
+                    }
+                    else if (lecture.VideoUrl.Contains("open?id="))
+                    {
+                        var fileId = lecture.VideoUrl.Split("open?id=").Last();
+                        lecture.VideoUrl = $"https://drive.google.com/file/d/{fileId}/preview";
+                    }
+                }
+
+                await _lecturesRepository.AddLectureAsync(lecture);
+                TempData["SuccessMessage"] = "Đã thêm bài giảng thành công!";
+                return RedirectToAction("ListLecture");
+            }
+
+            // Nếu không hợp lệ → load lại danh sách Course để hiển thị
+            ViewBag.CourseList = _context.Courses
+                .Select(c => new SelectListItem
+                {
+                    Value = c.CourseID.ToString(),
+                    Text = c.CourseName
+                }).ToList();
+
+            return View(lecture);
+        }
+
+
+
+
         public async Task<IActionResult> EditLecture(int id)
         {
             SetLecturerViewData();
@@ -583,11 +631,29 @@ namespace Do_An_Web_Hoc.Controllers
         {
             if (ModelState.IsValid)
             {
+                //  Kiểm tra và chuyển đổi VideoUrl nếu là link Google Drive
+                if (!string.IsNullOrEmpty(lecture.VideoUrl))
+                {
+                    // Nếu là link Google Drive file và có "view?usp=sharing" thì đổi thành preview
+                    if (lecture.VideoUrl.Contains("drive.google.com") && lecture.VideoUrl.Contains("/view"))
+                    {
+                        lecture.VideoUrl = lecture.VideoUrl.Replace("/view", "/preview");
+                    }
+
+                    // Nếu link dạng "open?id=..." → chuyển thành dạng file/d/ID/preview
+                    if (lecture.VideoUrl.Contains("open?id="))
+                    {
+                        var fileId = lecture.VideoUrl.Split("open?id=").Last();
+                        lecture.VideoUrl = $"https://drive.google.com/file/d/{fileId}/preview";
+                    }
+                }
+
                 await _lecturesRepository.UpdateLectureAsync(lecture);
                 return RedirectToAction("ListLecture");
             }
             return View(lecture);
         }
+
 
         public async Task<IActionResult> DeleteLecture(int id)
         {
@@ -708,7 +774,7 @@ namespace Do_An_Web_Hoc.Controllers
             var result = await _resultsRepository.GetResultByIdAsync(id);
             return View(result);
         }
-        // ✅ Hiển thị thông tin chi tiết học viên theo ID
+        // Hiển thị thông tin chi tiết học viên theo ID
         public async Task<IActionResult> ViewStudent(int id)
         {
             SetLecturerViewData();
