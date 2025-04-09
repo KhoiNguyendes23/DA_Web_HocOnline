@@ -1,80 +1,99 @@
-﻿@{
+﻿@model IEnumerable<Do_An_Web_Hoc.Models.UserAccount>
+
+@{
+    ViewData["Title"] = "Phân Quyền Người Dùng";
     Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+    var keyword = Context.Request.Query["keyword"].ToString()?.ToLower();
+    var currentEmail = User.Identity?.Name?.ToLower();
+
+    var allSuggestions = Model.Select(u => u.FullName)
+                              .Concat(Model.Select(u => u.Email))
+                              .Concat(new[] { "admin", "giảng viên", "học viên" })
+                              .Distinct()
+                              .ToList();
 }
-@using Microsoft.AspNetCore.Mvc.Razor
-<!DOCTYPE html>
-<html lang="vi">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link href="~/css/Admin.css" rel="stylesheet" />
-</head>
-<body>
 
-   
+<link rel="stylesheet" href="~/css/Decentralization.css" />
 
-    <div class="container">
-        <h2 class="mb-4 text-primary">Phân quyền sử dụng theo loại tài khoản</h2>
-        <form action="#" method="POST">
-            <div class="table-responsive">
-                <table class="table table-bordered">
-                    <thead class="table-primary">
-                        <tr>
-                            <th>Phân quyền</th>
-                            <th>Admin</th>
-                            <th>Giáo viên</th>
-                            <th>Người dùng</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>Tạo khóa học</td>
-                            <td><input type="checkbox" name="createTaskManager" checked></td>
-                            <td><input type="checkbox" name="createTaskMember" checked></td>
-                            <td><input type="checkbox" name="createTaskGuest"></td>
-                        </tr>
-                        <tr>
-                            <td>Tạo nhóm công việc mới</td>
-                            <td><input type="checkbox" name="createTaskGroupManager" checked></td>
-                            <td><input type="checkbox" name="createTaskGroupMember"></td>
-                            <td><input type="checkbox" name="createTaskGroupGuest"></td>
-                        </tr>
-                        <tr>
-                            <td>Xem công việc của người khác</td>
-                            <td><input type="checkbox" name="viewOtherTasksManager" checked></td>
-                            <td><input type="checkbox" name="viewOtherTasksMember" checked></td>
-                            <td><input type="checkbox" name="viewOtherTasksGuest"></td>
-                        </tr>
-                        <tr>
-                            <td>Quyền xem báo cáo công việc</td>
-                            <td><input type="checkbox" name="viewReportManager" checked></td>
-                            <td><input type="checkbox" name="viewReportMember"></td>
-                            <td><input type="checkbox" name="viewReportGuest"></td>
-                        </tr>
-                        <tr>
-                            <td>Quyền tạo cuộc thảo luận mới</td>
-                            <td><input type="checkbox" name="createDiscussionManager" checked></td>
-                            <td><input type="checkbox" name="createDiscussionMember" checked></td>
-                            <td><input type="checkbox" name="createDiscussionGuest"></td>
-                        </tr>
-                        <tr>
-                            <td>Quyền tải tài liệu mới</td>
-                            <td><input type="checkbox" name="uploadFileManager" checked></td>
-                            <td><input type="checkbox" name="uploadFileMember" checked></td>
-                            <td><input type="checkbox" name="uploadFileGuest"></td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-            <button type="submit" class="btn btn-primary">Lưu thay đổi</button>
-        </form>
+<h2 class="text-primary mb-3">👥 Phân Quyền Người Dùng</h2>
+
+<!-- 🔍 TÌM KIẾM -->
+<form asp-action="Decentralization" method="get" class="mb-3 d-flex">
+    <input type="text" name="keyword" list="keywordList" value="@keyword"
+           class="form-control me-2" placeholder="Tìm theo tên, email hoặc vai trò..." />
+    <datalist id="keywordList">
+        @foreach (var s in allSuggestions)
+        {
+            <option value="@s" />
+        }
+    </datalist>
+    <button type="submit" class="btn btn-primary">Tìm kiếm</button>
+</form>
+<form asp-controller="Admin" asp-action="UpdateUserRole" method="post" id="tokenForm">
+    @Html.AntiForgeryToken()
+</form>
+
+
+<!-- 🔴 THÔNG BÁO -->
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger" id="errorBox">
+        @TempData["Error"]
     </div>
+}
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<!-- 📋 BẢNG NGƯỜI DÙNG -->
+<table class="table table-bordered table-hover mt-3">
+    <thead class="table-dark">
+        <tr>
+            <th>Họ Tên</th>
+            <th>Email</th>
+            <th>Admin</th>
+            <th>Giảng viên</th>
+            <th>Học viên</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var user in Model)
+        {
+            var isAdmin = user.RoleID == 1;
+            var isSelf = user.Email?.ToLower() == currentEmail;
+            var rowClass = !string.IsNullOrEmpty(keyword) && (
+            (!string.IsNullOrEmpty(user.FullName) && user.FullName.ToLower().Contains(keyword)) ||
+            (!string.IsNullOrEmpty(user.Email) && user.Email.ToLower().Contains(keyword)) ||
+            (user.RoleID == 1 && "admin".Contains(keyword)) ||
+            (user.RoleID == 2 && "giảng viên".Contains(keyword)) ||
+            (user.RoleID == 3 && "học viên".Contains(keyword))
+            ) ? "highlight" : "";
 
-</body>
-</html>
+            <tr class="@rowClass">
+                <td>@user.FullName</td>
+                <td>@user.Email</td>
+
+                @for (int roleId = 1; roleId <= 3; roleId++)
+                {
+                    <td>
+                        @if (!isAdmin && !isSelf)
+                        {
+                            <input type="checkbox"
+                                   class="role-checkbox"
+                                   data-user-id="@user.UserID"
+                                   data-role-id="@roleId"
+                            @(user.RoleID == roleId ? "checked" : "")
+                                   onclick="handleRoleChange(this)" />
+
+                        }
+                        else
+                        {
+                            <input type="checkbox" disabled @(user.RoleID == roleId ? "checked" : "") />
+                        }
+                    </td>
+                }
+            </tr>
+        }
+    </tbody>
+</table>
+
+@section Scripts {
+    <script src="~/js/decentralization.js"></script>
+}

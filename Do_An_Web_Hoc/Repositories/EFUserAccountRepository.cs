@@ -325,6 +325,16 @@ namespace Do_An_Web_Hoc.Repositories
         {
             return await _context.UserAccounts.FirstOrDefaultAsync(u => u.UserID == id);
         }
+        public async Task UpdateUserRoleAsync(int userId, int newRoleId)
+        {
+            var user = await _context.UserAccounts.FindAsync(userId);
+            if (user != null)
+            {
+                user.RoleID = newRoleId;
+                await _context.SaveChangesAsync();
+            }
+        }
+
 
     }
 }

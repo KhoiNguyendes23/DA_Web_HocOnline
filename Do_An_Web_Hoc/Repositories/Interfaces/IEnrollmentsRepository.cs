@@ -1,4 +1,5 @@
 ﻿using Do_An_Web_Hoc.Models;
+using Do_An_Web_Hoc.Models.ViewModels;
 
 namespace Do_An_Web_Hoc.Repositories.Interfaces
 {
@@ -23,5 +24,10 @@ namespace Do_An_Web_Hoc.Repositories.Interfaces
         Task<IEnumerable<RevenueStatisticViewModel>> GetMonthlyRevenueStatisticsAsync();
         //  Lấy danh sách các khóa học đã thanh toán của người dùng
         Task<IEnumerable<Enrollments>> GetPaidEnrollmentsByUserAsync(int userId);
+
+        Task<decimal> GetRevenueByMonthAsync(int month, int year);
+        Task<List<TopCourseViewModel>> GetTopCoursesAsync(int topN);
+        Task<List<RecentUserViewModel>> GetRecentUsersAsync(int topN);
+
     }
 }

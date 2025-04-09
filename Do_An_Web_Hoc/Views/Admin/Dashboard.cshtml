@@ -1,70 +1,128 @@
 ﻿@{
+    ViewData["Title"] = "Bảng Điều Khiển";
+    var revenueData = (IEnumerable<Do_An_Web_Hoc.Models.RevenueStatisticViewModel>)ViewBag.RevenueStatistics;
+    var topCourses = (List<Do_An_Web_Hoc.Models.ViewModels.TopCourseViewModel>)ViewBag.TopCourses;
+    var recentUsers = (List<Do_An_Web_Hoc.Models.ViewModels.RecentUserViewModel>)ViewBag.RecentUsers;
     Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
 }
 
-@using Microsoft.AspNetCore.Mvc.Razor
-<!DOCTYPE html>
-<html lang="vi">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link href="~/css/Admin.css" rel="stylesheet" />
-    
-    
-</head>
-<body>
+<div class="container mt-4">
+    <h2 class="text-primary mb-4">📊 Bảng Điều Khiển Thống Kê</h2>
 
-  
-    <!-- Content -->
-    <div class="content">
-        <!-- Header -->
-        <div class="header">
-            <h3 >Dashboard</h3>
-            <div class="header-menu">
-                
-            </div>
-        </div>
-
-        <!-- Cards Overview -->
-        <div class="row mt-3">
-            <div class="col-md-6">
-                <div class="card p-3">
-                    <h5>Biểu đồ Thống kê Học viên</h5>
-                    <canvas id="studentChart"></canvas>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="card p-3">
-                    <h5>Hoạt động gần đây</h5>
-                    <ul>
-                        <li>Học viên Nguyễn Văn B vừa hoàn thành khóa học Python.</li>
-                        <li>Admin đã tạo một bài kiểm tra mới.</li>
-                        <li>Thống kê doanh thu tháng 3 đã được cập nhật.</li>
-                    </ul>
+    <div class="row g-4">
+        <div class="col-md-3">
+            <div class="card border-primary text-center">
+                <div class="card-body">
+                    <h5 class="card-title">Tổng Học Viên</h5>
+                    <p class="display-6 fw-bold">@ViewBag.TotalStudents</p>
                 </div>
             </div>
         </div>
+        <div class="col-md-3">
+            <div class="card border-success text-center">
+                <div class="card-body">
+                    <h5 class="card-title">Tổng Giảng Viên</h5>
+                    <p class="display-6 fw-bold">@ViewBag.TotalLecturers</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-warning text-center">
+                <div class="card-body">
+                    <h5 class="card-title">Tổng Khóa Học</h5>
+                    <p class="display-6 fw-bold">@ViewBag.TotalCourses</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-danger text-center">
+                <div class="card-body">
+                    <h5 class="card-title">Doanh Thu Tháng</h5>
+                    <p class="display-6 fw-bold">@ViewBag.MonthlyRevenue.ToString("N0") đ</p>
+                </div>
+            </div>
+        </div>
+    </div>
 
-      
+    <div class="row mt-5">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    Biểu đồ doanh thu theo tháng
+                </div>
+                <div class="card-body">
+                    <canvas id="revenueChart" height="120"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header bg-success text-white">
+                    Top 5 Khóa Học Đăng Ký Nhiều Nhất
+                </div>
+                <ul class="list-group list-group-flush">
+                    @foreach (var course in topCourses)
+                    {
+                        <li class="list-group-item d-flex justify-content-between">
+                            <span>@course.CourseName</span>
+                            <span class="badge bg-primary">@course.EnrollmentCount</span>
+                        </li>
+                    }
+                </ul>
+            </div>
+        </div>
+    </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <div class="card mt-5">
+        <div class="card-header bg-info text-white">
+            Người Dùng Mới Đăng Ký Gần Đây
+        </div>
+        <table class="table table-hover">
+            <thead class="table-light">
+                <tr>
+                    <th>Họ Tên</th>
+                    <th>Email</th>
+                    <th>Vai Trò</th>
+                    <th>Ngày Đăng Ký</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var user in recentUsers)
+                {
+                    <tr>
+                        <td>@user.FullName</td>
+                        <td>@user.Email</td>
+                        <td>@user.RoleName</td>
+                        <td>@user.CreatedAt.ToString("dd/MM/yyyy HH:mm")</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@section Scripts {
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
-        var ctx = document.getElementById('studentChart').getContext('2d');
-        var studentChart = new Chart(ctx, {
+        const revenueCtx = document.getElementById('revenueChart');
+        const revenueChart = new Chart(revenueCtx, {
             type: 'bar',
             data: {
-                labels: ['Tháng 1', 'Tháng 2', 'Tháng 3', 'Tháng 4'],
+                labels: [@string.Join(",", revenueData.Select(d => "\"" + d.Month + "/" + d.Year + "\""))],
                 datasets: [{
-                    label: 'Số học viên',
-                    data: [50, 70, 60, 90],
-                    backgroundColor: 'rgba(54, 162, 235, 0.6)'
+                    label: 'Doanh thu',
+                    data: [@string.Join(",", revenueData.Select(d => d.TotalRevenue))],
+                    backgroundColor: 'rgba(54, 162, 235, 0.7)'
                 }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
             }
         });
     </script>
-</body>
-</html>
+}

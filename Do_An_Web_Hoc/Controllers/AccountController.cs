@@ -91,7 +91,15 @@ namespace Do_An_Web_Hoc.Controllers
                 ViewBag.Error = "Email đã tồn tại!";
                 return View("Index", model);
             }
-
+            // Gán mặc định RoleID là 3 nếu chưa có
+            if (model.RoleID == null)
+            {
+                model.RoleID = 3; // 3: Học viên
+            }
+            if (model.CreateAt == default)
+            {
+                model.CreateAt = DateTime.Now;
+            }
             // Mã hóa mật khẩu trước khi lưu
             //var hasher = new PasswordHasher<UserAccount>();
             //model.Password = hasher.HashPassword(model, model.Password);

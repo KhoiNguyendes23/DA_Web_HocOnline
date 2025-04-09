@@ -11,6 +11,8 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Identity;
 using ClosedXML.Excel;
 using System.IO;
+using Microsoft.AspNetCore.Mvc.Filters;
+using Do_An_Web_Hoc.Models.ViewModels;
 
 namespace Do_An_Web_Hoc.Controllers
 {
@@ -23,7 +25,14 @@ namespace Do_An_Web_Hoc.Controllers
         private readonly ILogger<AdminController> _logger;
         private readonly ICatogoriesRepository _catogoriesRepository;
         private readonly IEnrollmentsRepository _enrollmentRepo;
-        public AdminController(IUserAccountRepository userRepo, ICoursesRepository coursesRepo, IExamsRepository examsRepo, ILogger<AdminController> logger, ICatogoriesRepository catogoriesRepository, IEnrollmentsRepository enrollmentRepo)
+        private readonly IRolesRepository _roleRepo;
+        public AdminController(IUserAccountRepository userRepo,
+                               ICoursesRepository coursesRepo, 
+                               IExamsRepository examsRepo, 
+                               ILogger<AdminController> logger,
+                               ICatogoriesRepository catogoriesRepository,
+                               IEnrollmentsRepository enrollmentRepo, 
+                               IRolesRepository rolesRepository)
         {
             _userRepo = userRepo;
             _coursesRepo = coursesRepo;
@@ -31,17 +40,56 @@ namespace Do_An_Web_Hoc.Controllers
             _logger = logger;
             _catogoriesRepository = catogoriesRepository;
             _enrollmentRepo = enrollmentRepo;
+            _roleRepo = rolesRepository;
         }
-        public IActionResult Dashboard()
+        private async Task SetAdminViewData()
         {
-            var fullName = User.FindFirstValue(ClaimTypes.Name);
-            var roleName = User.FindFirstValue(ClaimTypes.Role);
             var email = User.FindFirstValue(ClaimTypes.Email);
-            ViewData["FullName"] = fullName;
-            ViewData["RoleName"] = roleName;
-            ViewData["Email"] = email;
+            if (!string.IsNullOrEmpty(email))
+            {
+                var user = await _userRepo.GetByEmailAsync(email);
+                ViewData["FullName"] = user?.FullName ?? "Admin";
+                ViewData["RoleName"] = "Admin";
+                ViewData["ImagePath"] = user?.Image;
+            }
+        }
+
+        public override async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
+        {
+            await SetAdminViewData(); // Tự động gán dữ liệu cho ViewData ở mọi action
+            await base.OnActionExecutionAsync(context, next);
+        }
+
+        public async Task<IActionResult> Dashboard()
+        {
+            await SetAdminViewData(); // Đảm bảo ảnh, tên, role hiện đúng ở layout
+
+            // Tổng số lượng
+            ViewBag.TotalStudents = (await _userRepo.GetUsersByRoleAsync(3)).Count();
+            ViewBag.TotalLecturers = (await _userRepo.GetUsersByRoleAsync(2)).Count();
+            ViewBag.TotalCourses = (await _coursesRepo.GetAllCoursesAsync()).Count();
+
+            // Doanh thu tháng hiện tại
+            ViewBag.MonthlyRevenue = await _enrollmentRepo.GetRevenueByMonthAsync(DateTime.Now.Month, DateTime.Now.Year);
+
+            // Dữ liệu biểu đồ: doanh thu các tháng
+            var revenueStatistics = await _enrollmentRepo.GetMonthlyRevenueStatisticsAsync();
+
+            // Top 5 khóa học được đăng ký nhiều nhất
+            var topCourses = await _enrollmentRepo.GetTopCoursesAsync(5);
+
+            // 5 người dùng (giảng viên, học viên) mới nhất
+            var recentUsers = await _enrollmentRepo.GetRecentUsersAsync(5);
+
+            // Truyền vào ViewModel hoặc ViewBag
+            ViewBag.RevenueStatistics = revenueStatistics;
+            ViewBag.TopCourses = topCourses;
+            ViewBag.RecentUsers = recentUsers;
+
             return View();
         }
+
+
         public async Task<IActionResult> ListCourse()
         {
             var courses = await _coursesRepo.GetAllCoursesAsync();
@@ -240,10 +288,51 @@ namespace Do_An_Web_Hoc.Controllers
 
             return View(userAccount);
         }
-        public IActionResult Decentralization()
+        public async Task<IActionResult> Decentralization(string keyword)
         {
-            return View();
+            await SetAdminViewData();
+            var users = await _userRepo.GetAllUsersAsync();
+
+            if (!string.IsNullOrEmpty(keyword))
+            {
+                keyword = keyword.ToLower();
+                users = users.Where(u =>
+                    (!string.IsNullOrEmpty(u.FullName) && u.FullName.ToLower().Contains(keyword)) ||
+                    (!string.IsNullOrEmpty(u.Email) && u.Email.ToLower().Contains(keyword)) ||
+                    (u.RoleID == 1 && "admin".Contains(keyword)) ||
+                    (u.RoleID == 2 && "giảng viên".Contains(keyword)) ||
+                    (u.RoleID == 3 && "học viên".Contains(keyword))
+                );
+            }
+
+            return View(users);
         }
+
+        [HttpPost]
+        public async Task<IActionResult> UpdateUserRole([FromBody] RoleUpdateRequest request)
+        {
+            var currentUserEmail = User.FindFirstValue(ClaimTypes.Email);
+            var currentUser = await _userRepo.GetByEmailAsync(currentUserEmail);
+            var targetUser = await _userRepo.GetByIdAsync(request.UserId);
+
+            // Không được tự đổi mình
+            if (currentUser?.UserID == request.UserId)
+            {
+                return Json(new { success = false, message = "Bạn không thể thay đổi vai trò của chính mình!" });
+            }
+
+            // Không được đổi Admin khác
+            if (targetUser?.RoleID == 1)
+            {
+                return Json(new { success = false, message = "Không thể thay đổi vai trò của người dùng Admin!" });
+            }
+
+            await _userRepo.UpdateUserRoleAsync(request.UserId, request.NewRoleId);
+            return Json(new { success = true });
+        }
+
+
+
 
         [HttpGet]
         public async Task<IActionResult> UpdatePersonalPage()
@@ -623,6 +712,8 @@ namespace Do_An_Web_Hoc.Controllers
         }
         public async Task<IActionResult> ViewStudent(int id)
         {
+            await SetAdminViewData(); // Dùng cho layout
+
             var students = await _userRepo.GetUsersByRoleAsync(3);
             var student = students.FirstOrDefault(s => s.UserID == id);
 
@@ -631,14 +722,9 @@ namespace Do_An_Web_Hoc.Controllers
                 return NotFound();
             }
 
-            ViewData["FullName"] = student.FullName;
-            ViewData["Email"] = student.Email;
-            ViewData["PhoneNumber"] = student.PhoneNumber;
-            ViewData["Birthday"] = student.Birthday?.ToString("dd/MM/yyyy");
-            ViewData["Status"] = student.Status == 1 ? "Active" : "Ngừng Học";
-            
-            return View(student);
+            return View(student); // Chỉ truyền model, không set ViewData
         }
+
         public async Task<IActionResult> ViewTeacher(int id)
         {   var lecturers = await _userRepo.GetUsersByRoleAsync(2);
             var teacher = lecturers.FirstOrDefault(l => l.UserID == id);
