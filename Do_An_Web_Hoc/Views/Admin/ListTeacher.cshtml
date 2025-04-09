@@ -16,7 +16,11 @@
 </head>
 <body>
     <div class="container mt-4">
-        <h3 class="text-primary">Danh sách giáo viên</h3>
+        <h2 class="d-flex align-items-center gap-2 fw-bold text-primary border-bottom pb-2 mb-4">
+            <i class="fas fa-chalkboard-teacher fa-lg"></i>
+            Danh sách giáo viên
+        </h2>
+
         <div class="mb-3">
             <label class="form-label fw-bold me-2">Lọc trạng thái:</label>
             <div class="form-check form-check-inline">
@@ -35,25 +39,20 @@
         <table id="teacherTable" class="table table-bordered table-striped">
             <thead class="table-primary">
                 <tr>
-                    <th>STT</th>
-                    <th>Tên giáo viên</th>
-                    <th>Email</th>
-                    <th>Hành động</th>
-                    <th>Trạng thái</th>
+                    <th class="text-center">STT</th>
+                    <th class="text-center">Tên giáo viên</th>
+                    <th class="text-center">Email</th>
+                    <th class="text-center">Trạng thái</th>
+                    <th class="text-center">Hành động</th>
                 </tr>
             </thead>
             <tbody>
                 @foreach (var teacher in Model)
                 {
-                    <tr>
+                    <tr class="text-center">
                         <td>@teacher.UserID</td>
                         <td>@teacher.UserName</td>
                         <td>@teacher.Email</td>
-                        <td>
-                            <a href="@Url.Action("ViewTeacher", "Admin", new { id = teacher.UserID })" class="btn btn-sm btn-info"><i class="fas fa-eye"></i> Xem</a>
-                            <a href="@Url.Action("UpdateTeacher", "Admin", new { id = teacher.UserID })" class="btn btn-sm btn-warning"><i class="fas fa-edit"></i> Sửa</a>
-                            <a href="@Url.Action("DeleteTeacher", "Admin", new { id = teacher.UserID })" class="btn btn-sm btn-danger"><i class="fas fa-trash"></i> Xóa</a>
-                        </td>
                         <td>
                             @if (teacher.Status == 1)
                             {
@@ -67,8 +66,12 @@
                             {
                                 <span class="badge bg-dark">Bị cấm</span>
                             }
-
                         </td>
+                        <td>
+                            <a href="@Url.Action("ViewTeacher", "Admin", new { id = teacher.UserID })" class="btn btn-sm btn-info"><i class="fas fa-eye"></i> Xem</a>
+                            <a href="@Url.Action("UpdateTeacher", "Admin", new { id = teacher.UserID })" class="btn btn-sm btn-warning"><i class="fas fa-edit"></i> Sửa</a>
+                            <a href="@Url.Action("DeleteTeacher", "Admin", new { id = teacher.UserID })" class="btn btn-sm btn-danger"><i class="fas fa-trash"></i> Xóa</a>
+                        </td>  
                     </tr>
                 }
             </tbody>
