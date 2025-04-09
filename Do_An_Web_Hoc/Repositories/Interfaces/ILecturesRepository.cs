@@ -20,7 +20,8 @@ namespace Do_An_Web_Hoc.Repositories.Interfaces
         Task<int> CountLecturesAsync();
         Task<IEnumerable<Lectures>> GetLecturesPagedAsync(int pageIndex, int pageSize);
         // Thêm vào cuối interface
-        
+        Task<IEnumerable<Lectures>> GetLecturesWithActiveCoursesAsync();
+
         Task UpdateLecturerProfileAsync(Lectures lecturer);
 
     }

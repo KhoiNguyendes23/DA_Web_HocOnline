@@ -13,6 +13,7 @@ using ClosedXML.Excel;
 using System.IO;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Do_An_Web_Hoc.Models.ViewModels;
+using DocumentFormat.OpenXml.InkML;
 
 namespace Do_An_Web_Hoc.Controllers
 {
@@ -26,13 +27,15 @@ namespace Do_An_Web_Hoc.Controllers
         private readonly ICatogoriesRepository _catogoriesRepository;
         private readonly IEnrollmentsRepository _enrollmentRepo;
         private readonly IRolesRepository _roleRepo;
+        private readonly ApplicationDbContext _context;
         public AdminController(IUserAccountRepository userRepo,
                                ICoursesRepository coursesRepo, 
                                IExamsRepository examsRepo, 
                                ILogger<AdminController> logger,
                                ICatogoriesRepository catogoriesRepository,
                                IEnrollmentsRepository enrollmentRepo, 
-                               IRolesRepository rolesRepository)
+                               IRolesRepository rolesRepository,
+                               ApplicationDbContext context)
         {
             _userRepo = userRepo;
             _coursesRepo = coursesRepo;
@@ -41,6 +44,7 @@ namespace Do_An_Web_Hoc.Controllers
             _catogoriesRepository = catogoriesRepository;
             _enrollmentRepo = enrollmentRepo;
             _roleRepo = rolesRepository;
+            _context = context;
         }
         private async Task SetAdminViewData()
         {
@@ -825,6 +829,77 @@ namespace Do_An_Web_Hoc.Controllers
         //    await _userRepo.SaveAllUsersAsync(users);
         //    return Content("Đã mã hóa mật khẩu thành công!");
         //}
+        [HttpGet]
+        public async Task<IActionResult> EditCategory(int id)
+        {
+            var category = await _context.Categories.FindAsync(id);
+            if (category == null)
+            {
+                return NotFound();
+            }
 
+            return View(category);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> EditCategory(Categories category)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(category);
+            }
+
+            var existingCategory = await _context.Categories.FindAsync(category.CategoryId);
+            if (existingCategory == null)
+            {
+                return NotFound();
+            }
+
+            // Cập nhật thông tin danh mục
+            existingCategory.CategoryName = category.CategoryName;
+            existingCategory.Status = category.Status;
+
+            await _context.SaveChangesAsync();
+
+            // Tìm tất cả khóa học thuộc danh mục
+            var relatedCourses = _context.Courses
+                .Where(c => c.CategoryID == category.CategoryId)
+                .ToList();
+
+            if (category.Status == 2) // Ngưng danh mục → ngưng khóa học và bài giảng
+            {
+                foreach (var course in relatedCourses)
+                {
+                    course.Status = 2;
+
+                    // Ngưng các bài giảng thuộc khóa học
+                    var lectures = _context.Lectures.Where(l => l.CourseID == course.CourseID).ToList();
+                    foreach (var lecture in lectures)
+                    {
+                        lecture.Status = 2;
+                    }
+                }
+
+                await _context.SaveChangesAsync();
+            }
+            else if (category.Status == 1) // Kích hoạt danh mục → kích hoạt lại khóa học & bài giảng
+            {
+                foreach (var course in relatedCourses)
+                {
+                    course.Status = 1;
+
+                    var lectures = _context.Lectures.Where(l => l.CourseID == course.CourseID).ToList();
+                    foreach (var lecture in lectures)
+                    {
+                        lecture.Status = 1;
+                    }
+                }
+
+                await _context.SaveChangesAsync();
+            }
+
+            TempData["SuccessMessage"] = "Đã cập nhật danh mục thành công.";
+            return RedirectToAction("ListCategory");
+        }
     }
 }

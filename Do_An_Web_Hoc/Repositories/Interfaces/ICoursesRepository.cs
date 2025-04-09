@@ -1,4 +1,6 @@
 ﻿using Do_An_Web_Hoc.Models;
+using Do_An_Web_Hoc.Models.ViewModels;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace Do_An_Web_Hoc.Repositories.Interfaces
 {
@@ -28,6 +30,11 @@ namespace Do_An_Web_Hoc.Repositories.Interfaces
         Task<bool> SoftDeleteCourseAsync(int courseId);
         // Kiểm tra học viên đã đăng ký khóa học chứa bài kiểm tra chưa
         Task<bool> IsUserEnrolledInExamCourseAsync(int userId, int examId);
+        // Thống kê số học viên theo khóa học
+        Task<List<CourseStudentStat>> GetStudentCountPerCourseAsync();
+
+        Task<IEnumerable<SelectListItem>> GetActiveCourseSelectListAsync();
+
 
     }
 }

@@ -118,5 +118,24 @@ namespace Do_An_Web_Hoc.Repositories
 
             return rankings;
         }
+        public async Task<IEnumerable<ResultExamViewModel>> GetExamResultsForLecturerAsync()
+        {
+            var results = await (from r in _context.Results
+                                 join u in _context.UserAccounts on r.UserID equals u.UserID
+                                 join q in _context.Quizzes on r.QuizID equals q.QuizID
+                                 join e in _context.Exams on q.ExamID equals e.ExamID
+                                 select new ResultExamViewModel
+                                 {
+                                     StudentName = u.FullName,
+                                     ExamName = e.ExamName,
+                                     QuizName = q.QuizName,
+                                     Score = r.Score,
+                                     SubmissionTime = r.SubmissionTime
+                                 })
+                                 .OrderByDescending(r => r.SubmissionTime)
+                                 .ToListAsync();
+
+            return results;
+        }
     }
 }

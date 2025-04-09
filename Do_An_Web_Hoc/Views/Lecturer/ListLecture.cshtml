@@ -10,7 +10,7 @@
 <div class="container mt-4">
     <h3 class="text-primary text-center mb-4">Danh sách bài giảng</h3>
 
-    <!-- ✅ Nút được đặt bên phải -->
+    <!-- ✅ Nút Thêm bài giảng -->
     <div class="d-flex justify-content-start mb-3">
         <a class="btn btn-success" href="@Url.Action("AddLecture", "Lecturer")">
             <i class="fas fa-plus"></i> Thêm bài giảng
@@ -44,20 +44,25 @@
                         <td>
                             @if (!string.IsNullOrEmpty(item.VideoUrl))
                             {
-                                var embedUrl = item.VideoUrl.Contains("watch?v=")
-                                ? item.VideoUrl.Replace("watch?v=", "embed/")
-                                : item.VideoUrl.Replace("youtu.be/", "www.youtube.com/embed/");
-
-                                if (embedUrl.Contains("youtube.com"))
+                                if (item.VideoUrl.Contains("drive.google.com"))
                                 {
+                                    <iframe src="@item.VideoUrl" width="120" height="70" allow="autoplay" allowfullscreen style="border: none;"></iframe>
+                                }
+                                else if (item.VideoUrl.Contains("watch?v="))
+                                {
+                                    var embedUrl = item.VideoUrl.Replace("watch?v=", "embed/");
                                     <iframe width="120" height="70" src="@embedUrl" frameborder="0" allowfullscreen></iframe>
                                 }
-                                else
+                                else if (item.VideoUrl.EndsWith(".mp4") || item.VideoUrl.StartsWith("http"))
                                 {
                                     <video width="120" height="70" controls muted>
                                         <source src="@item.VideoUrl" type="video/mp4" />
                                         Trình duyệt không hỗ trợ video.
                                     </video>
+                                }
+                                else
+                                {
+                                    <span class="text-muted">Không hỗ trợ định dạng video</span>
                                 }
                             }
                             else
@@ -114,7 +119,6 @@
             }
         </tbody>
     </table>
-
 </div>
 
 @section Scripts {
