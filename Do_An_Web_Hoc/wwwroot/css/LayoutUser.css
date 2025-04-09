@@ -13,8 +13,8 @@ body {
     flex-direction: column;
     height: 100vh;
     width: var(--sidebar-width);
-    /* background: linear-gradient(135deg, #424eb9 0%, #16181f 100%); */
-    background: linear-gradient(45deg, #6a11cb 0%, #2575fc 100%);
+    background: linear-gradient(135deg, #424eb9 0%, #16181f 100%); 
+    /*background: linear-gradient(45deg, #6a11cb 0%, #2575fc 100%);*/
     transition: all 0.3s ease;
     justify-content: flex-start;
     padding: 0;
@@ -24,6 +24,12 @@ body {
     .sidebar.collapsed {
         width: var(--sidebar-width-collapsed);
     }
+
+    .sidebar.collapsed ~ .main-content {
+    margin-left: var(--sidebar-width-collapsed);
+    width: calc(100% - var(--sidebar-width-collapsed)); /* ✔ Bổ sung dòng này */
+}
+
 
 /* Sidebar link */
 .sidebar-link {
@@ -87,6 +93,7 @@ body {
     .profile-section img {
         height: 50px;
         border-radius: 50%;
+        border: 3px solid white; /* ✅ Viền trắng dày 3px */
     }
 
 .profile-info {

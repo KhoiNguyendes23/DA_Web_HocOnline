@@ -1,34 +1,38 @@
 ﻿@model IEnumerable<Do_An_Web_Hoc.Models.Courses>
 
+<link rel="stylesheet" href="~/css/user-dashboard.css" asp-append-version="true" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+
 @{
     Layout = "~/Views/Shared/_LayoutUsers.cshtml";
-    ViewData["Title"] = "Trang Người dùng";
+    ViewData["Title"] = "Tất Cả Các Khóa Học Của Chúng Tôi";
+    var enrolledCourseIds = ViewBag.EnrolledCourseIds as List<int> ?? new List<int>();
 }
 
 <div class="container-fluid px-4 mt-4">
     <div class="row">
         <div class="col-12">
-            <h2 class="mb-4">@ViewData["Title"]</h2>
+            <h2 class="fw-bold fs-2 mb-4">
+                <i class="fas fa-graduation-cap text-primary me-2"></i>
+                Tất Cả Các Khóa Học Của Chúng Tôi
+            </h2>
+
 
             <!-- FORM LỌC KHÓA HỌC -->
-            <form method="get" asp-action="Dashboard" class="row g-2 mb-4">
-                <div class="col-md-4">
-                    <input type="text" name="keyword" class="form-control" placeholder="Tìm kiếm khóa học..." value="@ViewBag.Keyword" />
-                </div>
-
-                <div class="col-md-3">
-                    <select name="priceType" class="form-select">
-                        <option value="">-- Tất cả khóa học --</option>
+            <form method="get" asp-action="Dashboard" class="mb-4">
+                <div class="input-group">
+                    <select name="priceType" class="form-select" style="max-width: 160px;">
+                        <option value="">Tất cả khóa học</option>
                         <option value="free" selected="@(ViewBag.PriceType == "free" ? "selected" : null)">Miễn phí</option>
                         <option value="paid" selected="@(ViewBag.PriceType == "paid" ? "selected" : null)">Trả phí</option>
                     </select>
-                </div>
 
-                <div class="col-md-3">
+                    <input type="text" name="keyword" class="form-control" placeholder="Tìm kiếm khóa học..." value="@ViewBag.Keyword" />
+
                     <input type="number" name="maxPrice" class="form-control" placeholder="Giá tối đa (VNĐ)" value="@ViewBag.MaxPrice" min="0" />
-                </div>
-                <div class="col-md-2">
-                    <button class="btn btn-primary w-100" type="submit">
+
+                    <button class="btn btn-primary" type="submit">
                         <i class="fas fa-filter"></i> Lọc
                     </button>
                 </div>
@@ -54,12 +58,23 @@
                         <div class="card-body">
                             <h5 class="card-title">@course.CourseName</h5>
                             <p class="card-text">@course.Description</p>
-                            <p class="card-text"><strong>Giá:</strong> @(course.Price.HasValue && course.Price.Value > 0 ? course.Price.Value.ToString("N0") + " VNĐ" : "Miễn phí")</p>
                         </div>
                         <div class="card-footer bg-transparent text-end border-0">
-                            <a asp-action="LearnCourse" asp-route-id="@course.CourseID" class="btn btn-primary btn-sm mt-2">
-                                <i class="fas fa-play-circle"></i> Học ngay
-                            </a>
+                            @if (enrolledCourseIds.Contains(course.CourseID))
+                            {
+                                <a asp-action="LearnCourse" asp-route-id="@course.CourseID" class="custom-btn primary">
+                                    <i class="fas fa-play-circle"></i> HỌC NGAY
+                                </a>                            }
+                            else
+                            {
+                                <p class="card-text course-price"><strong>Giá:</strong> @(course.Price > 0 ? course.Price?.ToString("N0") + " VNĐ" : "Miễn phí")</p>
+                                <form method="post" asp-action="RegisterCourse" asp-controller="User">
+                                    <input type="hidden" name="courseId" value="@course.CourseID" />
+                                    <button type="submit" class="custom-btn success">
+                                        <i class="fas fa-plus-circle"></i> ĐĂNG KÝ
+                                    </button>
+                                </form>
+                            }
                         </div>
                     </div>
                 </div>

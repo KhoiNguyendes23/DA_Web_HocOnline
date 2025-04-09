@@ -120,6 +120,9 @@
   <data name="AboutSub" xml:space="preserve">
     <value>KTDAH is a course selling web development team, focusing on lesson content, flexible payment and smart course management. With an experienced team, we are committed to providing a modern online learning platform, connecting teachers and students easily.</value>
   </data>
+  <data name="ContactForConsultation" xml:space="preserve">
+    <value>Contact for consultation</value>
+  </data>
   <data name="ContinuousGrowth" xml:space="preserve">
     <value>Continuous growth</value>
   </data>
@@ -150,6 +153,9 @@
   <data name="LearnNow" xml:space="preserve">
     <value>LEARN NOW</value>
   </data>
+  <data name="Mem" xml:space="preserve">
+    <value>Member</value>
+  </data>
   <data name="MemberInformation" xml:space="preserve">
     <value>Member information</value>
   </data>
@@ -168,8 +174,17 @@
   <data name="NameCourse3" xml:space="preserve">
     <value>Data Structure &amp; Algorithm</value>
   </data>
+  <data name="Nation" xml:space="preserve">
+    <value>Nation</value>
+  </data>
   <data name="OurVision" xml:space="preserve">
     <value>Our Vision</value>
+  </data>
+  <data name="Prize" xml:space="preserve">
+    <value>Prize</value>
+  </data>
+  <data name="Project" xml:space="preserve">
+    <value>Project</value>
   </data>
   <data name="StartLearning" xml:space="preserve">
     <value>STRAT LEARNING</value>

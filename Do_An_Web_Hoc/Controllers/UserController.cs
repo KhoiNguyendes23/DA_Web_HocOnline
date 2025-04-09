@@ -84,13 +84,17 @@ namespace Do_An_Web_Hoc.Controllers
 
         public async Task<IActionResult> Dashboard(string keyword, string priceType, decimal? maxPrice)
         {
-            var fullName = User.FindFirstValue(ClaimTypes.Name);
-            var email = User.FindFirstValue(ClaimTypes.Email);
-            ViewData["FullName"] = fullName;
-            ViewData["Email"] = email;
+            int userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
 
+            // Danh sách khóa học đã đăng ký
+            var enrolledCourseIds = (await _enrollmentsRepo.GetEnrollmentsByUserAsync(userId))
+                                    .Select(e => e.CourseID)
+                                    .ToList();
+
+            // Toàn bộ khóa học
             var courses = await _coursesRepo.GetAllCoursesAsync();
 
+            // Tìm kiếm theo keyword
             if (!string.IsNullOrEmpty(keyword))
             {
                 keyword = keyword.ToLower();
@@ -100,31 +104,30 @@ namespace Do_An_Web_Hoc.Controllers
                 ).ToList();
             }
 
+            // Lọc theo loại giá
             if (!string.IsNullOrEmpty(priceType))
             {
                 if (priceType == "free")
-                {
                     courses = courses.Where(c => c.Price == 0).ToList();
-                }
                 else if (priceType == "paid")
-                {
                     courses = courses.Where(c => c.Price > 0).ToList();
-                }
             }
 
+            // Lọc theo giá tối đa
             if (maxPrice.HasValue)
             {
                 courses = courses.Where(c => c.Price <= maxPrice.Value).ToList();
             }
 
+            // Truyền dữ liệu ra View
+            ViewBag.EnrolledCourseIds = enrolledCourseIds;
             ViewBag.Keyword = keyword;
             ViewBag.PriceType = priceType;
             ViewBag.MaxPrice = maxPrice;
+
             SetUserViewData();
             return View(courses);
         }
-
-
 
         public IActionResult Courses()
         {

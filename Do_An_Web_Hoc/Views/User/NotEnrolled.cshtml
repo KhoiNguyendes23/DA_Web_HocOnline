@@ -1,18 +1,25 @@
 ﻿@model IEnumerable<Do_An_Web_Hoc.Models.Courses>
 
+<link rel="stylesheet" href="~/css/NotEnrolled.css" asp-append-version="true" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
 @{
     Layout = "~/Views/Shared/_LayoutUsers.cshtml";
-    ViewData["Title"] = "Khóa học chưa đăng ký";
+    ViewData["Title"] = "Khóa Học Bạn Chưa Được Đăng Ký";
 }
 
 <div class="container-fluid px-4 mt-4">
-    <h2 class="mb-4">@ViewData["Title"]</h2>
+    <h2 class="section-title">
+        <i class="fas fa-book-open text-secondary me-2"></i> Khóa Học Bạn Chưa Được Đăng Ký
+    </h2>
+
+    <hr class="my-3" />
 
     <div class="row">
         @if (!Model.Any())
         {
             <div class="col-12">
-                <div class="alert alert-success">Bạn đã đăng ký tất cả các khóa học.</div>
+                <div class="alert alert-success">Bạn đã đăng ký tất cả các khóa học !</div>
             </div>
         }
         else
@@ -25,13 +32,13 @@
                         <div class="card-body">
                             <h5 class="card-title">@course.CourseName</h5>
                             <p class="card-text">@course.Description</p>
-                            <p class="card-text"><strong>Giá:</strong> @course.Price?.ToString("N0") VNĐ</p>
                         </div>
                         <div class="card-footer bg-transparent border-0 text-end">
+                            <p class="card-text course-price"><strong>Giá:</strong> @(course.Price > 0 ? course.Price?.ToString("N0") + " VNĐ" : "Miễn phí")</p>
                             <form method="post" asp-action="RegisterCourse" asp-controller="User">
                                 <input type="hidden" name="courseId" value="@course.CourseID" />
-                                <button type="submit" class="btn btn-sm btn-success">
-                                    <i class="fas fa-plus-circle"></i> Đăng ký
+                                <button type="submit" class="custom-btn success">
+                                    <i class="fas fa-plus-circle"></i> ĐĂNG KÝ
                                 </button>
                             </form>
                         </div>

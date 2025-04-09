@@ -40,12 +40,16 @@
                          class="rounded-circle" style="height: 60px" />
                     <div class="ms-3 profile-info">
                         <h6 class="text-white mb-0">@fullName</h6>
-                        <small class="text-muted">@role</small>
+                        <small class="text-white">@role</small>
                     </div>
                 </div>
             </div>
 
             <div class="nav flex-column">
+                <a href="@Url.Action("Dashboard", "User")" class="sidebar-link">
+                    <i class="fas fa-home me-2"></i>
+                    <span class="hide-on-collapse">Trang Chủ</span>
+                </a>
                 <!-- KHÓA HỌC CỦA TÔI -->
                 <div class="menu-item">
                     <a href="#" class="sidebar-link" onclick="toggleMenu('my-courses-menu')">
@@ -78,7 +82,7 @@
                         <i class="fas fa-chevron-down dropdown-icon ms-auto"></i>
                     </a>
                     <div id="support-menu" class="submenu">
-                        <a href="@Url.Action("Support", "User")" class="submenu-link">Trợ giúc</a>
+                        <a href="@Url.Action("Support", "User")" class="submenu-link">Trợ giúp</a>
                         <a href="@Url.Action("ContactLecturer", "User")" class="submenu-link">Liên hệ giảng viên</a>
                         <a href="@Url.Action("Community", "User")" class="submenu-link">Cộng đồng</a>
                     </div>
@@ -97,10 +101,7 @@
                     </div>
                 </div>
 
-                <a href="@Url.Action("Dashboard", "User")" class="sidebar-link">
-                    <i class="fas fa-home me-2"></i>
-                    <span class="hide-on-collapse">Quay về trang chủ</span>
-                </a>
+                
 
                 <a href="@Url.Action("Logout", "Account")" class="sidebar-link logout-btn">
                     <i class="fas fa-sign-out-alt me-2"></i>
@@ -109,7 +110,9 @@
             </div>
 
             <div class="mt-auto p-4">
-                <h4 class="logo-text fw-bold mb-0">NexusFlow</h4>
+                <a asp-controller="Home" asp-action="Index">
+                    <h4 class="logo-text fw-bold mb-0">KTDAH</h4>
+                </a>
             </div>
         </nav>
 
