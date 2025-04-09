@@ -39,70 +39,7 @@ document.querySelectorAll('.sidebar-link').forEach(link => {
     });
 });
 
-//-----DANH MỤC KHÓA HỌC-----
-document.querySelector('.submenu-link[data-view="registered"]').addEventListener('click', function (e) {
-    e.preventDefault();
-    window.location.href = "/User/RegisteredCourses";
-});
 
-document.querySelector('.submenu-link[data-view="completed"]').addEventListener('click', function (e) {
-    e.preventDefault();
-    window.location.href = "/User/Completed";
-});
-//-----KHÓA HỌC CỦA TÔI-----
-document.querySelector('.submenu-link[data-view="FreeCourses"]').addEventListener('click', function (e) {
-    e.preventDefault();
-    window.location.href = "/User/FreeCourses";
-});
-
-document.querySelector('.submenu-link[data-view="PaidCourses"]').addEventListener('click', function (e) {
-    e.preventDefault();
-    window.location.href = "/User/PaidCourses";
-});
-//-----LUYỆN TẬP-------
-document.querySelector('.submenu-link[data-view="Quiz"]').addEventListener('click', function (e) {
-    e.preventDefault();
-    window.location.href = "/User/Quiz";
-});
-
-document.querySelector('.submenu-link[data-view="Practice"]').addEventListener('click', function (e) {
-    e.preventDefault();
-    window.location.href = "/User/Practice";
-});
-
-document.querySelector('.submenu-link[data-view="Ranking"]').addEventListener('click', function (e) {
-    e.preventDefault();
-    window.location.href = "/User/Ranking";
-});
-
-//-----HỖ TRỢ-----
-document.querySelector('.submenu-link[data-view="Support"]')?.addEventListener('click', function (e) {
-    e.preventDefault();
-    window.location.href = "/User/Support";
-});
-document.querySelector('.submenu-link[data-view="ContactLecturer"]')?.addEventListener('click', function (e) {
-    e.preventDefault();
-    window.location.href = "/User/ContactLecturer";
-});
-document.querySelector('.submenu-link[data-view="Community"]')?.addEventListener('click', function (e) {
-    e.preventDefault();
-    window.location.href = "/User/Community";
-});
-//-----TÀI KHOẢN CỦA TÔI-----
-document.querySelector('.submenu-link[data-view="Profile"]')?.addEventListener('click', function (e) {
-    e.preventDefault();
-    window.location.href = "/User/Profile";
-});
-
-document.querySelector('.submenu-link[data-view="PaymentHistory"]')?.addEventListener('click', function (e) {
-    e.preventDefault();
-    window.location.href = "/User/PaymentHistory";
-});
-
-document.querySelector('.submenu-link[data-view="SecuritySettings"]')?.addEventListener('click', function (e) {
-    e.preventDefault();
-    window.location.href = "/User/SecuritySettings";
-});
 
 
 

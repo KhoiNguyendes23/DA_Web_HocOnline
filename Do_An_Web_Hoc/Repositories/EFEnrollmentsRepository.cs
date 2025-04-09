@@ -1,6 +1,7 @@
 ﻿using Do_An_Web_Hoc.Models;
 using Do_An_Web_Hoc.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using Do_An_Web_Hoc.Models.ViewModels;
 
 namespace Do_An_Web_Hoc.Repositories
 {
@@ -95,6 +96,70 @@ namespace Do_An_Web_Hoc.Repositories
                 .Include(e => e.Course) // lấy luôn thông tin khóa học
                 .Where(e => e.UserID == userId && e.IsPaid && e.PaymentDate.HasValue)
                 .ToListAsync();
+        }
+        public async Task<decimal> GetRevenueByMonthAsync(int month, int year)
+        {
+            return await _context.Enrollments
+                .Where(e => e.IsPaid &&
+                            e.PaymentDate.HasValue &&
+                            e.PaymentDate.Value.Month == month &&
+                            e.PaymentDate.Value.Year == year)
+                .SumAsync(e => e.Course.Price ?? 0); // tránh lỗi do Price nullable
+        }
+        public async Task<List<RevenueStatisticViewModel>> GetMonthlyEnrollmentsAsync(int year)
+        {
+            return await _context.Enrollments
+                .Where(e => e.IsPaid && e.PaymentDate.HasValue && e.PaymentDate.Value.Year == year)
+                .GroupBy(e => e.PaymentDate.Value.Month)
+                .Select(g => new RevenueStatisticViewModel
+                {
+                    Month = g.Key,
+                    TotalEnrollments = g.Count()
+                })
+                .OrderBy(g => g.Month)
+                .ToListAsync();
+        }
+
+        //public async Task<List<StatisticalCourseViewModel>> GetTopCoursesAsync(int top)
+        //{
+        //    return await _context.Courses
+        //        .Where(c => c.Enrollments.Any(e => e.IsPaid))
+        //        .Select(c => new StatisticalCourseViewModel
+        //        {
+        //            CourseName = c.CourseName,
+        //            EnrollmentCount = c.Enrollments.Count(e => e.IsPaid)
+        //        })
+        //        .OrderByDescending(c => c.EnrollmentCount)
+        //        .Take(top)
+        //        .ToListAsync();
+        //}
+        public async Task<List<TopCourseViewModel>> GetTopCoursesAsync(int topN)
+        {
+            return await _context.Enrollments
+                .Where(e => e.IsPaid)
+                .GroupBy(e => new { e.CourseID, e.Course.CourseName })
+                .Select(g => new TopCourseViewModel
+                {
+                    CourseName = g.Key.CourseName,
+                    EnrollmentCount = g.Count()
+                })
+                .OrderByDescending(x => x.EnrollmentCount)
+                .Take(topN)
+                .ToListAsync();
+        }
+
+        public async Task<List<RecentUserViewModel>> GetRecentUsersAsync(int topN)
+        {
+            return await _context.UserAccounts
+                .OrderByDescending(u => u.CreateAt) // đảm bảo bạn có trường CreatedAt
+                .Take(topN)
+                .Select(u => new RecentUserViewModel
+                {
+                    FullName = u.FullName,
+                    Email = u.Email,
+                    RoleName = u.RoleID == 2 ? "Giảng viên" : u.RoleID == 3 ? "Học viên" : "Khác",
+                    CreatedAt = u.CreateAt
+                }).ToListAsync();
         }
     }
 }

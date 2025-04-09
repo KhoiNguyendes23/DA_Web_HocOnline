@@ -5,23 +5,69 @@
 }
 
 <div class="container mt-5">
-    <h2 class="text-primary mb-4">📊 Thống kê lượt đăng ký khóa học</h2>
+    <h2 class="text-primary mb-4"><i class="fas fa-chart-bar"></i> Thống kê lượt đăng ký khóa học</h2>
 
-    <table class="table table-bordered table-hover">
-        <thead class="table-dark">
-            <tr>
-                <th>Tên khóa học</th>
-                <th>Số lượt đăng ký (đã thanh toán)</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model)
-            {
-                <tr>
-                    <td>@item.CourseName</td>
-                    <td>@item.EnrollmentCount</td>
-                </tr>
-            }
-        </tbody>
-    </table>
+    <div class="row">
+        <div class="col-lg-7">
+            <table class="table table-bordered table-hover shadow-sm">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Tên khóa học</th>
+                        <th>Số lượt đăng ký (đã thanh toán)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@item.CourseName</td>
+                            <td>@item.EnrollmentCount</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <div class="col-lg-5">
+            <canvas id="courseChart" width="400" height="400"></canvas>
+        </div>
+    </div>
 </div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        const ctx = document.getElementById('courseChart').getContext('2d');
+        const chart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: @Html.Raw(Json.Serialize(Model.Select(m => m.CourseName))),
+                datasets: [{
+                    label: 'Lượt đăng ký',
+                    data: @Html.Raw(Json.Serialize(Model.Select(m => m.EnrollmentCount))),
+                    backgroundColor: 'rgba(54, 162, 235, 0.6)',
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: { callbacks: { label: ctx => ` ${ctx.raw} lượt` } }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        stepSize: 1,
+                        title: { display: true, text: 'Lượt đăng ký' }
+                    },
+                    x: {
+                        ticks: { autoSkip: false },
+                        title: { display: true, text: 'Khóa học' }
+                    }
+                }
+            }
+        });
+    </script>
+}

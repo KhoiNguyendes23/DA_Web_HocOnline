@@ -69,7 +69,7 @@ builder.Services.AddScoped<IQuestionsRepository, EFQuestionsRepository>();
 builder.Services.AddScoped<IEnrollmentsRepository, EFEnrollmentsRepository>();
 builder.Services.AddScoped<IAnswersRepository, EFAnswersRepository>();
 builder.Services.AddScoped<IUserAnswersRepository, EFUserAnswersRepository>();
-
+builder.Services.AddScoped<IRolesRepository, EFRolesRepository>();
 
 
 // 💡 **Cấu hình MVC & View Localization**

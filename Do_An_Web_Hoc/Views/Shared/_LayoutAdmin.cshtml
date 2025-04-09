@@ -1,136 +1,121 @@
-﻿@* Views/Shared/_LayoutAdmin.cshtml *@
+﻿@{
+    var fullName = ViewData["FullName"]?.ToString() ?? "Admin";
+    var role = ViewData["RoleName"]?.ToString() ?? "Admin";
+
+    var rawImage = ViewData["ImagePath"]?.ToString();
+    var imagePath = Url.Content(
+        string.IsNullOrEmpty(rawImage)
+            ? "~/images/Avatar_images/default-avatar.png"
+            : rawImage.StartsWith("~") || rawImage.StartsWith("/")
+                ? rawImage
+                : "~/images/Avatar_images/" + rawImage
+    );
+}
+
 <!DOCTYPE html>
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title >@ViewData["Title"] - Admin Dashboard</title>
+    <title>@ViewData["Title"] - Admin Dashboard</title>
 
-    <!-- Bootstrap & FontAwesome -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link rel="stylesheet" href="~/css/Admin.css" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="~/css/LayoutAdmin.css" asp-append-version="true" />
 
-  
 </head>
 <body>
+    <div class="d-flex">
+        <!-- Sidebar -->
+        <nav class="sidebar d-flex flex-column flex-shrink-0 position-fixed">
+            <button class="toggle-btn" onclick="toggleSidebar()">
+                <i class="fas fa-chevron-left"></i>
+            </button>
 
-    <!-- Nút mở menu -->
-    <button class="menu-toggle"><i class="fas fa-bars"></i></button>
+            <div class="profile-section">
+                <div class="d-flex align-items-center">
+                    <img src="@imagePath"
+                         onerror="this.onerror=null; this.src='@Url.Content("~/images/Avatar_images/default-avatar.png")';"
+                         class="avatar-img" />
+                    <div class="ms-3 profile-info">
+                        <h6 class="text-white mb-0">@fullName</h6>
+                        <small class="text-muted">@role</small>
+                    </div>
+                </div>
+            </div>
 
-    <!-- Sidebar -->
-    <div class="sidebar">
-        <div class="text-center">
-            <i class="fas fa-user-circle fa-3x"></i>
-            <h5>@ViewData["FullName"]</h5>
-            <p>@ViewData["RoleName"]</p>
-        </div>
-        <ul class="sidebar-menu">
-            <li class="dropdown">
-                <a href="#courseSubmenu" data-bs-toggle="collapse" class="dropdown-toggle"><i class="fas fa-book-open"></i> Quản lý khóa học</a>
-                <ul class="collapse list-unstyled" id="courseSubmenu">
-                    <li><a href="ListCourse">Danh sách khóa học</a></li>
-                    <li><a href="AddCourse">Thêm khóa học</a></li>
-                </ul>
-            </li>
-            <li class="dropdown">
-                <a href="#studentSubmenu" data-bs-toggle="collapse" class="dropdown-toggle"><i class="fas fa-users"></i> Quản lý học viên</a>
-                <ul class="collapse list-unstyled" id="studentSubmenu">
-                    <li><a href="ListStudent">Danh sách học viên</a></li>
-                    <li><a href="ListTeacher">Danh sách giáo viên</a></li>
-                </ul>
-            </li>
-            @* <li class="dropdown"> *@
-            @*     <a href="#examSubmenu" data-bs-toggle="collapse" class="dropdown-toggle"><i class="fas fa-question-circle"></i> Quản lý bài kiểm tra</a> *@
-            @*     <ul class="collapse list-unstyled" id="examSubmenu"> *@
-            @*         <li><a href="ListExam">Danh sách bài kiểm tra</a></li> *@
-            @*         <li><a href="AddExam">Tạo bài kiểm tra</a></li> *@
-            @*         <li><a href="TestResult">Kết quả kiểm tra</a></li> *@
-            @*     </ul> *@
-            @* </li> *@
-            <li class="dropdown">
-                <a href="#reportSubmenu" data-bs-toggle="collapse" class="dropdown-toggle"><i class="fas fa-file-alt"></i> Thống kê & Báo cáo</a>
-                <ul class="collapse list-unstyled" id="reportSubmenu">
-                    <li><a href="StatisticalCourse">Thống kê khóa học</a></li>
-                    <li><a href="StatisticalRevenue">Doanh thu</a></li>
-                </ul>
-            </li>
-            <li class="dropdown">
-                <a href="#settingsSubmenu" data-bs-toggle="collapse" class="dropdown-toggle"><i class="fas fa-wrench"></i> Cài đặt tài khoản</a>
-                <ul class="collapse list-unstyled" id="settingsSubmenu">
-                    <li><a href="PersonalPage">Thông tin cá nhân</a></li>
-                    <li><a href="Decentralization">Phân quyền người dùng</a></li>
-                </ul>
-            </li>
-            <li>
-                <a href="@Url.Action("Logout", "Account")" class="text-danger">
-                    <i class="fas fa-sign-out-alt"></i> Đăng xuất
+            <!-- Menu -->
+            <div class="nav flex-column">
+                <!-- Trang chủ -->
+                <a href="@Url.Action("Dashboard", "Admin")" class="sidebar-link">
+                    <i class="fas fa-home me-2"></i>
+                    <span class="hide-on-collapse">Trang chủ</span>
                 </a>
-            </li>
-        </ul>
+                <!-- Quản lý khóa học -->
+                <a href="#" class="sidebar-link" onclick="toggleMenu('course-menu')">
+                    <i class="fas fa-book-open"></i>
+                    <span class="hide-on-collapse">Quản lý khóa học</span>
+                    <i class="fas fa-chevron-down dropdown-icon ms-auto"></i>
+                </a>
+                <div id="course-menu" class="submenu">
+                    <a href="@Url.Action("ListCourse", "Admin")" class="submenu-link">Danh sách khóa học</a>
+                    <a href="@Url.Action("AddCourse", "Admin")" class="submenu-link">Thêm khóa học</a>
+                </div>
+
+                <!-- Quản lý học viên -->
+                <a href="#" class="sidebar-link" onclick="toggleMenu('student-menu')">
+                    <i class="fas fa-users"></i>
+                    <span class="hide-on-collapse">Quản lý học viên</span>
+                    <i class="fas fa-chevron-down dropdown-icon ms-auto"></i>
+                </a>
+                <div id="student-menu" class="submenu">
+                    <a href="@Url.Action("ListStudent", "Admin")" class="submenu-link">Danh sách học viên</a>
+                    <a href="@Url.Action("ListTeacher", "Admin")" class="submenu-link">Danh sách giáo viên</a>
+                </div>
+
+                <!-- Thống kê -->
+                <a href="#" class="sidebar-link" onclick="toggleMenu('report-menu')">
+                    <i class="fas fa-file-alt"></i>
+                    <span class="hide-on-collapse">Thống kê & Báo cáo</span>
+                    <i class="fas fa-chevron-down dropdown-icon ms-auto"></i>
+                </a>
+                <div id="report-menu" class="submenu">
+                    <a href="@Url.Action("StatisticalCourse", "Admin")" class="submenu-link">Thống kê khóa học</a>
+                    <a href="@Url.Action("StatisticalRevenue", "Admin")" class="submenu-link">Doanh thu</a>
+                </div>
+
+                <!-- Cài đặt -->
+                <a href="#" class="sidebar-link" onclick="toggleMenu('settings-menu')">
+                    <i class="fas fa-wrench"></i>
+                    <span class="hide-on-collapse">Cài đặt tài khoản</span>
+                    <i class="fas fa-chevron-down dropdown-icon ms-auto"></i>
+                </a>
+                <div id="settings-menu" class="submenu">
+                    <a href="@Url.Action("PersonalPage", "Admin")" class="submenu-link">Thông tin cá nhân</a>
+                    <a href="@Url.Action("Decentralization", "Admin")" class="submenu-link">Phân quyền người dùng</a>
+                </div>
+
+                <!-- Đăng xuất -->
+                <a href="@Url.Action("Logout", "Account")" class="sidebar-link logout-btn text-danger">
+                    <i class="fas fa-sign-out-alt me-2"></i>
+                    <span class="hide-on-collapse">Đăng xuất</span>
+                </a>
+            </div>
+
+            <div class="mt-auto p-4">
+                <h4 class="logo-text fw-bold mb-0">NexusFlow</h4>
+            </div>
+        </nav>
+
+        <!-- Nội dung chính -->
+        <div class="main-content w-100" id="main-content">
+            @RenderBody()
+        </div>
     </div>
 
-    <!-- Nội dung chính -->
-    <div class="content">
-        @RenderBody()
-    </div>
-
-    <!-- Bootstrap JS -->
+    <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
-    <!-- Script để mở/đóng Sidebar -->
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            let menuToggle = document.querySelector(".menu-toggle");
-            let sidebar = document.querySelector(".sidebar");
-            let content = document.querySelector(".content");
-            let dropdownToggles = document.querySelectorAll(".dropdown-toggle"); // Chọn tất cả menu chính
-
-            // Kiểm tra trạng thái của sidebar trong localStorage khi tải trang
-            if (localStorage.getItem("sidebarState") === "active") {
-                sidebar.classList.add("active");
-                content.classList.add("active");
-            }
-
-            // Sự kiện click để mở/tắt sidebar và lưu trạng thái
-            menuToggle.addEventListener("click", function () {
-                sidebar.classList.toggle("active");
-                content.classList.toggle("active");
-
-                // Lưu trạng thái vào localStorage
-                if (sidebar.classList.contains("active")) {
-                    localStorage.setItem("sidebarState", "active");
-                } else {
-                    localStorage.setItem("sidebarState", "inactive");
-                }
-            });
-
-            // Xử lý đóng mở submenu
-            dropdownToggles.forEach(toggle => {
-                toggle.addEventListener("click", function (e) {
-                    e.preventDefault(); // Ngăn chặn load lại trang
-
-                    let submenu = document.querySelector(this.getAttribute("href")); // Tìm menu con dựa vào href
-
-                    // Nếu submenu đang mở -> Đóng lại
-                    if (submenu.classList.contains("show")) {
-                        new bootstrap.Collapse(submenu, { toggle: true });
-                    } else {
-                        // Đóng tất cả submenu khác trước khi mở menu hiện tại
-                        document.querySelectorAll(".collapse.show").forEach(openSubmenu => {
-                            new bootstrap.Collapse(openSubmenu, { toggle: true });
-                        });
-
-                        // Mở menu hiện tại
-                        new bootstrap.Collapse(submenu, { toggle: true });
-                    }
-                });
-            });
-        });
-    </script>
-
-
-    @RenderSection("Scripts", required: false)  
-    @* Toản không được xóa dòng này *@
+    <script src="~/js/LayoutAdmin.js" asp-append-version="true"></script>
+    @RenderSection("Scripts", required: false)
 </body>
 </html>
