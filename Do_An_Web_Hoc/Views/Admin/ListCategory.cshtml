@@ -1,0 +1,62 @@
+﻿@model IEnumerable<Do_An_Web_Hoc.Models.Categories>
+@{
+    ViewData["Title"] = "Danh sách danh mục";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<h2 class="text-primary mb-3">📚 Danh sách danh mục</h2>
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+}
+
+<table class="table table-bordered table-striped">
+    <thead class="table-dark">
+        <tr>
+            <th scope="col">STT</th>
+            <th scope="col">Tên danh mục</th>
+            <th scope="col">Trạng thái</th>
+            <th scope="col">Hành động</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model != null && Model.Any())
+        {
+            var index = 1;
+            foreach (var item in Model)
+            {
+                <tr>
+                    <td>@index</td>
+                    <td>@item.CategoryName</td>
+                    <td>
+                        @if (item.Status == 1)
+                        {
+                            <span class="badge bg-success">Hoạt động</span>
+                        }
+                        else if (item.Status == 2)
+                        {
+                            <span class="badge bg-secondary">Ngưng hoạt động</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-warning">Không xác định</span>
+                        }
+                    </td>
+                    <td>
+                        <a asp-action="EditCategory" asp-route-id="@item.CategoryId" class="btn btn-warning btn-sm">
+                            <i class="bi bi-pencil-square"></i> Sửa
+                        </a>
+                    </td>
+                </tr>
+                index++;
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="4" class="text-center text-muted">Không có danh mục nào.</td>
+            </tr>
+        }
+    </tbody>
+</table>

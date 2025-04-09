@@ -1,0 +1,37 @@
+﻿@model Do_An_Web_Hoc.Models.Categories
+
+@{
+    ViewData["Title"] = "Chỉnh sửa danh mục";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<h2 class="text-primary mb-3">✏️ Chỉnh sửa danh mục</h2>
+
+<form asp-action="EditCategory" method="post">
+    <input type="hidden" asp-for="CategoryId" />
+
+    <div class="mb-3">
+        <label asp-for="CategoryName" class="form-label">Tên danh mục</label>
+        <input asp-for="CategoryName" class="form-control" />
+        <span asp-validation-for="CategoryName" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Status" class="form-label">Trạng thái</label>
+        <select asp-for="Status" class="form-select">
+            <option value="1" selected="@Model.Status == 1">Hoạt động</option>
+            <option value="2" selected="@Model.Status == 2">Ngưng hoạt động</option>
+        </select>
+    </div>
+
+    <button type="submit" class="btn btn-success">
+        <i class="fas fa-save"></i> Lưu thay đổi
+    </button>
+    <a asp-action="ListCategory" class="btn btn-secondary ms-2">Quay lại</a>
+</form>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

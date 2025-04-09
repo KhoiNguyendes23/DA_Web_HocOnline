@@ -901,5 +901,10 @@ namespace Do_An_Web_Hoc.Controllers
             TempData["SuccessMessage"] = "Đã cập nhật danh mục thành công.";
             return RedirectToAction("ListCategory");
         }
+        public async Task<IActionResult> ListCategory()
+        {
+            var categories = await _context.Categories.ToListAsync();
+            return View(categories);
+        }
     }
 }
