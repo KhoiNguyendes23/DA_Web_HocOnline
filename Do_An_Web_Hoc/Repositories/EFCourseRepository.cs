@@ -1,5 +1,7 @@
 ﻿using Do_An_Web_Hoc.Models;
+using Do_An_Web_Hoc.Models.ViewModels;
 using Do_An_Web_Hoc.Repositories.Interfaces;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -118,7 +120,27 @@ namespace Do_An_Web_Hoc.Repositories
             return await _context.Enrollments
                 .AnyAsync(e => e.UserID == userId && e.CourseID == exam.CourseID);
         }
-
+        public async Task<List<CourseStudentStat>> GetStudentCountPerCourseAsync()
+        {
+            return await _context.Courses
+                .Select(c => new CourseStudentStat
+                {
+                    CourseName = c.CourseName,
+                    StudentCount = c.Enrollments.Count()
+                })
+                .ToListAsync();
+        }
+        public async Task<IEnumerable<SelectListItem>> GetActiveCourseSelectListAsync()
+        {
+            return await (from c in _context.Courses
+                          join cat in _context.Categories on c.CategoryID equals cat.CategoryId
+                          where c.Status == 1 && cat.Status == 1
+                          select new SelectListItem
+                          {
+                              Value = c.CourseID.ToString(),
+                              Text = c.CourseName
+                          }).ToListAsync();
+        }
     }
 }
 

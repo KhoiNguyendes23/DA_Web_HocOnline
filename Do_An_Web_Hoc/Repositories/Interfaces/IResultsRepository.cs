@@ -30,6 +30,7 @@ namespace Do_An_Web_Hoc.Repositories.Interfaces
         // Xóa kết quả (Chỉ Admin mới có thể xóa)
         Task DeleteResultAsync(int resultId, int userRoleId);
         Task SaveResultFromUserAsync(ModelsResults result);
+        Task<IEnumerable<ResultExamViewModel>> GetExamResultsForLecturerAsync();
 
         Task<IEnumerable<RankingViewModel>> GetUserRankingAsync();
     }

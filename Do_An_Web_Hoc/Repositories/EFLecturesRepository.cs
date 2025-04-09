@@ -18,8 +18,17 @@ namespace Do_An_Web_Hoc.Repositories
 
         public async Task<IEnumerable<Lectures>> GetAllLecturesAsync()
         {
-            return await _context.Lectures.ToListAsync();
+            var query = from l in _context.Lectures
+                        join c in _context.Courses on l.CourseID equals c.CourseID
+                        join cat in _context.Categories on c.CategoryID equals cat.CategoryId
+                        where l.Status == 1 && c.Status == 1 && cat.Status == 1
+                        select l;
+
+            return await query.ToListAsync();
         }
+
+
+
 
         public async Task<Lectures> GetLectureByIdAsync(int lectureId)
         {
@@ -94,6 +103,14 @@ namespace Do_An_Web_Hoc.Repositories
         {
             _context.Lectures.Update(lecturer);
             await _context.SaveChangesAsync();
+        }
+        public async Task<IEnumerable<Lectures>> GetLecturesWithActiveCoursesAsync()
+        {
+            return await (from l in _context.Lectures
+                          join c in _context.Courses on l.CourseID equals c.CourseID
+                          join cat in _context.Categories on c.CategoryID equals cat.CategoryId
+                          where c.Status == 1 && cat.Status == 1
+                          select l).ToListAsync();
         }
     }
 }
