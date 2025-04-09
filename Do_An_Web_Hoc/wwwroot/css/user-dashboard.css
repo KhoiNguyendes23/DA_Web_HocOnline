@@ -16,6 +16,67 @@
     border-bottom: 1px solid #f0f0f0;
 }
 
+.course-price {
+    font-size: 1.2rem !important;
+    font-weight: 500;
+    color: #333;
+}
+
+
+.custom-btn {
+    border-radius: 30px;
+    padding: 10px 30px;
+    font-size: 15px;
+    font-weight: bold;
+    text-transform: uppercase;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+    .custom-btn.primary {
+        text-decoration: none;
+        background-color: #007bff; /* Màu xanh dương đậm */
+        color: #fff;
+        border: none;
+        border-radius: 50px; /* Bo tròn mạnh */
+        padding: 10px 20px;
+        font-weight: bold;
+        text-transform: uppercase;
+        font-size: 16px;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.3s ease;
+    }
+
+        .custom-btn.primary:hover {
+            background-color: #0056b3;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 10px rgba(0, 0, 0, 0.2);
+        }
+
+    .custom-btn.success {
+        background-color: #28a745; /* Màu xanh lá */
+        color: #fff;
+        border: none;
+        border-radius: 50px;
+        padding: 10px 20px;
+        font-weight: bold;
+        text-transform: uppercase;
+        font-size: 16px;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        text-decoration: none;
+        transition: all 0.3s ease;
+    }
+
+        .custom-btn.success:hover {
+            background-color: #1e7e34;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 10px rgba(0, 0, 0, 0.2);
+        }
+
+
 /* Tên khóa học */
 .card-title {
     font-size: 1.2rem;
@@ -63,3 +124,4 @@
             margin-top: 5px;
         }
 }
+

@@ -120,6 +120,9 @@
   <data name="AboutSub" xml:space="preserve">
     <value />
   </data>
+  <data name="ContactForConsultation" xml:space="preserve">
+    <value />
+  </data>
   <data name="ContinuousGrowth" xml:space="preserve">
     <value />
   </data>
@@ -150,6 +153,9 @@
   <data name="LearnNow" xml:space="preserve">
     <value />
   </data>
+  <data name="Mem" xml:space="preserve">
+    <value />
+  </data>
   <data name="MemberInformation" xml:space="preserve">
     <value />
   </data>
@@ -168,7 +174,16 @@
   <data name="NameCourse3" xml:space="preserve">
     <value />
   </data>
+  <data name="Nation" xml:space="preserve">
+    <value />
+  </data>
   <data name="OurVision" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Prize" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Project" xml:space="preserve">
     <value />
   </data>
   <data name="StartLearning" xml:space="preserve">

@@ -120,6 +120,9 @@
   <data name="AboutSub" xml:space="preserve">
     <value>KTDAH là nhóm phát triển web bán khóa học, tập trung vào nội dung bài học, thanh toán linh hoạt và quản lý khóa học thông minh. Với đội ngũ giàu kinh nghiệm, chúng tôi cam kết mang đến nền tảng học tập trực tuyến hiện đại, kết nối giảng viên và học viên dễ dàng.</value>
   </data>
+  <data name="ContactForConsultation" xml:space="preserve">
+    <value>Liên Hệ Tư Vấn</value>
+  </data>
   <data name="ContinuousGrowth" xml:space="preserve">
     <value>Tăng trưởng liên tục</value>
   </data>
@@ -150,6 +153,9 @@
   <data name="LearnNow" xml:space="preserve">
     <value>HỌC NGAY</value>
   </data>
+  <data name="Mem" xml:space="preserve">
+    <value>Học viên</value>
+  </data>
   <data name="MemberInformation" xml:space="preserve">
     <value>Thông tin của các thành viên</value>
   </data>
@@ -168,8 +174,17 @@
   <data name="NameCourse3" xml:space="preserve">
     <value>Cấu Trúc Dữ Liệu &amp; Giải Thuật</value>
   </data>
+  <data name="Nation" xml:space="preserve">
+    <value>Quốc Gia</value>
+  </data>
   <data name="OurVision" xml:space="preserve">
     <value>Tầm nhìn của chúng tôi</value>
+  </data>
+  <data name="Prize" xml:space="preserve">
+    <value>Giải thưởng</value>
+  </data>
+  <data name="Project" xml:space="preserve">
+    <value>Dự án</value>
   </data>
   <data name="StartLearning" xml:space="preserve">
     <value>BẮT ĐẦU HỌC</value>
