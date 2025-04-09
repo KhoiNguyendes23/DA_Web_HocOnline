@@ -1,93 +1,58 @@
 ﻿@model Do_An_Web_Hoc.Models.UserAccount
-
 @{
     Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+    ViewData["Title"] = "Cập nhật thông tin cá nhân";
 }
 
-<!DOCTYPE html>
-<html lang="vi">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chỉnh Sửa Thông Tin Cá Nhân</title>
+<div class="container mt-5">
+    <h2 class="text-primary text-center mb-4">Chỉnh Sửa Thông Tin Cá Nhân</h2>
 
-    <!-- Bootstrap & Font Awesome -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link href="~/css/Admin.css" rel="stylesheet" />
-</head>
-<body>
-    <div class="container mt-5">
-        <h2 class="text-primary text-center mb-4">Chỉnh Sửa Thông Tin Cá Nhân</h2>
+    @if (!string.IsNullOrEmpty(Model.Image) && Model.Image != "/images/default-avatar.png")
+    {
+        <div class="text-center mb-4">
+            <img src="@Url.Content(Model.Image)" alt="Ảnh đại diện" class="img-fluid rounded-circle" style="max-width: 150px;" />
+        </div>
+    }
 
-        <!-- Hiển thị ảnh đại diện -->
-        @if (!string.IsNullOrEmpty(Model.Image) && Model.Image != "/images/default-avatar.png")
-        {
-            <div class="text-center mb-4">
-                <img src="@Url.Content(Model.Image)" alt="Profile Picture" class="img-fluid rounded-circle" />
-            </div>
-        }
+    <form asp-action="UpdatePersonalPage" method="post" enctype="multipart/form-data">
+        <div class="form-group mb-3">
+            <label><i class="fas fa-user"></i> Họ và tên</label>
+            <input type="text" name="FullName" value="@Model.FullName" class="form-control" required />
+        </div>
 
-        <!-- Form chỉnh sửa thông tin cá nhân -->
-        <form asp-action="UpdatePersonalPage" method="post" enctype="multipart/form-data">
+        <div class="form-group mb-3">
+            <label><i class="fas fa-envelope"></i> Email</label>
+            <input type="email" name="Email" value="@Model.Email" class="form-control" readonly />
+        </div>
 
-            <!-- Họ và tên -->
-            <div class="form-group">
-                <label for="fullName"><i class="fas fa-user"></i> Họ và tên</label>
-                <input type="text" class="form-control" id="fullName" name="FullName" value="@Model.FullName" required>
-            </div>
+        <div class="form-group mb-3">
+            <label><i class="fas fa-phone"></i> Số điện thoại</label>
+            <input type="tel" name="PhoneNumber" value="@Model.PhoneNumber" class="form-control" required />
+        </div>
 
-            <!-- Email -->
-            <div class="form-group">
-                <label for="email"><i class="fas fa-envelope"></i> Email</label>
-                <input type="email" class="form-control" id="email" name="Email" value="@Model.Email" readonly>
-            </div>
+        <div class="form-group mb-3">
+            <label><i class="fas fa-calendar"></i> Ngày sinh</label>
+            <input type="date" name="Birthday" value="@Model.Birthday?.ToString("yyyy-MM-dd")" class="form-control" />
+        </div>
 
-            <!-- Số điện thoại -->
-            <div class="form-group">
-                <label for="phone"><i class="fas fa-phone"></i> Số điện thoại</label>
-                <input type="tel" class="form-control" id="phone" name="PhoneNumber" value="@Model.PhoneNumber" required>
-            </div>
+        <div class="form-group mb-3">
+            <label><i class="fas fa-map-marker-alt"></i> Địa chỉ</label>
+            <input type="text" name="Address" value="@Model.Address" class="form-control" />
+        </div>
 
-            <!-- Ngày sinh -->
-            <div class="form-group">
-                <label for="dob"><i class="fas fa-calendar"></i> Ngày sinh</label>
-                <input type="date" class="form-control" id="dob" name="Birthday" value="@Model.Birthday?.ToString("yyyy-MM-dd")">
-            </div>
+        <div class="form-group mb-3">
+            <label><i class="fas fa-user-shield"></i> Vai trò</label>
+            <input type="text" class="form-control" value="@(Model.RoleID == 1 ? "Admin" : Model.RoleID == 2 ? "Giáo viên" : "Học viên")" disabled />
+        </div>
 
-            <!-- Địa chỉ -->
-            <div class="form-group">
-                <label for="address"><i class="fas fa-map-marker-alt"></i> Địa chỉ</label>
-                <input type="text" class="form-control" id="address" name="Address" value="@Model.Address">
-            </div>
+        <div class="form-group mb-3">
+            <label><i class="fas fa-image"></i> Sửa ảnh đại diện</label>
+            <input type="file" name="Image" class="form-control" accept="image/*" />
+        </div>
 
-            <!-- Vai trò (Chỉ hiển thị, không chỉnh sửa) -->
-            <div class="form-group">
-                <label for="role"><i class="fas fa-user-shield"></i> Vai trò</label>
-                <input type="text" class="form-control" id="role" value="@(
-                    Model.RoleID == 1 ? "Admin" :
-                    Model.RoleID == 2 ? "Giáo viên" : "Học viên")" disabled>
-            </div>
-
-            <!-- Trường sửa ảnh đại diện -->
-            <div class="form-group">
-                <label for="image"><i class="fas fa-image"></i> Sửa ảnh đại diện</label>
-                <input type="file" class="form-control" id="image" name="Image" accept="image/*">
-            </div>
-
-            <!-- Nút lưu -->
-            <div class="text-center mt-4">
-                <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Lưu Thay Đổi</button>
-            </div>
-
-            <!-- Nút quay lại -->
-            <div class="text-center mt-3">
-                <a href="@Url.Action("PersonalPage", "Admin")" class="btn btn-secondary"><i class="fas fa-arrow-left"></i> Quay lại</a>
-            </div>
-        </form>
-    </div>
-
-    <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-</html>
+        <div class="text-center mt-4">
+            <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Lưu Thay Đổi</button>
+            <a href="@Url.Action("PersonalPage", "Admin")" class="btn btn-secondary ms-2"><i class="fas fa-arrow-left"></i> Quay lại</a>
+        </div>
+    </form>
+</div>

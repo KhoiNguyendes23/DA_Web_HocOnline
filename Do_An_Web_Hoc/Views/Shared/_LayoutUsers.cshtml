@@ -35,12 +35,14 @@
 
             <div class="profile-section">
                 <div class="d-flex align-items-center">
-                    <img src="@imagePath"
-                         onerror="this.src='@Url.Content("~/images/Avatar_images/default-avatar.png")';"
-                         class="rounded-circle" style="height: 60px" />
+                    <div class="text-center">
+                        <img src="@imagePath"
+                             onerror="this.src='@Url.Content("~/images/Avatar_images/default-avatar.png")';"
+                             class="rounded-circle" style="height: 60px" />
+					</div>
                     <div class="ms-3 profile-info">
                         <h6 class="text-white mb-0">@fullName</h6>
-                        <small class="text-white">@role</small>
+                        <small class="role-label">@role</small>
                     </div>
                 </div>
             </div>
