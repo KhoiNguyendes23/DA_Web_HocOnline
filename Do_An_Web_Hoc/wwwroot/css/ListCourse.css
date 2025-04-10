@@ -1,0 +1,79 @@
+﻿/* Định dạng tổng thể */
+body {
+    background-color: #f8f9fa;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+/* Tiêu đề trang */
+h3.fw-bold.fs-2 {
+    color: #0048ba;
+}
+
+/* Bảng khóa học */
+#courseTable {
+    background-color: white;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+    #courseTable thead {
+        background-color: #007bff;
+        color: white;
+    }
+
+    #courseTable th,
+    #courseTable td {
+        vertical-align: middle !important;
+        text-align: center;
+    }
+
+/* Nút hành động */
+.btn-sm {
+    margin: 0 2px;
+}
+
+.btn-info {
+    background-color: #0dcaf0;
+    border: none;
+}
+
+.btn-warning {
+    background-color: #ffc107;
+    border: none;
+}
+
+.btn-danger {
+    background-color: #dc3545;
+    border: none;
+}
+
+/* Badge trạng thái */
+.badge.bg-success {
+    background-color: #198754 !important;
+}
+
+.badge.bg-secondary {
+    background-color: #6c757d !important;
+}
+
+/* Bộ lọc trạng thái */
+.status-filter {
+    transform: scale(1.1);
+    margin-right: 5px;
+}
+
+/* Responsive datatable */
+.dataTables_wrapper .dataTables_filter {
+    float: right;
+    text-align: right;
+}
+
+.dataTables_wrapper .dataTables_length {
+    float: left;
+}
+
+/* Khoảng cách giữa các thành phần */
+.container.mt-4 {
+    padding-bottom: 30px;
+}

@@ -27,8 +27,10 @@ namespace Do_An_Web_Hoc.Repositories
             return await query.ToListAsync();
         }
 
-
-
+        public async Task SaveChangesAsync()
+        {
+            await _context.SaveChangesAsync();
+        }
 
         public async Task<Lectures> GetLectureByIdAsync(int lectureId)
         {

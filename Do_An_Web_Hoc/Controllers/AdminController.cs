@@ -27,6 +27,8 @@ namespace Do_An_Web_Hoc.Controllers
         private readonly ICatogoriesRepository _catogoriesRepository;
         private readonly IEnrollmentsRepository _enrollmentRepo;
         private readonly IRolesRepository _roleRepo;
+        private readonly ILecturesRepository _lecturesRepository;
+
         private readonly ApplicationDbContext _context;
         public AdminController(IUserAccountRepository userRepo,
                                ICoursesRepository coursesRepo, 
@@ -35,6 +37,7 @@ namespace Do_An_Web_Hoc.Controllers
                                ICatogoriesRepository catogoriesRepository,
                                IEnrollmentsRepository enrollmentRepo, 
                                IRolesRepository rolesRepository,
+                               ILecturesRepository lecturesRepository,
                                ApplicationDbContext context)
         {
             _userRepo = userRepo;
@@ -44,6 +47,7 @@ namespace Do_An_Web_Hoc.Controllers
             _catogoriesRepository = catogoriesRepository;
             _enrollmentRepo = enrollmentRepo;
             _roleRepo = rolesRepository;
+            _lecturesRepository = lecturesRepository;
             _context = context;
         }
         private async Task SetAdminViewData()
@@ -496,69 +500,77 @@ namespace Do_An_Web_Hoc.Controllers
         [HttpPost]
         public async Task<IActionResult> UpdateCourse(Courses updatedCourse, IFormFile image)
         {
-            // Kiểm tra ModelState trước
             if (!ModelState.IsValid)
             {
-                // Load lại các danh mục và trạng thái nếu có lỗi validation
                 await LoadCategoriesAndStatusAsync();
                 return View(updatedCourse);
             }
 
-            // Lấy thông tin khóa học cần cập nhật
             var course = await _coursesRepo.GetCourseByIdAsync(updatedCourse.CourseID);
             if (course == null) return NotFound();
 
-            // Cập nhật các trường dữ liệu của khóa học ngay cả khi không có ảnh mới
+            if (updatedCourse.CategoryID == null)
+            {
+                ModelState.AddModelError("", "Danh mục không hợp lệ.");
+                await LoadCategoriesAndStatusAsync();
+                return View(updatedCourse);
+            }
+
+            var category = await _catogoriesRepository.GetCategoryByIdAsync(updatedCourse.CategoryID.Value);
+            if (category == null || category.Status == 2)
+            {
+                ModelState.AddModelError("", "Không thể cập nhật vì danh mục đã ngưng hoạt động.");
+                await LoadCategoriesAndStatusAsync();
+                return View(updatedCourse);
+            }
             course.CourseName = updatedCourse.CourseName;
             course.Description = updatedCourse.Description;
             course.Price = updatedCourse.Price;
             course.CategoryID = updatedCourse.CategoryID;
-            course.Status = updatedCourse.Status;
-
-            // Xử lý hình ảnh mới nếu có
+            if (updatedCourse.Status == 2)
+            {
+                course.Status = 2;
+                var lectures = await _lecturesRepository.GetLecturesByCourseIdAsync(course.CourseID);
+                foreach (var lecture in lectures) lecture.Status = 2;
+                await _lecturesRepository.SaveChangesAsync();
+            }
+            else if (updatedCourse.Status == 1)
+            {
+                course.Status = 1;
+                var lectures = await _lecturesRepository.GetLecturesByCourseIdAsync(course.CourseID);
+                foreach (var lecture in lectures) lecture.Status = 1;
+                await _lecturesRepository.SaveChangesAsync();
+            }
             if (image != null && image.Length > 0)
             {
-                var updateResult = await UpdateCourseImageAsync(course, image);
-                if (!updateResult)
+                var result = await UpdateCourseImageAsync(course, image);
+                if (!result)
                 {
-                    ModelState.AddModelError("Image", "Lỗi khi tải lên hình ảnh.");
+                    ModelState.AddModelError("Image", "Lỗi khi tải ảnh.");
                     await LoadCategoriesAndStatusAsync();
                     return View(updatedCourse);
                 }
             }
-            else
+            if (string.IsNullOrEmpty(course.ImageUrl))
             {
-                // Nếu không có ảnh mới, giữ lại ảnh cũ
-                // Đảm bảo rằng giá trị ImageUrl không bị null
-                if (string.IsNullOrEmpty(course.ImageUrl))
-                {
-                    course.ImageUrl = "/images/default-course.png"; // Hoặc giữ giá trị mặc định nếu cần
-                }
+                course.ImageUrl = "/images/default-course.png";
             }
 
-            // Cập nhật khóa học vào cơ sở dữ liệu
-            try
+            // ✅ Lưu cập nhật
+            var success = await _coursesRepo.UpdateCourseAsync(course);
+            if (!success)
             {
-                var updateSuccessful = await _coursesRepo.UpdateCourseAsync(course);
-                if (!updateSuccessful)
-                {
-                    ModelState.AddModelError("", "Cập nhật khóa học không thành công.");
-                    await LoadCategoriesAndStatusAsync();
-                    return View(updatedCourse);
-                }
-            }
-            catch (Exception ex)
-            {
-                // Xử lý lỗi khi cập nhật khóa học
-                Console.WriteLine($"Error updating course: {ex.Message}");
-                ModelState.AddModelError("", "Có lỗi xảy ra khi cập nhật khóa học.");
+                ModelState.AddModelError("", "Không thể cập nhật khóa học.");
                 await LoadCategoriesAndStatusAsync();
                 return View(updatedCourse);
             }
 
-            // Chuyển hướng tới danh sách khóa học
+            TempData["SuccessMessage"] = "Cập nhật khóa học thành công.";
             return RedirectToAction("ListCourse");
         }
+
+
+
 
         private async Task LoadCategoriesAndStatusAsync()
         {
@@ -584,54 +596,32 @@ namespace Do_An_Web_Hoc.Controllers
             {
                 var ext = Path.GetExtension(image.FileName).ToLower();
                 var allowedExts = new[] { ".jpg", ".jpeg", ".png", ".gif" };
+                if (!allowedExts.Contains(ext)) return false;
 
-                // Kiểm tra xem file có hợp lệ không
-                if (!allowedExts.Contains(ext))
-                {
-                    return false; // File không hợp lệ
-                }
-
-                // Xóa ảnh cũ nếu có và không phải ảnh mặc định
                 if (!string.IsNullOrEmpty(course.ImageUrl) && course.ImageUrl != "/images/default-course.png")
                 {
                     var oldPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", course.ImageUrl.TrimStart('/'));
                     if (System.IO.File.Exists(oldPath))
-                    {
-                        try
-                        {
-                            System.IO.File.Delete(oldPath); // Xóa ảnh cũ
-                        }
-                        catch (Exception ex)
-                        {
-                            // Log lỗi nếu có
-                            Console.WriteLine($"Error deleting old image: {ex.Message}");
-                            return false; // Nếu có lỗi xóa ảnh cũ, trả về false
-                        }
-                    }
+                        System.IO.File.Delete(oldPath);
                 }
 
-                // Tạo tên mới cho tệp hình ảnh
-                var fileName = Guid.NewGuid().ToString() + ext;
+                var fileName = Guid.NewGuid() + ext;
                 var newPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", "Course_images", fileName);
 
-                // Lưu ảnh mới
                 using (var stream = new FileStream(newPath, FileMode.Create))
                 {
                     await image.CopyToAsync(stream);
                 }
 
-                // Cập nhật ImageUrl trong khóa học
                 course.ImageUrl = "/images/Course_images/" + fileName;
                 return true;
             }
             catch (Exception ex)
             {
-                // Log lỗi nếu có
-                Console.WriteLine($"Error saving new image: {ex.Message}");
-                return false; // Trả về false nếu có lỗi
+                Console.WriteLine($"Error saving image: {ex.Message}");
+                return false;
             }
         }
-
 
 
 

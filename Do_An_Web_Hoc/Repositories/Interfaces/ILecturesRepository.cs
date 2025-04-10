@@ -15,6 +15,7 @@ namespace Do_An_Web_Hoc.Repositories.Interfaces
         Task DeleteLectureAsync(int lectureId);
         Task<IEnumerable<Lectures>> SearchLecturesByTitleAsync(string title);
         Task<IEnumerable<Lectures>> GetLecturesByCourseIdAsync(int courseId);
+        Task SaveChangesAsync();
         Task<IEnumerable<Lectures>> GetRecentLecturesAsync(int count);
         Task<bool> LectureExistsAsync(int lectureId);
         Task<int> CountLecturesAsync();
