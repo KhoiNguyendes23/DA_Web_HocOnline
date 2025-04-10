@@ -1,58 +1,59 @@
 ﻿@model Do_An_Web_Hoc.Models.UserAccount
 @{
-    Layout = "~/Views/Shared/_LayoutLecturer.cshtml";
-    ViewData["Title"] = "Hồ sơ cá nhân";
+	Layout = "~/Views/Shared/_LayoutLecturer.cshtml";
+	ViewData["Title"] = "Hồ sơ cá nhân";
 }
 
 <div class="container mt-5">
-    <h2 class="text-primary text-center mb-4">Thông tin cá nhân</h2>
+	<h2 class="text-primary text-center mb-4">Thông tin cá nhân</h2>
 
-    <!-- Hiển thị ảnh đại diện -->
-    <div class="text-center">
-        <img src="@Url.Content(string.IsNullOrEmpty(Model.Image)
-            ? "~/images/Avatar_images/default-avatar.png"
-             : "~" + Model.Image)"
-             alt="Profile Picture"
-             class="profile-pic img-fluid rounded-circle mb-3"
-             style="width: 150px;" />
-    </div>
+	<!-- Hiển thị ảnh đại diện -->
+	<div class="text-center">
+		<img src="@Url.Content(string.IsNullOrEmpty(Model.Image)
+    ? "~/images/Avatar_images/default-avatar.png"
+    : "~" + Model.Image)"
+			 alt="Profile Picture"
+			 class="profile-pic img-fluid rounded-circle mb-3"
+			 style="width: 150px; height: 150px; object-fit: cover;" />
 
-    <!-- Hiển thị thông tin người dùng -->
-    <div class="table-responsive d-flex justify-content-center">
-        <table class="table table-bordered table-striped w-50">
-            <tbody>
-                <tr>
-                    <th>Họ và tên</th>
-                    <td>@Model.FullName</td>
-                </tr>
-                <tr>
-                    <th>Email</th>
-                    <td>@Model.Email</td>
-                </tr>
-                <tr>
-                    <th>Số điện thoại</th>
-                    <td>@Model.PhoneNumber</td>
-                </tr>
-                <tr>
-                    <th>Ngày sinh</th>
-                    <td>@Model.Birthday?.ToString("dd/MM/yyyy")</td>
-                </tr>
-                <tr>
-                    <th>Địa chỉ</th>
-                    <td>@Model.Address</td>
-                </tr>
-                <tr>
-                    <th>Vai trò</th>
-                    <td>@(Model.RoleID == 1 ? "Admin" : Model.RoleID == 2 ? "Giáo viên" : "Học viên")</td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
+	</div>
 
-    <!-- Nút chỉnh sửa -->
-    <div class="text-center mt-4">
-        <a href="@Url.Action("EditProfile", "Lecturer")" class="btn btn-primary">
-            <i class="fas fa-edit"></i> Chỉnh sửa thông tin
-        </a>
-    </div>
+	<!-- Hiển thị thông tin người dùng -->
+	<div class="table-responsive d-flex justify-content-center">
+		<table class="table table-bordered table-striped w-50">
+			<tbody>
+				<tr>
+					<th>Họ và tên</th>
+					<td>@Model.FullName</td>
+				</tr>
+				<tr>
+					<th>Email</th>
+					<td>@Model.Email</td>
+				</tr>
+				<tr>
+					<th>Số điện thoại</th>
+					<td>@Model.PhoneNumber</td>
+				</tr>
+				<tr>
+					<th>Ngày sinh</th>
+					<td>@Model.Birthday?.ToString("dd/MM/yyyy")</td>
+				</tr>
+				<tr>
+					<th>Địa chỉ</th>
+					<td>@Model.Address</td>
+				</tr>
+				<tr>
+					<th>Vai trò</th>
+					<td>@(Model.RoleID == 1 ? "Admin" : Model.RoleID == 2 ? "Giáo viên" : "Học viên")</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+
+	<!-- Nút chỉnh sửa -->
+	<div class="text-center mt-4">
+		<a href="@Url.Action("EditProfile", "Lecturer")" class="btn btn-primary">
+			<i class="fas fa-edit"></i> Chỉnh sửa thông tin
+		</a>
+	</div>
 </div>

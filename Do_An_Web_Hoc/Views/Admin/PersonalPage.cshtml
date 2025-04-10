@@ -10,7 +10,11 @@
     @if (!string.IsNullOrEmpty(Model.Image) && Model.Image != "/images/default-avatar.png")
     {
         <div class="text-center">
-            <img src="@Model.Image" alt="Ảnh đại diện" class="img-fluid rounded-circle mb-3" style="max-width: 200px;" />
+            <img src="@Model.Image"
+                 alt="Ảnh đại diện"
+                 class="img-fluid rounded-circle mb-3"
+                 style="width: 150px; height: 150px; object-fit: cover; border: 3px solid white; box-shadow: 0 0 6px rgba(0,0,0,0.15);" />
+
         </div>
     }
 

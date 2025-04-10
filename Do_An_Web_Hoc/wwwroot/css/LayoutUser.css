@@ -116,10 +116,13 @@ body {
 }
 
     .profile-section img {
-        height: 50px;
+        width: 60px;
+        height: 60px;
         border-radius: 50%;
-        border: 3px solid white; /* ✅ Viền trắng dày 3px */
+        object-fit: cover;
+        border: 3px solid white;
     }
+
 
 .profile-info {
     margin-left: 10px;
