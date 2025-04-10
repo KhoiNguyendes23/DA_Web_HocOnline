@@ -491,7 +491,7 @@ namespace Do_An_Web_Hoc.Controllers
             var quiz = await _quizzesRepository.GetQuizByIdAsync(quizId);
             int totalQuestions = questions.Count();
             int totalMarks = quiz?.TotalMarks ?? totalQuestions;
-
+            int examId = quiz?.ExamID ?? 0; // lấy exam id
             int score = 0;
             if (totalQuestions > 0)
             {
@@ -512,6 +512,7 @@ namespace Do_An_Web_Hoc.Controllers
             ViewBag.Total = totalMarks;
             ViewBag.CorrectAnswers = correctCount;
             ViewBag.TotalQuestions = totalQuestions;
+            ViewBag.ExamID = examId;
             SetUserViewData();
             return View("QuizResult");
         }
