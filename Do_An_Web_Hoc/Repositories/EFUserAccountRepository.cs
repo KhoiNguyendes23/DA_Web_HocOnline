@@ -103,8 +103,10 @@ namespace Do_An_Web_Hoc.Repositories
                 return null;
             }
 
-            var hasher = new PasswordHasher<UserAccount>();
-            var result = hasher.VerifyHashedPassword(user, user.Password, password);
+            //var hasher = new PasswordHasher<UserAccount>();
+            //var result = hasher.VerifyHashedPassword(user, user.Password, password);
+            var result = _passwordHasher.VerifyHashedPassword(user, user.Password, password);
+
 
             if (result == PasswordVerificationResult.Failed)
             {
@@ -129,23 +131,29 @@ namespace Do_An_Web_Hoc.Repositories
         // (1) Gửi mã OTP đến email người dùng
         public async Task<bool> SendOTPAsync(string email)
         {
-            var user = await GetByEmailAsync(email);
+            // 
+            var user = await _context.UserAccounts.FirstOrDefaultAsync(u => u.Email == email);
             if (user == null)
                 return false;
 
-            // Tạo mã OTP ngẫu nhiên 6 chữ số
-            Random random = new Random();
-            string otp = random.Next(100000, 999999).ToString();
+            // Tạo mã OTP ngẫu nhiên
+            var otp = new Random().Next(100000, 999999).ToString();
 
             user.ResetToken = otp;
-            user.ResetTokenExpiry = DateTime.UtcNow.AddMinutes(10); // Hiệu lực 10 phút
+            user.ResetTokenExpiry = DateTime.UtcNow.AddMinutes(10);
+
+            // Cập nhật lại để EF theo dõi (nếu cần, nhưng FirstOrDefaultAsync đủ rồi)
+            _context.UserAccounts.Update(user); //dòng này để đảm bảo được track
+
             await _context.SaveChangesAsync();
 
-            // Gửi OTP qua Email
-            await SendOTPEmailAsync(email, otp);
+            await SendOTPEmailAsync(email, otp); // Gửi OTP qua email
+
+            Console.WriteLine($"[DEBUG] OTP: {otp} đã gửi đến {email}");
 
             return true;
         }
+
         // (2) Kiểm tra OTP hợp lệ không
         public async Task<bool> VerifyOTPAsync(string email, string otp)
         {
@@ -162,28 +170,36 @@ namespace Do_An_Web_Hoc.Repositories
             var user = await _context.UserAccounts.FirstOrDefaultAsync(u =>
                 u.Email == email &&
                 u.ResetTokenExpiry > DateTime.UtcNow);
-            Console.WriteLine($"[SUCCESS] Mật khẩu của {email} đã được cập nhật.");
+
             if (user == null)
             {
                 Console.WriteLine($"[ERROR] Không tìm thấy tài khoản hoặc OTP đã hết hạn cho email: {email}");
                 return false;
             }
-            // Kiểm tra xem ResetToken có null không (nếu bạn có lưu ResetToken khi gửi OTP)
+
             if (string.IsNullOrEmpty(user.ResetToken))
             {
                 Console.WriteLine($"[ERROR] ResetToken không hợp lệ hoặc đã bị xóa.");
                 return false;
             }
-            // Không dùng mã hóa mật khẩu nếu chưa cần
+
+            // ✅ Mã hóa mật khẩu mới
             user.Password = _passwordHasher.HashPassword(user, newPassword);
 
-            // Xóa thông tin OTP sau khi đổi mật khẩu thành công
+            // ✅ Cập nhật lại context (bắt buộc nếu có AsNoTracking trước đó)
+            _context.UserAccounts.Update(user); // 👈 đảm bảo EF theo dõi entity
+
+            // ✅ Xóa OTP sau khi sử dụng
             user.ResetToken = null;
             user.ResetTokenExpiry = null;
+
+            // ✅ Lưu thay đổi
             await _context.SaveChangesAsync();
+
             Console.WriteLine($"[SUCCESS] Mật khẩu của {email} đã được cập nhật.");
             return true;
         }
+
 
         // Hàm hỗ trợ gửi OTP bằng SMTP
         private async Task SendOTPEmailAsync(string email, string otp)

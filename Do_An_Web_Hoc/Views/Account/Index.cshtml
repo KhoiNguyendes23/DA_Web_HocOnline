@@ -26,8 +26,8 @@
                     <i class='bx bxs-user'></i>
                 </div>
                 <div class="input-box">
-                    <input type="password" name="password" class="form-control" placeholder="Mật khẩu" required />
-                    <i class='bx bxs-lock-alt'></i>
+                    <input type="password" name="password" class="form-control password-input" placeholder="Mật khẩu" required />
+                    <i class='bx bxs-lock-alt toggle-password' style="cursor: pointer;"></i>
                 </div>
                 <div class="forgot-link">
                     <a asp-controller="Account" asp-action="ForgotPassword">Quên mật khẩu?</a>
@@ -63,8 +63,8 @@
                     <i class='bx bxs-user'></i>
                 </div>
                 <div class="input-box">
-                    <input type="password" name="Password" placeholder="Mật khẩu" required>
-                    <i class='bx bxs-lock-alt'></i>
+                    <input type="password" name="Password" class="form-control password-input" placeholder="Mật khẩu" required>
+                    <i class='bx bxs-lock-alt toggle-password' style="cursor: pointer;"></i>
                 </div>
                 <button type="submit" class="btn">ĐĂNG KÝ</button>
             </form>
@@ -85,6 +85,7 @@
         </div>
     </div>
 
-	<script src="~/js/form_log_reg.js"></script>
+    <script src="~/js/Form_Log_Reg.js"></script>
+
 </body>
 </html>

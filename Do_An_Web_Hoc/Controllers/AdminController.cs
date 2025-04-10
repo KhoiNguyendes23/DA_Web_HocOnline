@@ -240,38 +240,74 @@ namespace Do_An_Web_Hoc.Controllers
         {
             var data = await _enrollmentRepo.GetMonthlyRevenueStatisticsAsync();
 
-
             using (var workbook = new XLWorkbook())
             {
-                var worksheet = workbook.Worksheets.Add("Thống kê doanh thu");
+                var ws = workbook.Worksheets.Add("Thống kê doanh thu");
 
-                // Header
-                worksheet.Cell(1, 1).Value = "Năm";
-                worksheet.Cell(1, 2).Value = "Tháng";
-                worksheet.Cell(1, 3).Value = "Lượt đăng ký";
-                worksheet.Cell(1, 4).Value = "Tổng doanh thu (VNĐ)";
-                worksheet.Range("A1:D1").Style.Font.Bold = true;
+                // Tiêu đề lớn (merge A1-D1)
+                ws.Range("A1:D1").Merge().Value = "BÁO CÁO DOANH THU THEO THÁNG";
+                var titleCell = ws.Cell("A1");
+                titleCell.Style.Font.SetBold().Font.FontSize = 18;
+                titleCell.Style.Font.FontColor = XLColor.White;
+                titleCell.Style.Fill.BackgroundColor = XLColor.DarkBlue;
+                titleCell.Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+                titleCell.Style.Alignment.SetVertical(XLAlignmentVerticalValues.Center);
+                ws.Row(1).Height = 35;
 
-                int row = 2;
+                // Header (A2:D2)
+                ws.Cell(2, 1).Value = "Năm";
+                ws.Cell(2, 2).Value = "Tháng";
+                ws.Cell(2, 3).Value = "Lượt đăng ký";
+                ws.Cell(2, 4).Value = "Tổng doanh thu (VNĐ)";
+                var headerRange = ws.Range("A2:D2");
+                headerRange.Style.Font.SetBold();
+                headerRange.Style.Fill.BackgroundColor = XLColor.SkyBlue;
+                headerRange.Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+                headerRange.Style.Alignment.SetVertical(XLAlignmentVerticalValues.Center);
+                headerRange.Style.Border.OutsideBorder = XLBorderStyleValues.Thick;
+                headerRange.Style.Border.InsideBorder = XLBorderStyleValues.Thin;
+                ws.Row(2).Height = 25;
+
+                // Dữ liệu
+                int row = 3;
                 foreach (var item in data)
                 {
-                    worksheet.Cell(row, 1).Value = item.Year;
-                    worksheet.Cell(row, 2).Value = item.Month;
-                    worksheet.Cell(row, 3).Value = item.TotalEnrollments;
-                    worksheet.Cell(row, 4).Value = item.TotalRevenue;
+                    ws.Cell(row, 1).Value = item.Year;
+                    ws.Cell(row, 2).Value = item.Month;
+                    ws.Cell(row, 3).Value = item.TotalEnrollments;
+                    ws.Cell(row, 4).Value = item.TotalRevenue;
+                    ws.Cell(row, 4).Style.NumberFormat.Format = "#,##0";
+
+                    ws.Range(row, 1, row, 4).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+                    ws.Range(row, 1, row, 4).Style.Alignment.SetVertical(XLAlignmentVerticalValues.Center);
+                    ws.Range(row, 1, row, 4).Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
+                    ws.Range(row, 1, row, 4).Style.Border.InsideBorder = XLBorderStyleValues.Dotted;
+
                     row++;
                 }
 
+                // Căn độ rộng và +2 để dễ nhìn
+                ws.Columns().AdjustToContents();
+                for (int col = 1; col <= 4; col++)
+                {
+                    ws.Column(col).Width += 2;
+                }
+
+                // Xuất file
                 using (var stream = new MemoryStream())
                 {
                     workbook.SaveAs(stream);
                     stream.Seek(0, SeekOrigin.Begin);
                     return File(stream.ToArray(),
                         "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-                        $"ThongKeDoanhThu_{DateTime.Now:yyyyMMdd}.xlsx");
+                        $"BaoCaoDoanhThu_{DateTime.Now:yyyyMMdd}.xlsx");
                 }
             }
         }
+
+
+
+
 
         public async Task<IActionResult> StatisticalRevenue()
         {
@@ -720,21 +756,18 @@ namespace Do_An_Web_Hoc.Controllers
         }
 
         public async Task<IActionResult> ViewTeacher(int id)
-        {   var lecturers = await _userRepo.GetUsersByRoleAsync(2);
+        {
+            await SetAdminViewData(); 
+
+            var lecturers = await _userRepo.GetUsersByRoleAsync(2);
             var teacher = lecturers.FirstOrDefault(l => l.UserID == id);
-            if (teacher == null) {
+            if (teacher == null)
+            {
                 return NotFound();
             }
-
-            ViewData["FullName"] = teacher.FullName;
-            ViewData["Email"] = teacher.Email;
-            ViewData["PhoneNumber"] = teacher.PhoneNumber;
-            ViewData["Birthday"] = teacher.Birthday?.ToString("dd/MM/yyyy");
-            ViewData["Status"] = teacher.Status == 1 ? "Hoạt Động" : "Ngừng Dạy";
-
-
-            return View(teacher);
+            return View(teacher); // truyền bằng Model là đủ
         }
+
         public IActionResult AddTeacher()
         {
             return View();

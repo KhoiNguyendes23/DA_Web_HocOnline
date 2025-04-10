@@ -135,17 +135,21 @@ namespace Do_An_Web_Hoc.Controllers
             if (!result)
                 return Json(new { success = false, message = "Email không tồn tại!" });
 
-            TempData["EmailOTP"] = email;
+            HttpContext.Session.SetString("EmailOTP", email); // Dùng Session
             return Json(new { success = true });
         }
+
 
         // nhập OTP
         public IActionResult VerifyOTP()
         {
-            if (TempData["EmailOTP"] == null)
+            var email = HttpContext.Session.GetString("EmailOTP");
+            if (string.IsNullOrEmpty(email))
+            {
                 return RedirectToAction("ForgotPassword");
+            }
 
-            return View("ForgotPassword"); // Chỉ định rõ view
+            return View("ForgotPassword"); // Trả về đúng giao diện nhập OTP
         }
 
         [HttpPost]
@@ -153,30 +157,30 @@ namespace Do_An_Web_Hoc.Controllers
         {
             Console.WriteLine($"[DEBUG] OTP nhận được từ request: '{otp}'");
 
-            if (string.IsNullOrEmpty(otp))
+            if (string.IsNullOrWhiteSpace(otp))
             {
                 return Json(new { success = false, message = "OTP không được để trống!" });
             }
 
             otp = otp.Trim();
 
-            var email = TempData["EmailOTP"] as string;
-            if (email == null)
+            // ✅ Lấy email từ Session thay vì TempData
+            var email = HttpContext.Session.GetString("EmailOTP");
+            if (string.IsNullOrEmpty(email))
             {
                 return Json(new { success = false, message = "Phiên OTP đã hết hạn!" });
             }
 
-            // Kiểm tra OTP trong database
+            // ✅ Kiểm tra OTP trong DB
             bool isOtpValid = await _userAccountRepository.VerifyOTPAsync(email, otp);
-
             if (!isOtpValid)
             {
-                TempData["EmailOTP"] = email;
                 return Json(new { success = false, message = "Mã OTP không hợp lệ hoặc hết hạn!" });
             }
 
-            //TempData["EmailVerified"] = email;
+            // ✅ Nếu thành công, chuyển sang bước 3: lưu lại email đã xác thực
             HttpContext.Session.SetString("EmailVerified", email);
+
             return Json(new { success = true });
         }
 
@@ -201,23 +205,21 @@ namespace Do_An_Web_Hoc.Controllers
                 {
                     return Json(new { success = false, message = "Phiên đặt lại mật khẩu đã hết hạn! Vui lòng thực hiện lại từ đầu." });
                 }
+
                 // Kiểm tra độ mạnh mật khẩu
                 if (newPassword.Length < 8 || !newPassword.Any(char.IsUpper) ||
                     !newPassword.Any(char.IsDigit) || !newPassword.Any(ch => !char.IsLetterOrDigit(ch)))
                 {
                     return Json(new { success = false, message = "Mật khẩu không đủ mạnh! Yêu cầu: ít nhất 8 ký tự, 1 chữ hoa, 1 số, 1 ký tự đặc biệt." });
                 }
-                // Thực hiện đặt lại mật khẩu
-                // Mã hóa mật khẩu trước khi lưu
-                var hasher = new PasswordHasher<UserAccount>();
-                var hashedPassword = hasher.HashPassword(new UserAccount(), newPassword);
 
-                bool resetSuccess = await _userAccountRepository.ResetPasswordByOTPAsync(email, hashedPassword);
+                // Gửi mật khẩu gốc sang Repository để mã hóa tại đó
+                bool resetSuccess = await _userAccountRepository.ResetPasswordByOTPAsync(email, newPassword);
                 if (!resetSuccess)
                 {
                     return Json(new { success = false, message = "Đặt lại mật khẩu thất bại! Vui lòng thử lại." });
                 }
-                // Xóa session sau khi đặt lại mật khẩu thành công
+
                 HttpContext.Session.Remove("EmailVerified");
                 return Json(new { success = true, redirectUrl = Url.Action("Index", "Account") });
             }
@@ -227,6 +229,7 @@ namespace Do_An_Web_Hoc.Controllers
                 return Json(new { success = false, message = "Đã xảy ra lỗi hệ thống. Vui lòng thử lại sau." });
             }
         }
+
         //Để mã hóa mật khẩu cũ
         //[HttpGet]
         //[AllowAnonymous] // hoặc [Authorize(Roles = "Admin")] nếu muốn giới hạn

@@ -35,6 +35,8 @@ namespace Do_An_Web_Hoc.Repositories.Interfaces
 
         Task<IEnumerable<SelectListItem>> GetActiveCourseSelectListAsync();
 
+        Task<IEnumerable<Courses>> GetAvailableCoursesForUserAsync(int userId);
+        Task<IEnumerable<Courses>> GetNotEnrolledCoursesAsync(int userId);
 
     }
 }

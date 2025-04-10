@@ -6,6 +6,7 @@ using Do_An_Web_Hoc.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using System.Linq;
 using System.Security.Claims;
 using ResultsModel = Do_An_Web_Hoc.Models.Results;
 
@@ -92,7 +93,7 @@ namespace Do_An_Web_Hoc.Controllers
                                     .ToList();
 
             // Toàn bộ khóa học
-            var courses = await _coursesRepo.GetAllCoursesAsync();
+            var courses = await _coursesRepo.GetAvailableCoursesForUserAsync(userId);
 
             // Tìm kiếm theo keyword
             if (!string.IsNullOrEmpty(keyword))
@@ -139,11 +140,8 @@ namespace Do_An_Web_Hoc.Controllers
         {
             var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
 
-            var enrollments = await _enrollmentsRepo.GetEnrollmentsByUserAsync(userId);
-            var courseIds = enrollments.Select(e => e.CourseID).ToList();
+            var notEnrolledCourses = await _coursesRepo.GetNotEnrolledCoursesAsync(userId);
 
-            var allCourses = await _coursesRepo.GetAllCoursesAsync();
-            var notEnrolledCourses = allCourses.Where(c => !courseIds.Contains(c.CourseID)).ToList();
             SetUserViewData();
             return View(notEnrolledCourses);
         }
@@ -251,6 +249,7 @@ namespace Do_An_Web_Hoc.Controllers
             ViewBag.Questions = questions;
             ViewBag.Answers = answers;
             ViewBag.ExamName = exam?.ExamName;
+            ViewBag.Duration = exam?.Duration ?? 60;
 
             return View("TakeQuiz");
         }
@@ -447,7 +446,7 @@ namespace Do_An_Web_Hoc.Controllers
             // Lấy đáp án đúng
             var correctAnswers = await _answersRepository.GetAnswersByQuestionIdsAsync(questionIds);
 
-            int score = 0;
+            int correctCount = 0;
 
             foreach (var question in questions)
             {
@@ -467,7 +466,7 @@ namespace Do_An_Web_Hoc.Controllers
 
                         if (correctAnswer != null && correctAnswer.AnswerID == selectedAnswerId)
                         {
-                            score++;
+                            correctCount++;
                         }
 
                         var userAnswer = new UserAnswers
@@ -482,8 +481,19 @@ namespace Do_An_Web_Hoc.Controllers
                 }
             }
 
+            // Lấy tổng điểm từ Quiz
+            var quiz = await _quizzesRepository.GetQuizByIdAsync(quizId);
+            int totalQuestions = questions.Count();
+            int totalMarks = quiz?.TotalMarks ?? totalQuestions; // fallback nếu null
 
-            // Lưu kết quả bài làm vào bảng Results
+            // Tính điểm: số câu đúng / tổng câu * totalMarks
+            int score = 0;
+            if (totalQuestions > 0)
+            {
+                score = (int)Math.Round((double)correctCount * totalMarks / totalQuestions);
+            }
+
+            // Lưu kết quả bài làm
             var result = new ResultsModel
             {
                 UserID = userId,
@@ -492,14 +502,16 @@ namespace Do_An_Web_Hoc.Controllers
                 SubmissionTime = DateTime.Now
             };
 
-
-            await _resultsRepository.SaveResultFromUserAsync(result); // Không kiểm tra quyền ở đây vì là học viên
+            await _resultsRepository.SaveResultFromUserAsync(result);
 
             ViewBag.Score = score;
-            ViewBag.Total = questionIds.Count;
+            ViewBag.Total = totalMarks;
+            ViewBag.CorrectAnswers = correctCount;
+            ViewBag.TotalQuestions = totalQuestions;
             SetUserViewData();
             return View("QuizResult");
         }
+
 
 
 

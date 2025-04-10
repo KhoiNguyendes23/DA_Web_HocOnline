@@ -8,131 +8,186 @@
     const resetPasswordForm = document.getElementById("resetPasswordForm");
 
     const emailInput = document.getElementById("emailInput");
-    const otpHiddenInput = document.getElementById("otpHiddenInput"); // Input ẩn để chứa OTP
+    const otpHiddenInput = document.getElementById("otpHiddenInput");
     const newPasswordInput = document.getElementById("newPassword");
     const confirmPasswordInput = document.getElementById("confirmPassword");
 
-    // ✅ Xử lý gửi mã OTP
+    const lengthCheck = document.getElementById("lengthCheck");
+    const uppercaseCheck = document.getElementById("uppercaseCheck");
+    const specialCharCheck = document.getElementById("specialCharCheck");
+    const numberCheck = document.getElementById("numberCheck");
+    const resetPasswordError = document.getElementById("resetPasswordError");
+
+    // ✅ Cập nhật thanh bước
+    function updateStepIndicator(currentStep) {
+        const steps = document.querySelectorAll(".step");
+        const connectors = document.querySelectorAll(".step-connector");
+
+        steps.forEach((step, index) => {
+            step.classList.remove("active", "completed");
+            if (index < currentStep) step.classList.add("completed");
+            else if (index === currentStep) step.classList.add("active");
+        });
+
+        connectors.forEach((connector, index) => {
+            if (index < currentStep) connector.classList.add("active");
+            else connector.classList.remove("active");
+        });
+    }
+
+    // ✅ Hiển thị/ẩn lỗi
+    function showResetError(message) {
+        resetPasswordError.textContent = message;
+        resetPasswordError.style.display = "block";
+    }
+
+    function clearResetError() {
+        resetPasswordError.textContent = "";
+        resetPasswordError.style.display = "none";
+    }
+
+    // ✅ Kiểm tra điều kiện mật khẩu
+    function validatePasswordRequirements(password) {
+        const updateClass = (condition, element) => {
+            if (condition) {
+                element.classList.add("text-success");
+                element.classList.remove("text-muted");
+            } else {
+                element.classList.remove("text-success");
+                element.classList.add("text-muted");
+            }
+        };
+
+        updateClass(password.length >= 8, lengthCheck);
+        updateClass(/[A-Z]/.test(password), uppercaseCheck);
+        updateClass(/[!@#$%^&*(),.?":{}|<>]/.test(password), specialCharCheck);
+        updateClass(/\d/.test(password), numberCheck);
+    }
+
+    newPasswordInput.addEventListener("input", function () {
+        validatePasswordRequirements(this.value);
+        clearResetError();
+    });
+
+    confirmPasswordInput.addEventListener("input", clearResetError);
+
+    // ✅ Gửi OTP
     sendOtpBtn.addEventListener("click", async function (e) {
         e.preventDefault();
         const email = emailInput.value.trim();
 
         if (!email || !email.includes("@")) {
-            alert("Email không hợp lệ!");
+            showResetError("Email không hợp lệ!");
             return;
         }
 
         try {
-            let response = await fetch("/Account/ForgotPassword", {
+            const response = await fetch("/Account/ForgotPassword", {
                 method: "POST",
                 headers: { "Content-Type": "application/x-www-form-urlencoded" },
-                body: `email=${encodeURIComponent(email)}`,
+                body: `email=${encodeURIComponent(email)}`
             });
 
-            let result = await response.json();
+            const result = await response.json();
             if (result.success) {
                 step1.classList.add("d-none");
                 step2.classList.remove("d-none");
-                alert("Mã OTP đã được gửi!");
+                updateStepIndicator(1);
+                clearResetError();
             } else {
-                alert(result.message);
+                showResetError(result.message || "Email không tồn tại trong hệ thống!");
             }
         } catch (error) {
             console.error("Lỗi khi gửi OTP:", error);
-            alert("Lỗi hệ thống, vui lòng thử lại sau!");
+            showResetError("Lỗi hệ thống, vui lòng thử lại sau!");
         }
     });
 
-    // ✅ Xử lý xác thực OTP
+    // ✅ Xác thực OTP
     verifyOtpBtn.addEventListener("click", async function (e) {
         e.preventDefault();
-
-        // Kiểm tra có đúng 6 ô nhập không
         const otpInputs = document.querySelectorAll(".verification-input");
-        if (otpInputs.length !== 6) {
-            alert("Có lỗi xảy ra với ô nhập OTP!");
-            return;
-        }
+        const otp = Array.from(otpInputs).map(input => input.value.trim()).join("");
 
-        // 🔹 Ghép các số OTP thành một chuỗi duy nhất
-        const otp = Array.from(otpInputs)
-            .map(input => input.value.trim()) // Xóa khoảng trắng
-            .join(""); // Nối thành chuỗi OTP đầy đủ
-
-        console.log("OTP gửi lên server:", otp); // Debug để kiểm tra giá trị OTP trước khi gửi
-
-        // Kiểm tra OTP nhập đủ 6 số chưa
         if (otp.length !== 6 || isNaN(otp)) {
-            alert("Vui lòng nhập đủ 6 số OTP hợp lệ!");
+            showResetError("Vui lòng nhập đủ 6 số OTP hợp lệ!");
             return;
         }
 
         try {
-            let response = await fetch("/Account/VerifyOTP", {
+            const response = await fetch("/Account/VerifyOTP", {
                 method: "POST",
                 headers: { "Content-Type": "application/x-www-form-urlencoded" },
-                body: `otp=${encodeURIComponent(otp)}`,
+                body: `otp=${encodeURIComponent(otp)}`
             });
 
-            let result = await response.json();
+            const result = await response.json();
             if (result.success) {
                 step2.classList.add("d-none");
                 step3.classList.remove("d-none");
-                alert("Xác thực OTP thành công!");
+                updateStepIndicator(2);
+                clearResetError();
             } else {
-                alert(result.message);
+                showResetError(result.message || "Mã OTP không đúng!");
             }
         } catch (error) {
-            console.error("Lỗi khi xác thực OTP:", error);
-            alert("Lỗi hệ thống, vui lòng thử lại sau!");
+            console.error("Lỗi xác thực OTP:", error);
+            showResetError("Lỗi hệ thống, vui lòng thử lại sau!");
         }
     });
 
-    //Xử lý đặt lại mật khẩu (Dùng sự kiện `submit`)
+    // ✅ Đặt lại mật khẩu
     resetPasswordForm.addEventListener("submit", async function (e) {
-        e.preventDefault(); // Ngăn form gửi dữ liệu mặc định
-
+        e.preventDefault();
         const newPassword = newPasswordInput.value.trim();
         const confirmPassword = confirmPasswordInput.value.trim();
 
-        // Kiểm tra độ dài mật khẩu
         if (newPassword.length < 8) {
-            alert("Mật khẩu phải có ít nhất 8 ký tự!");
+            showResetError("Mật khẩu phải có ít nhất 8 ký tự!");
             return;
         }
 
-        // Kiểm tra mật khẩu xác nhận
         if (newPassword !== confirmPassword) {
-            alert("Mật khẩu xác nhận không khớp!");
+            showResetError("Mật khẩu xác nhận không khớp!");
             return;
         }
 
         try {
-            console.log("🔄 Đang gửi yêu cầu đặt lại mật khẩu...");
-
-            //Gửi yêu cầu đặt lại mật khẩu bằng `application/x-www-form-urlencoded`
-            let formData = new URLSearchParams();
+            const formData = new URLSearchParams();
             formData.append("newPassword", newPassword);
             formData.append("confirmPassword", confirmPassword);
 
-            let response = await fetch("/Account/ResetPassword", {
+            const response = await fetch("/Account/ResetPassword", {
                 method: "POST",
                 headers: { "Content-Type": "application/x-www-form-urlencoded" },
-                body: formData,
+                body: formData
             });
 
-            let result = await response.json();
-            console.log("✅ Phản hồi từ server:", result);
-
+            const result = await response.json();
             if (result.success) {
-                alert("Mật khẩu đã được đặt lại thành công!");
-                window.location.href = result.redirectUrl; // Chuyển hướng đến trang đăng nhập
+                window.location.href = result.redirectUrl;
             } else {
-                alert(result.message);
+                showResetError(result.message || "Đặt lại mật khẩu thất bại!");
             }
         } catch (error) {
-            console.error("❌ Lỗi khi đặt lại mật khẩu:", error);
-            alert("Lỗi hệ thống, vui lòng thử lại sau!");
+            console.error("Lỗi đặt lại mật khẩu:", error);
+            showResetError("Lỗi hệ thống, vui lòng thử lại sau!");
         }
     });
 });
+
+// ✅ Toggle hiện/ẩn mật khẩu
+function togglePasswordVisibility(inputId) {
+    const input = document.getElementById(inputId);
+    const icon = input.nextElementSibling.querySelector("i");
+
+    if (input.type === "password") {
+        input.type = "text";
+        icon.classList.remove("fa-eye");
+        icon.classList.add("fa-eye-slash");
+    } else {
+        input.type = "password";
+        icon.classList.remove("fa-eye-slash");
+        icon.classList.add("fa-eye");
+    }
+}

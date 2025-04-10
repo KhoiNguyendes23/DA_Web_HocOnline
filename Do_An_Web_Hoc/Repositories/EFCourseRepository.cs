@@ -141,6 +141,37 @@ namespace Do_An_Web_Hoc.Repositories
                               Text = c.CourseName
                           }).ToListAsync();
         }
+        public async Task<IEnumerable<Courses>> GetAvailableCoursesForUserAsync(int userId)
+        {
+            var enrolledCourseIds = await _context.Enrollments
+                .Where(e => e.UserID == userId)
+                .Select(e => e.CourseID)
+                .ToListAsync();
+
+            // JOIN giữa Courses và Categories
+            var result = await (from c in _context.Courses
+                                join cat in _context.Categories on c.CategoryID equals cat.CategoryId
+                                where (c.Status == 1 && cat.Status == 1) || enrolledCourseIds.Contains(c.CourseID)
+                                select c).ToListAsync();
+
+            return result;
+        }
+        public async Task<IEnumerable<Courses>> GetNotEnrolledCoursesAsync(int userId)
+        {
+            var enrolledCourseIds = await _context.Enrollments
+                .Where(e => e.UserID == userId)
+                .Select(e => e.CourseID)
+                .ToListAsync();
+
+            var result = await (from c in _context.Courses
+                                join cat in _context.Categories on c.CategoryID equals cat.CategoryId
+                                where !enrolledCourseIds.Contains(c.CourseID)
+                                      && c.Status == 1
+                                      && cat.Status == 1
+                                select c).ToListAsync();
+
+            return result;
+        }
     }
 }
 

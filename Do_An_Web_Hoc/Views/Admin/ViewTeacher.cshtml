@@ -1,42 +1,38 @@
-﻿@{
+﻿@model Do_An_Web_Hoc.Models.UserAccount
+@{
     Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+    ViewData["Title"] = "Chi tiết giáo viên";
+
+    string trangThai = Model.Status switch
+    {
+        1 => "Đang dạy",
+        2 => "Ngừng dạy",
+        3 => "Bị cấm",
+        _ => "Không xác định"
+    };
 }
 
-<!DOCTYPE html>
-<html lang="vi">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chi tiết giáo viên</title>
+<div class="container mt-5">
+    <h2 class="text-center text-primary">Thông Tin Giáo Viên</h2>
 
-    <!-- Bootstrap & Font Awesome -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link href="~/css/Admin.css" rel="stylesheet" />
-</head>
-<body>
-    <div class="container mt-5">
-        <h2 class="text-center text-primary">Thông Tin Giáo Viên</h2>
-
-        <div class="card mx-auto" style="max-width: 500px;">
-            <div class="card-body">
-                <!-- Hiển thị thông tin giáo viên -->
-                <h5 class="card-title"><i class="fas fa-user"></i> @Model.FullName</h5>
-                <p><strong>Email:</strong> @Model.Email</p>
-                <p><strong>Số Điện Thoại:</strong> @Model.PhoneNumber</p>
-                <p><strong>Ngày Sinh:</strong> @Model.Birthday?.ToString("dd/MM/yyyy")</p>
-                <p><strong>Trạng Thái:</strong> @((Model.Status == 1) ? "Đang dạy" : "Ngừng dạy")</p>
-            </div>
-        </div>
-
-        <div class="text-center mt-4">
-            <!-- Thêm các nút điều hướng -->
-            <a href="@Url.Action("ListTeacher")" class="btn btn-secondary"><i class="fas fa-arrow-left"></i> Quay Lại</a>
-            <a href="@Url.Action("UpdateTeacher", new { id = Model.UserID })" class="btn btn-primary"><i class="fas fa-edit"></i> Chỉnh Sửa</a>
+    <div class="card mx-auto" style="max-width: 500px;">
+        <div class="card-body">
+            <h5 class="card-title">
+                <i class="fas fa-user"></i> @Model.FullName
+            </h5>
+            <p><strong>Email:</strong> @Model.Email</p>
+            <p><strong>Số Điện Thoại:</strong> @Model.PhoneNumber</p>
+            <p><strong>Ngày Sinh:</strong> @Model.Birthday?.ToString("dd/MM/yyyy")</p>
+            <p><strong>Trạng Thái:</strong> @trangThai</p>
         </div>
     </div>
 
-    <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-</html>
+    <div class="text-center mt-4">
+        <a href="@Url.Action("ListTeacher", "Admin")" class="btn btn-secondary">
+            <i class="fas fa-arrow-left"></i> Quay Lại
+        </a>
+        <a href="@Url.Action("UpdateTeacher", "Admin", new { id = Model.UserID })" class="btn btn-primary">
+            <i class="fas fa-edit"></i> Chỉnh Sửa
+        </a>
+    </div>
+</div>

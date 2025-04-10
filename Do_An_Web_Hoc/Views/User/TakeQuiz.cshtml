@@ -5,7 +5,8 @@
     var selectedQuiz = ViewBag.Quiz as Do_An_Web_Hoc.Models.Quizzes;
     var questions = ViewBag.Questions as List<Do_An_Web_Hoc.Models.Questions>;
     var answers = ViewBag.Answers as List<Do_An_Web_Hoc.Models.Answers>;
-    var duration = selectedQuiz?.Duration ?? 60;
+    var duration = ViewBag.Duration ?? 60;
+
 }
 
 <div class="container mt-4">

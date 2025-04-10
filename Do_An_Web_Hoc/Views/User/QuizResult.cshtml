@@ -1,14 +1,18 @@
 ﻿@{
     Layout = "~/Views/Shared/_LayoutUsers.cshtml";
     ViewData["Title"] = "Kết quả làm bài";
-    int score = (int)ViewBag.Score;
-    int total = (int)ViewBag.Total;
-}
 
+    int correctAnswers = (int)ViewBag.CorrectAnswers;
+    int totalQuestions = (int)ViewBag.TotalQuestions;
+
+    double score = (double)ViewBag.Score;
+    int totalMarks = (int)ViewBag.Total;
+}
 <div class="container mt-4 text-center">
     <h2 class="text-success">🎉 Bạn đã hoàn thành bài kiểm tra!</h2>
-    <p class="fs-4 mt-3">✅ Số câu đúng: <strong>@score / @total</strong></p>
-    <p class="fs-4">🎯 Điểm: <strong>@(score * 10 / total)</strong> / 10</p>
+
+    <p class="fs-4 mt-3">✅ Số câu đúng: <strong>@correctAnswers / @totalQuestions</strong></p>
+    <p class="fs-4">🎯 Điểm: <strong>@score</strong> / @totalMarks</p>
 
     <a asp-action="Dashboard" asp-controller="User" class="btn btn-primary mt-3">Quay lại Trang chính</a>
 </div>
