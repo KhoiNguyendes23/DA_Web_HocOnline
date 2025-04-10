@@ -42,16 +42,13 @@
 
         <div class="mb-3">
             <label for="image" class="form-label">Chọn ảnh</label>
-            <input type="file" name="image" id="image" class="form-control" />
+            <input type="file" name="image" id="image" class="form-control" accept="image/*" />
         </div>
 
-        @if (!string.IsNullOrEmpty(Model.ImageUrl))
-        {
-            <div class="mb-3">
-                <label class="form-label">Ảnh hiện tại:</label><br />
-                <img src="@Model.ImageUrl" width="220" class="img-thumbnail shadow" />
-            </div>
-        }
+        <div class="mb-3">
+            <label class="form-label">Ảnh hiện tại:</label><br />
+            <img id="current-preview" src="@Model.ImageUrl" width="220" class="img-thumbnail shadow" />
+        </div>
 
         <button type="submit" class="btn btn-success"><i class="fas fa-save"></i> Cập nhật</button>
         <a asp-action="ListCourse" class="btn btn-secondary ms-2"><i class="fas fa-arrow-left"></i> Quay lại</a>
@@ -60,4 +57,14 @@
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        document.getElementById("image").addEventListener("change", function () {
+            const [file] = this.files;
+            if (file) {
+                const preview = document.getElementById("current-preview");
+                preview.src = URL.createObjectURL(file);
+            }
+        });
+    </script>
 }
