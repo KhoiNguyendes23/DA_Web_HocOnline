@@ -1,4 +1,3 @@
-
 :root {
     --sidebar-width: 280px;
     --sidebar-width-collapsed: 80px;
@@ -8,25 +7,49 @@ body {
     overflow-x: hidden;
 }
 
-/* Sidebar chính */
 .sidebar {
     display: flex;
     flex-direction: column;
     height: 100vh;
     width: var(--sidebar-width);
-    background: linear-gradient(45deg, #6a11cb 0%, #2575fc 100%);
+    background: linear-gradient(135deg, #424eb9 0%, #16181f 100%);
     transition: all 0.3s ease;
     justify-content: flex-start;
     padding: 0;
     margin: 0;
-    z-index: 1000;
 }
 
-    .sidebar.collapsed {
-        width: var(--sidebar-width-collapsed);
+    .sidebar .avatar-img {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        object-fit: cover;
+        transition: all 0.3s ease;
     }
 
-/* Sidebar link */
+    /* Khi thu nhỏ */
+    .sidebar.collapsed .avatar-img {
+        width: 40px;
+        height: 40px;
+        margin: 0 auto;
+    }
+
+.role-label {
+    background-color: white;
+    color: forestgreen;
+    font-weight: bold;
+    padding: 2px 6px;
+    border-radius: 4px;
+    display: inline-block;
+    margin-top: 5px;
+}
+
+
+
+.sidebar.collapsed {
+    width: var(--sidebar-width-collapsed);
+}
+
 .sidebar-link {
     display: flex;
     align-items: center;
@@ -52,12 +75,13 @@ body {
     width: 100%;
 }
 
-    .sidebar.collapsed .sidebar-link span,
-    .sidebar.collapsed .logout-btn span,
-    .sidebar.collapsed .dropdown-icon,
-    .sidebar.collapsed .logo-text,
-    .sidebar.collapsed .profile-info {
-        display: none !important;
+    .sidebar.collapsed .sidebar-link i {
+        width: auto;
+        text-align: center;
+    }
+
+    .sidebar.collapsed .sidebar-link span {
+        display: none;
     }
 
 .sidebar-link:hover {
@@ -67,14 +91,15 @@ body {
 }
 
 .sidebar-link.active {
+    color: #ffffff;
     background: rgba(255, 255, 255, 0.2);
 }
 
-/* Profile Section */
 .profile-section {
     display: flex;
     align-items: center;
     padding: 10px 16px;
+    margin: 0;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
@@ -88,7 +113,11 @@ body {
     transition: opacity 0.3s ease;
 }
 
-/* Toggle Button */
+.sidebar.collapsed .profile-info {
+    opacity: 0;
+    visibility: hidden;
+}
+
 .toggle-btn {
     position: absolute;
     right: -15px;
@@ -99,24 +128,28 @@ body {
     height: 30px;
     border: none;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+    z-index: 100;
     cursor: pointer;
     transition: transform 0.3s ease;
-    z-index: 1100;
+}
+
+.collapsed .toggle-btn {
+    transform: rotate(180deg);
 }
 
 .main-content {
     margin-left: var(--sidebar-width);
+    width: calc(100% - var(--sidebar-width));
     background-color: #f8f9fa;
     min-height: 100vh;
     padding: 20px;
     transition: all 0.3s ease;
 }
 
-.sidebar.collapsed ~ .main-content {
+.collapsed ~ .main-content {
     margin-left: var(--sidebar-width-collapsed);
 }
 
-/* Logout */
 .logout-btn {
     display: flex;
     align-items: center;
@@ -141,28 +174,34 @@ body {
         transform: translateX(5px);
     }
 
-/* Submenu */
+.sidebar.collapsed .logout-btn {
+    justify-content: center;
+    padding: 12px 0;
+    width: 100%;
+}
+
+    .sidebar.collapsed .logout-btn span {
+        display: none;
+    }
+
 .submenu {
     display: none;
     padding-left: 30px;
-    transition: all 0.3s ease;
 }
-
-    .submenu.open {
-        display: block;
-    }
 
 .submenu-link {
     display: block;
     padding: 8px 16px;
     color: #ffffff !important;
-    text-decoration: none;
+    text-decoration: none !important;
     transition: all 0.2s ease;
 }
 
     .submenu-link:hover {
+        color: #ffffff;
         background: rgba(255, 255, 255, 0.1);
         border-radius: 8px;
+        text-decoration: none !important;
     }
 
 .dropdown-icon {
@@ -170,8 +209,20 @@ body {
     transition: transform 0.3s ease;
 }
 
+.submenu.open {
+    display: block;
+}
+
 .sidebar-link.active .dropdown-icon {
     transform: rotate(180deg);
+}
+
+.sidebar.collapsed .dropdown-icon {
+    display: none;
+}
+
+.sidebar.collapsed .logo-text {
+    display: none;
 }
 
 .logo-text {
@@ -180,76 +231,17 @@ body {
     text-align: center;
 }
 
-
-/* === BẢNG === */
-table.table {
-    border-radius: 8px;
-    overflow: hidden;
-    box-shadow: 0 0 5px rgba(0,0,0,0.05);
-    font-size: 15px;
+.sidebar a,
+.sidebar a * {
+    text-decoration: none !important;
 }
 
-    table.table thead {
-        background-color: #2575fc;
-        color: white;
-    }
 
-    table.table th,
-    table.table td {
-        vertical-align: middle !important;
-        text-align: center;
-    }
-
-/* === FORM === */
-form .form-control,
-form .form-select {
-    border-radius: 6px;
-    box-shadow: none;
-    border: 1px solid #ced4da;
-}
-
-form label {
-    font-weight: 500;
-    color: #333;
-}
-
-/* === NÚT === */
-.btn {
-    border-radius: 6px;
-    transition: all 0.2s ease-in-out;
-}
-
-    .btn i {
-        margin-right: 4px;
-    }
-
-    .btn:hover {
-        opacity: 0.9;
-        transform: scale(1.01);
-    }
-
-/* === MODAL === */
-.modal-content {
-    border-radius: 10px;
-    box-shadow: 0 5px 20px rgba(0,0,0,0.1);
-}
-
-.modal-header {
-    background-color: #2575fc;
-    color: white;
-    border-top-left-radius: 10px;
-    border-top-right-radius: 10px;
-}
-
-.modal-title {
-    font-weight: 600;
-}
-
-.modal-body label {
-    font-weight: 500;
-}
-
-/* === TIÊU ĐỀ === */
-h2, h3 {
-    font-weight: 600;
+.avatar-img {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 50%; /* làm tròn */
+    border: 2px solid white;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
 }
