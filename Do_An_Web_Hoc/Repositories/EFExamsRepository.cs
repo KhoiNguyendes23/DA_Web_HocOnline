@@ -162,29 +162,40 @@ namespace Do_An_Web_Hoc.Repositories
             return result;
         }
 
-
-
-
-
         public async Task<IEnumerable<CompletedQuizViewModel>> GetCompletedQuizzesByUserAsync(int userId)
         {
-            var completedQuizIds = await (from ua in _context.UserAnswers
-                                          join q in _context.Questions on ua.QuestionID equals q.QuestionID
-                                          where ua.UserID == userId
-                                          select q.QuizID)
-                                           .Distinct()
-                                           .ToListAsync();
+            // Lấy toàn bộ kết quả làm bài của người dùng (trong DB)
+            var allResults = await _context.Results
+                .Where(r => r.UserID == userId)
+                .ToListAsync();
 
-            return await (from quiz in _context.Quizzes
-                          join exam in _context.Exams on quiz.ExamID equals exam.ExamID
-                          where completedQuizIds.Contains(quiz.QuizID)
-                          select new CompletedQuizViewModel
-                          {
-                              QuizID = quiz.QuizID,
-                              QuizName = quiz.QuizName,
-                              CreatedAt = exam.CreatedAt, //Lấy từ Exam
-                              TotalMarks = quiz.TotalMarks
-                          }).ToListAsync();
+            // Group lại theo QuizID, chỉ lấy bản ghi mới nhất (linq to object)
+            var latestResults = allResults
+                .GroupBy(r => r.QuizID)
+                .Select(g => g.OrderByDescending(x => x.SubmissionTime).First())
+                .ToList();
+
+            // Lấy QuizID từ kết quả mới nhất
+            var quizIds = latestResults.Select(x => x.QuizID).ToList();
+
+            // Lấy thông tin chi tiết quiz
+            var quizzes = await _context.Quizzes
+                .Where(q => quizIds.Contains(q.QuizID))
+                .ToListAsync();
+
+            // Ghép kết quả
+            var quizInfos = (from result in latestResults
+                             join qz in quizzes on result.QuizID equals qz.QuizID
+                             select new CompletedQuizViewModel
+                             {
+                                 QuizID = qz.QuizID,
+                                 QuizName = qz.QuizName,
+                                 TotalMarks = qz.TotalMarks,
+                                 SubmissionTime = result.SubmissionTime,
+                                 Score = result.Score
+                             }).ToList();
+
+            return quizInfos;
         }
     }
 }

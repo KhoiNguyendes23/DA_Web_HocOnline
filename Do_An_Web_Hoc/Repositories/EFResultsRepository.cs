@@ -130,11 +130,11 @@ namespace Do_An_Web_Hoc.Repositories
                                      ExamName = e.ExamName,
                                      QuizName = q.QuizName,
                                      Score = r.Score,
+                                     TotalMarks = q.TotalMarks, 
                                      SubmissionTime = r.SubmissionTime
                                  })
                                  .OrderByDescending(r => r.SubmissionTime)
                                  .ToListAsync();
-
             return results;
         }
     }

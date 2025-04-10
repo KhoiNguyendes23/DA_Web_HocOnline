@@ -4,8 +4,9 @@
     {
         public int QuizID { get; set; }
         public string QuizName { get; set; }
-        public DateTime? CreatedAt { get; set; }
+        public DateTime? SubmissionTime { get; set; } // Thời gian làm bài
         public int? TotalMarks { get; set; }
+        public float? Score { get; set; } // Điểm đạt được
     }
 
 }

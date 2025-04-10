@@ -6,7 +6,10 @@
 }
 
 <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css" />
-
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
+<link rel="stylesheet" href="~/css/listLecturer.css" />
 <div class="container mt-4">
     <h3 class="text-primary text-center mb-4">📚 Danh sách bài giảng</h3>
 
@@ -38,7 +41,7 @@
                     <tr>
                         <td>@item.LectureID</td>
                         <td class="fw-bold">@item.Title</td>
-                        <td>@(string.IsNullOrEmpty(item.Content) ? "<span class='text-muted fst-italic'>Không có</span>" : item.Content)</td>
+                        <td>@Html.Raw(string.IsNullOrEmpty(item.Content) ? "<span class='text-muted fst-italic'>Không có</span>" : item.Content)</td>
 
                         <!-- Video -->
                         <td>
@@ -46,16 +49,16 @@
                             {
                                 if (item.VideoUrl.Contains("drive.google.com"))
                                 {
-                                    <iframe src="@item.VideoUrl" width="120" height="70" allowfullscreen style="border:none;"></iframe>
+                                    <iframe src="@item.VideoUrl" width="160" height="90" allowfullscreen style="border:none;"></iframe>
                                 }
                                 else if (item.VideoUrl.Contains("watch?v="))
                                 {
                                     var embedUrl = item.VideoUrl.Replace("watch?v=", "embed/");
-                                    <iframe width="120" height="70" src="@embedUrl" frameborder="0" allowfullscreen></iframe>
+                                    <iframe width="160" height="90" src="@embedUrl" frameborder="0" allowfullscreen></iframe>
                                 }
                                 else if (item.VideoUrl.EndsWith(".mp4") || item.VideoUrl.StartsWith("http"))
                                 {
-                                    <video width="120" height="70" controls muted>
+                                    <video width="160" height="90" controls muted>
                                         <source src="@item.VideoUrl" type="video/mp4" />
                                     </video>
                                 }
@@ -121,13 +124,6 @@
         </tbody>
     </table>
 </div>
-
-<style>
-    iframe, video {
-        border-radius: 8px;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    }
-</style>
 
 @section Scripts {
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

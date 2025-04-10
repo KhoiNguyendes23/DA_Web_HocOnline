@@ -1,0 +1,64 @@
+﻿/* Căn chỉnh bảng cho gọn và dễ nhìn */
+#lectureTable {
+    table-layout: auto;
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 15px;
+}
+
+    #lectureTable th,
+    #lectureTable td {
+        padding: 10px 8px;
+        vertical-align: middle;
+        word-wrap: break-word;
+        white-space: normal;
+    }
+
+    /* Căn giữa các icon và chữ */
+    #lectureTable i {
+        margin-right: 4px;
+    }
+
+    /* Nút hành động (Xem/Sửa/Xóa) */
+    #lectureTable .btn {
+        min-width: 70px;
+        margin: 2px 3px;
+    }
+
+    /* Dòng tiêu đề bảng */
+    #lectureTable thead th {
+        background-color: #007bff;
+        color: #fff;
+        font-weight: bold;
+    }
+
+/* Responsive video và iframe */
+iframe, video {
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+/* Tooltip nếu cần */
+td[title] {
+    cursor: help;
+}
+
+/* Giới hạn chiều rộng cột Mô tả để không bị giãn */
+#lectureTable td:nth-child(3),
+#lectureTable th:nth-child(3) {
+    max-width: 250px;
+    overflow-wrap: break-word;
+    word-break: break-word;
+}
+
+/* Làm gọn nút hành động */
+#lectureTable td:last-child a.btn {
+    padding: 4px 8px;
+    font-size: 14px;
+}
+
+/* Tăng khoảng cách dòng */
+#lectureTable td {
+    line-height: 1.4;
+}
+
