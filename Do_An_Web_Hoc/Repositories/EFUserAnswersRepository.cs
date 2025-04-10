@@ -18,6 +18,11 @@ namespace Do_An_Web_Hoc.Repositories
 
         public async Task SaveUserAnswerAsync(UserAnswers userAnswer)
         {
+            if (userAnswer.CreatedAt == default)
+            {
+                userAnswer.CreatedAt = DateTime.Now;
+            }
+
             _context.UserAnswers.Add(userAnswer);
             await _context.SaveChangesAsync();
         }

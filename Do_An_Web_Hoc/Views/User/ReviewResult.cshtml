@@ -1,0 +1,64 @@
+﻿@model Do_An_Web_Hoc.Models.ViewModels.QuizResultViewModel
+@{
+    Layout = "~/Views/Shared/_LayoutUsers.cshtml";
+    ViewData["Title"] = "Kết quả bài làm";
+}
+
+<div class="container mt-4">
+    <h3 class="text-center text-primary mb-4">📘 Kết Quả Bài Kiểm Tra</h3>
+
+    <div class="card mb-4 shadow-sm">
+        <div class="card-body">
+            <h5 class="card-title"><i class="fas fa-file-alt"></i> @Model.QuizName</h5>
+            <p><strong>Tổng số câu hỏi:</strong> @Model.TotalScore</p>
+            <p><strong>Số câu đúng:</strong> @Model.Score</p>
+        </div>
+    </div>
+
+    @for (int i = 0; i < Model.Questions.Count; i++)
+    {
+        var question = Model.Questions[i];
+        <div class="mb-4 border p-3 rounded shadow-sm">
+            <h5 class="fw-bold">Câu @((i + 1)): @question.QuestionText</h5>
+            <ul class="list-group mt-2">
+                @foreach (var ans in question.Answers)
+                {
+                    var liClass = "list-group-item";
+                    if (ans.IsCorrect && ans.IsSelected)
+                    {
+                        liClass += " list-group-item-success"; // chọn đúng
+                    }
+                    else if (!ans.IsCorrect && ans.IsSelected)
+                    {
+                        liClass += " list-group-item-danger"; // chọn sai
+                    }
+                    else if (ans.IsCorrect)
+                    {
+                        liClass += " border border-success"; // đúng nhưng không chọn
+                    }
+
+                    var icon = ans.IsCorrect && ans.IsSelected
+                    ? "fa-check-circle text-success"
+                    : (!ans.IsCorrect && ans.IsSelected
+                    ? "fa-times-circle text-danger"
+                    : "fa-circle");
+
+                    <li class="@liClass">
+                        <i class="fas @icon me-1"></i>
+                        @ans.AnswerText
+                        @if (ans.IsCorrect)
+                        {
+                            <span class="badge bg-success ms-2">Đáp án đúng</span>
+                        }
+                    </li>
+                }
+            </ul>
+        </div>
+    }
+
+    <div class="text-center mt-4">
+        <a asp-action="Dashboard" asp-controller="User" class="btn btn-primary mt-3">
+            <i class="fas fa-home"></i> Quay về trang chính
+        </a>
+    </div>
+</div>

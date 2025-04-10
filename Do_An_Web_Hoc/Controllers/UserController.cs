@@ -255,6 +255,14 @@ namespace Do_An_Web_Hoc.Controllers
         }
 
 
+        // Xem lại kết quả bài làm
+        public async Task<IActionResult> ReviewResult(int quizId)
+        {
+            SetUserViewData();
+            int userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            var result = await _examsRepository.GetQuizReviewResultAsync(quizId, userId);
+            return View("ReviewResult", result);
+        }
 
 
 
@@ -438,19 +446,17 @@ namespace Do_An_Web_Hoc.Controllers
         {
             int userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
             int quizId = int.Parse(form["QuizID"]);
+            var attemptId = Guid.NewGuid(); // tạo mã lượt làm bài
 
-            // Lấy danh sách câu hỏi trong quiz
             var questions = await _questionsRepository.GetQuestionsByQuizIdAsync(quizId);
             var questionIds = questions.Select(q => q.QuestionID).ToList();
-
-            // Lấy đáp án đúng
             var correctAnswers = await _answersRepository.GetAnswersByQuestionIdsAsync(questionIds);
 
             int correctCount = 0;
 
             foreach (var question in questions)
             {
-                if (question.QuestionType != "MCQ") continue; // Bỏ qua câu Essay
+                if (question.QuestionType != "MCQ") continue;
 
                 int questionId = question.QuestionID;
                 string key = $"Question_{questionId}";
@@ -458,7 +464,6 @@ namespace Do_An_Web_Hoc.Controllers
                 if (form.ContainsKey(key))
                 {
                     string answerValue = form[key];
-
                     if (int.TryParse(answerValue, out int selectedAnswerId))
                     {
                         var correctAnswer = correctAnswers
@@ -473,7 +478,9 @@ namespace Do_An_Web_Hoc.Controllers
                         {
                             UserID = userId,
                             QuestionID = questionId,
-                            AnswerID = selectedAnswerId
+                            AnswerID = selectedAnswerId,
+                            CreatedAt = DateTime.Now,
+                            AttemptId = attemptId //  Gán mã lượt làm bài
                         };
 
                         await _userAnswersRepository.SaveUserAnswerAsync(userAnswer);
@@ -481,19 +488,16 @@ namespace Do_An_Web_Hoc.Controllers
                 }
             }
 
-            // Lấy tổng điểm từ Quiz
             var quiz = await _quizzesRepository.GetQuizByIdAsync(quizId);
             int totalQuestions = questions.Count();
-            int totalMarks = quiz?.TotalMarks ?? totalQuestions; // fallback nếu null
+            int totalMarks = quiz?.TotalMarks ?? totalQuestions;
 
-            // Tính điểm: số câu đúng / tổng câu * totalMarks
             int score = 0;
             if (totalQuestions > 0)
             {
                 score = (int)Math.Round((double)correctCount * totalMarks / totalQuestions);
             }
 
-            // Lưu kết quả bài làm
             var result = new ResultsModel
             {
                 UserID = userId,
@@ -511,6 +515,7 @@ namespace Do_An_Web_Hoc.Controllers
             SetUserViewData();
             return View("QuizResult");
         }
+
 
 
 
@@ -566,7 +571,21 @@ namespace Do_An_Web_Hoc.Controllers
             return RedirectToAction("SecuritySettings");
         }
 
+        public async Task<IActionResult> CompletedQuizzes()
+        {
+            int userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
 
+            var completedQuizzes = await _examsRepository.GetCompletedQuizzesByUserAsync(userId);
+
+            return View(completedQuizzes);
+        }
+        public async Task<IActionResult> CompletedExams()
+        {
+            SetUserViewData();
+            int userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            var exams = await _examsRepository.GetCompletedQuizzesByUserAsync(userId);
+            return View(exams);
+        }
 
 
 

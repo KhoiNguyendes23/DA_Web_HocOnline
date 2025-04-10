@@ -1,44 +1,4 @@
-﻿@* @{
-    Layout = "~/Views/Shared/_LayoutLecturer.cshtml";
-}
-
-<div class="container mt-5">
-    <h2 class="text-danger text-center mb-4"><i class="fas fa-trash-alt"></i> Xóa Bài Kiểm Tra</h2>
-
-    <div class="card mx-auto" style="max-width: 600px;">
-        <div class="card-body">
-            <h5 class="card-title"><i class="fas fa-file-alt"></i> Bài Kiểm Tra: Python Cơ Bản</h5>
-            <p><strong>Ngày Kiểm Tra:</strong> 15/04/2025</p>
-            <p><strong>Khóa Học:</strong> Python Cơ Bản</p>
-            <p><strong>Thời Gian Làm Bài:</strong> 60 phút</p>
-            <p><strong>Số Câu Hỏi:</strong> 20 câu</p>
-            <p><strong>Trạng Thái:</strong> <span class="badge bg-success">Hoạt động</span></p>
-        </div>
-    </div>
-
-    <div class="alert alert-warning text-center mt-4">
-        <p><strong>Bạn có chắc chắn muốn xóa bài kiểm tra này không?</strong></p>
-        <p>Hành động này không thể hoàn tác!</p>
-    </div>
-
-    <div class="text-center">
-        <a href="ListExam" class="btn btn-secondary"><i class="fas fa-arrow-left"></i> Hủy</a>
-        <button class="btn btn-danger" onclick="confirmDelete()"><i class="fas fa-trash-alt"></i> Xóa</button>
-    </div>
-</div>
-
-@section Scripts {
-    <script>
-        function confirmDelete() {
-            if (confirm("Bạn có chắc chắn muốn xóa bài kiểm tra này không?")) {
-                alert("Bài kiểm tra đã được xóa thành công!");
-                window.location.href = "ListExam"; // Sau khi xóa chuyển về danh sách
-            }
-        }
-    </script>
-}
- *@
- @model Do_An_Web_Hoc.Models.Exams
+﻿@model Do_An_Web_Hoc.Models.Exams
 @{
     Layout = "~/Views/Shared/_LayoutLecturer.cshtml";
     ViewData["Title"] = "Xóa bài kiểm tra";
@@ -53,7 +13,7 @@
             <p><strong>Ngày Kiểm Tra:</strong> @Model.StartTime?.ToString("dd/MM/yyyy")</p>
             <p><strong>Khóa Học:</strong> @Model.CourseID</p>
             <p><strong>Thời Gian Làm Bài:</strong> @Model.Duration phút</p>
-            <p><strong>Số Câu Hỏi:</strong> (Hiển thị nếu cần)</p>
+            <p><strong>Số Câu Hỏi:</strong> @(ViewBag.Questions != null ? ((List<Questions>)ViewBag.Questions).Count : 0)</p>
             <p>
                 <strong>Trạng Thái:</strong>
                 <span class="badge bg-@(Model.Status == 1 ? "success" : "danger")">

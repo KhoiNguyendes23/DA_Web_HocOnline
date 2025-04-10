@@ -1,4 +1,5 @@
 ﻿using Do_An_Web_Hoc.Models;
+using Do_An_Web_Hoc.Models.ViewModels;
 
 namespace Do_An_Web_Hoc.Repositories.Interfaces
 {
@@ -32,6 +33,11 @@ namespace Do_An_Web_Hoc.Repositories.Interfaces
         Task<IEnumerable<Exams>> SearchExamsByNameAsync(string examName);
 
         Task<IEnumerable<Exams>> GetExamsByEnrolledUserAsync(int userId);
+
+        Task<QuizResultViewModel> GetQuizReviewResultAsync(int quizId, int userId);
+
+        Task<IEnumerable<CompletedQuizViewModel>> GetCompletedQuizzesByUserAsync(int userId);
+
 
     }
 }
