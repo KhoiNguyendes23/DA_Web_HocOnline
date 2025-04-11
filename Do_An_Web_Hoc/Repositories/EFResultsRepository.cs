@@ -118,6 +118,18 @@ namespace Do_An_Web_Hoc.Repositories
 
             return rankings;
         }
+
+        public async Task<List<int>> GetCompletedQuizIdsByUserAsync(int userId)
+        {
+            return await _context.Results
+                .Where(r => r.UserID == userId)
+                .Select(r => r.QuizID)
+                .Where(qid => qid.HasValue)
+                .Select(qid => qid.Value)
+                .Distinct()
+                .ToListAsync();
+        }
+
         public async Task<IEnumerable<ResultExamViewModel>> GetExamResultsForLecturerAsync()
         {
             var results = await (from r in _context.Results
@@ -137,5 +149,6 @@ namespace Do_An_Web_Hoc.Repositories
                                  .ToListAsync();
             return results;
         }
+
     }
 }

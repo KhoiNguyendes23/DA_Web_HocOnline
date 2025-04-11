@@ -214,10 +214,16 @@ namespace Do_An_Web_Hoc.Controllers
                 return RedirectToAction("QuizExamSelection");
             }
 
+            int userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            var completedQuizIds = await _resultsRepository.GetCompletedQuizIdsByUserAsync(userId);
+
             ViewBag.Quizzes = quizzes;
+            ViewBag.CompletedQuizIds = completedQuizIds;
             ViewBag.ExamName = exam.ExamName;
+
             return View("QuizSelection");
         }
+
 
         // Trang 3: Làm bài theo quizId
         public async Task<IActionResult> TakeQuiz(int quizId)

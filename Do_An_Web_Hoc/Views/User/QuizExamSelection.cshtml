@@ -6,18 +6,25 @@
 }
 
 <div class="container mt-5">
-    <h3 class="text-center text-primary mb-4">📋 Chọn bài kiểm tra</h3>
+    <h3 class="text-center text-success mb-4">📋 Chọn bài kiểm tra để bắt đầu</h3>
 
-    <form method="get" asp-action="QuizSelection" asp-controller="User">
-        <div class="input-group w-50 mx-auto">
-            <select name="examId" class="form-select" required>
-                <option value="">-- Chọn bài kiểm tra --</option>
-                @foreach (var exam in examList)
-                {
-                    <option value="@exam.ExamID">@exam.ExamName</option>
-                }
-            </select>
-            <button type="submit" class="btn btn-primary">Tiếp tục</button>
-        </div>
-    </form>
+    <div class="row justify-content-center">
+        @foreach (var exam in examList)
+        {
+            <div class="col-md-4 mb-4">
+                <div class="card shadow h-100">
+                    <div class="card-body d-flex flex-column justify-content-between">
+                        <div>
+                            <h5 class="card-title">@exam.ExamName</h5>
+                            <p class="text-muted">@exam.Description</p>
+                            <p class="fw-bold">Tổng điểm: @exam.TotalMarks</p>
+                        </div>
+                        <a href="@Url.Action("QuizSelection", "User", new { examId = exam.ExamID })" class="btn btn-primary mt-3">
+                            Bắt đầu
+                        </a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
 </div>
