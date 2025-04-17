@@ -1,0 +1,28 @@
+﻿/* Giao diện tin nhắn */
+#chat-messages {
+    border: 1px solid #ccc;
+    padding: 12px;
+    height: 300px;
+    overflow-y: auto;
+    background-color: #f9f9f9;
+    border-radius: 6px;
+    margin-bottom: 12px;
+}
+
+/* Tin nhắn gửi đi */
+.message-sent {
+    text-align: right;
+    color: #007bff;
+    margin-bottom: 8px;
+}
+
+/* Tin nhắn nhận được */
+.message-received {
+    text-align: left;
+    color: #555;
+    margin-bottom: 8px;
+}
+
+.input-group {
+    margin-top: 8px;
+}

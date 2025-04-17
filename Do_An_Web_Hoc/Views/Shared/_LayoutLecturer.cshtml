@@ -26,6 +26,7 @@
 
     <!-- Giao diện -->
     <link rel="stylesheet" href="~/css/Lecturer.css" asp-append-version="true" />
+    @RenderSection("Styles", required: false)
 </head>
 <body>
     <div class="d-flex">
@@ -105,7 +106,12 @@
                     <span class="hide-on-collapse">Hồ sơ cá nhân</span>
                 </a>
 
-                
+                <!-- Tin nhắn -->
+                <a href="@Url.Action("Index", "Chat")" class="sidebar-link p-3">
+                    <i class="fas fa-comments"></i>
+                    <span class="hide-on-collapse">Tin nhắn</span>
+                </a>
+
 
                 <!-- Đăng xuất -->
                 <a href="@Url.Action("Logout", "Account")" class="sidebar-link logout-btn p-3">

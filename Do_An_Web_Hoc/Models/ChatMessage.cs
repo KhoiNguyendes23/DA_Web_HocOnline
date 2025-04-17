@@ -1,8 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-
-
 namespace Do_An_Web_Hoc.Models
 {
     public class ChatMessage
@@ -24,12 +22,13 @@ namespace Do_An_Web_Hoc.Models
 
         public bool IsRead { get; set; } = false;
 
+        // Đổi sang nullable để không gây lỗi nếu không gán khi insert
         [ForeignKey("SenderId")]
         [InverseProperty("SentMessages")]
-        public UserAccount Sender { get; set; }
+        public UserAccount? Sender { get; set; }
 
         [ForeignKey("ReceiverId")]
         [InverseProperty("ReceivedMessages")]
-        public UserAccount Receiver { get; set; }
+        public UserAccount? Receiver { get; set; }
     }
 }

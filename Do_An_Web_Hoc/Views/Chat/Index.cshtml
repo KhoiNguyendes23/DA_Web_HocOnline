@@ -1,60 +1,55 @@
 ﻿@{
-    Layout = "_LayoutAdmin"; // hoặc "_LayoutLecturer" tùy người dùng đăng nhập
-    var userId = ViewBag.CurrentUserId;
+    Layout = ViewData["Layout"]?.ToString();
+    var userId = ViewBag.CurrentUserId ?? 0;
+    Func<int, string> getRoleName = roleId => roleId switch
+    {
+        1 => "Admin",
+        2 => "Giảng viên",
+        3 => "Học viên",
+        _ => "Không rõ"
+    };
 }
 
-<h3>💬 Chat Realtime</h3>
+<h3 class="mb-3">💬 Giao diện Chat Realtime</h3>
+<div class="row">
+    <!-- Danh sách người dùng bên trái -->
+    <div class="col-md-3 border-end user-list-container">
+        <h6 class="text-muted mt-2">📋 Người dùng</h6>
+        <ul class="list-group" id="user-list">
+            @foreach (var user in ViewBag.Users)
+            {
+                <li class="list-group-item list-group-item-action d-flex align-items-center user-item" data-userid="@user.UserID">
+                    <img src="@((user.Image ?? "/images/Avatar_images/default-avatar.png"))" class="rounded-circle me-2" width="36" height="36" />
+                    <div>
+                        <strong>@user.FullName</strong><br />
+                        <small class="text-muted">(@getRoleName(user.RoleID))</small>
+                    </div>
+                </li>
+            }
+        </ul>
+    </div>
 
-<!-- Chọn người để chat -->
-<select id="receiverSelect" class="form-select mb-3">
-    @foreach (var user in ViewBag.Users)
-    {
-        <option value="@user.UserID">@user.FullName (@user.RoleID)</option>
-    }
-</select>
+    <!-- Khung chat -->
+    <div class="col-md-9">
+        <h5 id="chat-title" class="mt-2">💬 Chat với <span class="text-primary">...</span></h5>
+        <div id="chat-messages" class="chat-box mb-2"></div>
 
-<!-- Vùng hiển thị tin nhắn -->
-<div id="chat-messages" style="border: 1px solid #ccc; padding: 10px; height: 300px; overflow-y: auto;"></div>
-
-<!-- Input gửi tin -->
-<div class="input-group mt-2">
-    <input type="text" id="chat-input" class="form-control" placeholder="Nhập tin nhắn..." />
-    <button id="chat-send" class="btn btn-primary">Gửi</button>
+        <div class="input-group">
+            <input type="text" id="chat-input" class="form-control" placeholder="Nhập tin nhắn..." />
+            <button id="chat-send" class="btn btn-primary">Gửi</button>
+        </div>
+    </div>
 </div>
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/chat.css" />
+}
 
 @section Scripts {
     <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.5/signalr.min.js"></script>
+    <script src="~/js/chat.js"></script>
     <script>
-        const connection = new signalR.HubConnectionBuilder().withUrl("/chathub").build();
-
-        connection.start().then(() => {
-            console.log("✅ SignalR connected");
-        }).catch(err => console.error(err.toString()));
-
         const senderId = @userId;
-
-        document.getElementById("chat-send").addEventListener("click", function () {
-            const message = document.getElementById("chat-input").value.trim();
-            const receiverId = document.getElementById("receiverSelect").value;
-
-            if (!message || !receiverId) return;
-
-            connection.invoke("SendMessage", senderId, receiverId, message)
-                .catch(err => console.error(err.toString()));
-
-            // Hiển thị tin ngay trên khung chat
-            const container = document.getElementById("chat-messages");
-            container.innerHTML += `<div class="text-end text-primary"><b>Bạn:</b> ${message}</div>`;
-            container.scrollTop = container.scrollHeight;
-
-            document.getElementById("chat-input").value = "";
-        });
-
-        // Nhận tin nhắn realtime
-        connection.on("ReceiveMessage", function (senderId, message) {
-            const container = document.getElementById("chat-messages");
-            container.innerHTML += `<div class="text-start"><b>Người gửi:</b> ${message}</div>`;
-            container.scrollTop = container.scrollHeight;
-        });
+        window.initializeChat(senderId);
     </script>
 }

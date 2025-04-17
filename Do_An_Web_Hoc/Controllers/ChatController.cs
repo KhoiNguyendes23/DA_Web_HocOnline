@@ -1,28 +1,137 @@
 ﻿using Do_An_Web_Hoc.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
-public class ChatController : Controller
+namespace Do_An_Web_Hoc.Controllers
 {
-    private readonly ApplicationDbContext _context;
-
-    public ChatController(ApplicationDbContext context)
+    public class ChatController : Controller
     {
-        _context = context;
-    }
+        private readonly ApplicationDbContext _context;
 
-    public async Task<IActionResult> Index()
-    {
-        var currentUserId = HttpContext.Session.GetInt32("UserID"); // Hoặc lấy từ Claims
+        public ChatController(ApplicationDbContext context)
+        {
+            _context = context;
+        }
 
-        // Lấy tất cả người dùng trừ chính mình
-        var users = await _context.UserAccounts
-            .Where(u => u.UserID != currentUserId)
-            .ToListAsync();
+        // Giao diện Chat chính
+        public async Task<IActionResult> Index()
+        {
+            var currentUserId = GetCurrentUserId();
+            if (currentUserId == null)
+                return RedirectToAction("Login", "Account");
 
-        ViewBag.CurrentUserId = currentUserId;
-        ViewBag.Users = users;
+            var currentUser = await _context.UserAccounts.FindAsync(currentUserId.Value);
+            if (currentUser == null)
+                return RedirectToAction("Login", "Account");
 
-        return View();
+            // ✅ Gán thông tin người dùng cho layout
+            ViewData["FullName"] = currentUser.FullName;
+            ViewData["RoleName"] = GetRoleName(currentUser.RoleID ?? 0);
+            ViewData["ImagePath"] = currentUser.Image;
+            ViewData["UserID"] = currentUser.UserID;
+
+            // ✅ Gán layout theo role
+            ViewData["Layout"] = (currentUser.RoleID ?? 0) switch
+            {
+                1 => "_LayoutAdmin",
+                2 => "_LayoutLecturer",
+                3 => "_LayoutUsers",     // học viên dùng layout này
+                _ => "_Layout"           // fallback mặc định
+            };
+
+            // Danh sách người để chat
+            var users = await _context.UserAccounts
+                .Where(u => u.UserID != currentUser.UserID)
+                .ToListAsync();
+
+            ViewBag.CurrentUserId = currentUser.UserID;
+            ViewBag.Users = users;
+
+            return View();
+        }
+
+
+        // API: Lấy lịch sử tin nhắn giữa 2 người
+        [HttpGet("api/chat/messages")]
+        public async Task<IActionResult> GetMessages(int senderId, int receiverId)
+        {
+            var messages = await _context.ChatMessages
+                .Where(m =>
+                    (m.SenderId == senderId && m.ReceiverId == receiverId) ||
+                    (m.SenderId == receiverId && m.ReceiverId == senderId))
+                .OrderBy(m => m.Timestamp)
+                .ToListAsync();
+
+            return Json(messages);
+        }
+
+        // API: Trả danh sách người nhận (có thể tùy theo vai trò)
+        [HttpGet("api/chat/receivers")]
+        public async Task<IActionResult> GetReceivers()
+        {
+            var currentUserId = GetCurrentUserId();
+            if (currentUserId == null)
+                return Unauthorized();
+
+            var currentUser = await _context.UserAccounts.FindAsync(currentUserId.Value);
+            if (currentUser == null)
+                return Unauthorized();
+
+            IQueryable<UserAccount> query = _context.UserAccounts.Where(u => u.UserID != currentUser.UserID);
+
+            // Học viên chỉ được chat với giảng viên
+            if (currentUser.RoleID == 3)
+            {
+                query = query.Where(u => u.RoleID == 2);
+            }
+
+            var users = await query.Select(u => new
+            {
+                userID = u.UserID,
+                fullName = u.FullName,
+                roleID = u.RoleID
+            }).ToListAsync();
+
+            return Json(users);
+        }
+
+        // Helper: Lấy ID người dùng từ Claims
+        private int? GetCurrentUserId()
+        {
+            var userIdStr = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            return int.TryParse(userIdStr, out var userId) ? userId : null;
+        }
+
+        // Helper: Đổi RoleID thành tên
+        private string GetRoleName(int roleId)
+        {
+            return roleId switch
+            {
+                1 => "Admin",
+                2 => "Giảng viên",
+                3 => "Học viên",
+                _ => "Không xác định"
+            };
+        }
+
+
+        //[HttpGet]
+        //public async Task<IActionResult> TestInsertMessage()
+        //{
+        //    var chat = new ChatMessage
+        //    {
+        //        SenderId = 1, // ID người gửi có tồn tại
+        //        ReceiverId = 2, // ID người nhận có tồn tại
+        //        Message = "Tin nhắn test thủ công",
+        //        Timestamp = DateTime.Now,
+        //        IsRead = false
+        //    };
+
+        //    _context.ChatMessages.Add(chat);
+        //    await _context.SaveChangesAsync();
+
+        //    return Content("✅ Lưu thành công!");
+        //}
     }
 }

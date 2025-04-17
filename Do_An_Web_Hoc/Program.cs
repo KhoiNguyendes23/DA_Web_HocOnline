@@ -8,6 +8,7 @@ using Do_An_Web_Hoc.Repositories;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Do_An_Web_Hoc.Hubs;
+using Microsoft.AspNetCore.SignalR;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -29,7 +30,7 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
     });
 
 builder.Services.AddSignalR(); //  Thêm SignalR
-
+builder.Services.AddSingleton<IUserIdProvider, NameIdentifierUserIdProvider>();
 // 💡 **Cấu hình Cookies**
 builder.Services.ConfigureApplicationCookie(options =>
 {

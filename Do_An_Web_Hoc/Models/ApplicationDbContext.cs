@@ -230,16 +230,15 @@ namespace Do_An_Web_Hoc.Models
 
             modelBuilder.Entity<ChatMessage>()
                 .HasOne(m => m.Sender)
-                .WithMany()
+                .WithMany(u => u.SentMessages)
                 .HasForeignKey(m => m.SenderId)
                 .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<ChatMessage>()
                 .HasOne(m => m.Receiver)
-                .WithMany()
+                .WithMany(u => u.ReceivedMessages)
                 .HasForeignKey(m => m.ReceiverId)
                 .OnDelete(DeleteBehavior.Restrict);
-
         }
     }
 }

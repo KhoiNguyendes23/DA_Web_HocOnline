@@ -1,7 +1,8 @@
-﻿@{
+﻿<!DOCTYPE html>
+<html lang="vi">
+@{
     var fullName = ViewData["FullName"]?.ToString() ?? "Admin";
     var role = ViewData["RoleName"]?.ToString() ?? "Admin";
-
     var rawImage = ViewData["ImagePath"]?.ToString();
     var imagePath = Url.Content(
         string.IsNullOrEmpty(rawImage)
@@ -10,10 +11,9 @@
                 ? rawImage
                 : "~/images/Avatar_images/" + rawImage
     );
+    var userId = ViewData["UserID"] ?? 0;
 }
 
-<!DOCTYPE html>
-<html lang="vi">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -44,16 +44,14 @@
                 </div>
             </div>
 
-            <!-- Menu -->
+            <!-- Sidebar Menu -->
             <div class="nav flex-column">
                 <a href="@Url.Action("Dashboard", "Admin")" class="sidebar-link">
-                    <i class="fas fa-home me-2"></i>
-                    <span class="hide-on-collapse">Trang chủ</span>
+                    <i class="fas fa-home me-2"></i> <span class="hide-on-collapse">Trang chủ</span>
                 </a>
 
                 <a href="#" class="sidebar-link" onclick="toggleMenu('course-menu')">
-                    <i class="fas fa-book-open"></i>
-                    <span class="hide-on-collapse">Quản lý khóa học</span>
+                    <i class="fas fa-book-open"></i> <span class="hide-on-collapse">Quản lý khóa học</span>
                     <i class="fas fa-chevron-down dropdown-icon ms-auto"></i>
                 </a>
                 <div id="course-menu" class="submenu">
@@ -63,8 +61,7 @@
                 </div>
 
                 <a href="#" class="sidebar-link" onclick="toggleMenu('student-menu')">
-                    <i class="fas fa-users"></i>
-                    <span class="hide-on-collapse">Quản lý thành viên</span>
+                    <i class="fas fa-users"></i> <span class="hide-on-collapse">Quản lý thành viên</span>
                     <i class="fas fa-chevron-down dropdown-icon ms-auto"></i>
                 </a>
                 <div id="student-menu" class="submenu">
@@ -73,8 +70,7 @@
                 </div>
 
                 <a href="#" class="sidebar-link" onclick="toggleMenu('report-menu')">
-                    <i class="fas fa-file-alt"></i>
-                    <span class="hide-on-collapse">Thống kê & Báo cáo</span>
+                    <i class="fas fa-file-alt"></i> <span class="hide-on-collapse">Thống kê & Báo cáo</span>
                     <i class="fas fa-chevron-down dropdown-icon ms-auto"></i>
                 </a>
                 <div id="report-menu" class="submenu">
@@ -83,8 +79,7 @@
                 </div>
 
                 <a href="#" class="sidebar-link" onclick="toggleMenu('settings-menu')">
-                    <i class="fas fa-wrench"></i>
-                    <span class="hide-on-collapse">Cài đặt tài khoản</span>
+                    <i class="fas fa-wrench"></i> <span class="hide-on-collapse">Cài đặt tài khoản</span>
                     <i class="fas fa-chevron-down dropdown-icon ms-auto"></i>
                 </a>
                 <div id="settings-menu" class="submenu">
@@ -92,9 +87,12 @@
                     <a href="@Url.Action("Decentralization", "Admin")" class="submenu-link">Phân quyền người dùng</a>
                 </div>
 
+                <a href="@Url.Action("Index", "Chat")" class="sidebar-link">
+                    <i class="fas fa-comments"></i> <span class="hide-on-collapse">Tin nhắn</span>
+                </a>
+
                 <a href="@Url.Action("Logout", "Account")" class="sidebar-link logout-btn text-danger">
-                    <i class="fas fa-sign-out-alt me-2"></i>
-                    <span class="hide-on-collapse">Đăng xuất</span>
+                    <i class="fas fa-sign-out-alt me-2"></i> <span class="hide-on-collapse">Đăng xuất</span>
                 </a>
             </div>
 
@@ -111,107 +109,55 @@
         </div>
     </div>
 
-    <!-- Nút mở chat nổi (bong bóng) -->
+    <!-- Chat AI bong bóng -->
     <div id="chat-toggle" style="position: fixed; bottom: 25px; right: 25px; z-index: 9999;">
         <button style="background-color: #007bff; color: white; border: none; border-radius: 50%; width: 55px; height: 55px; box-shadow: 0 4px 8px rgba(0,0,0,0.2);">
             💬
         </button>
     </div>
 
-    <!-- Bong bóng chat -->
-    <div id="chat-box" style="display: none; width: 300px; height: 450px; background: white; border: 1px solid #ccc; border-radius: 12px; overflow: hidden; position: fixed; bottom: 90px; right: 25px; box-shadow: 0 6px 16px rgba(0,0,0,0.3);">
-        <div style="background-color: #007bff; color: white; padding: 10px; font-weight: bold;">Chat Realtime</div>
+    <div id="chat-box-ai" style="display: none; width: 300px; height: 450px; background: white; border: 1px solid #ccc; border-radius: 12px; overflow: hidden; position: fixed; bottom: 90px; right: 25px; box-shadow: 0 6px 16px rgba(0,0,0,0.3);">
+        <div style="background-color: #007bff; color: white; padding: 10px; font-weight: bold;">Trợ lý AI</div>
 
-        <select id="receiverSelect" class="form-select form-select-sm m-2">
-            <option value="">-- Chọn người để chat --</option>
-        </select>
-
-        <div id="chat-messages" style="padding: 10px; height: 260px; overflow-y: auto; font-size: 14px;">
-            <div><strong>Bot:</strong> Xin chào! Bạn cần hỗ trợ gì?</div>
+        <div id="chat-ai-messages" style="padding: 10px; height: 330px; overflow-y: auto; font-size: 14px;">
+            <div><strong>Trợ lý:</strong> Xin chào! Tôi có thể giúp gì cho bạn?</div>
         </div>
 
         <div style="padding: 10px; border-top: 1px solid #ccc;">
-            <input type="text" id="chat-input" placeholder="Nhập tin nhắn..." style="width: 75%; padding: 5px;" />
-            <button id="chat-send" style="width: 20%; background-color: #007bff; color: white; border: none;">Gửi</button>
+            <input type="text" id="chat-ai-input" placeholder="Nhập câu hỏi..." style="width: 75%; padding: 5px;" />
+            <button id="chat-ai-send" style="width: 20%; background-color: #007bff; color: white; border: none;">Gửi</button>
         </div>
     </div>
 
-
-
-    <!-- Scripts -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.5/signalr.min.js"></script>
-    <script src="~/js/LayoutAdmin.js" asp-append-version="true"></script>
-
     <script>
-        // Hiện/ẩn khung chat
         document.getElementById("chat-toggle").addEventListener("click", function () {
-            const chatBox = document.getElementById("chat-box");
+            const chatBox = document.getElementById("chat-box-ai");
             chatBox.style.display = chatBox.style.display === "none" ? "block" : "none";
         });
 
-        // Kết nối đến SignalR Hub
-        const connection = new signalR.HubConnectionBuilder().withUrl("/chathub").build();
-
-        connection.start().then(() => {
-            console.log("✅ Đã kết nối tới SignalR Hub");
-        }).catch(err => console.error(err.toString()));
-
-        // Lấy ID người gửi từ ViewData render ra (hoặc thay bằng cách khác nếu cần)
-        const senderId = @ViewData["UserID"] ?? 0;
-
-        // Gửi tin nhắn
-        document.getElementById("chat-send").addEventListener("click", function () {
-            const input = document.getElementById("chat-input");
-            const messages = document.getElementById("chat-messages");
-            const receiverId = document.getElementById("receiverSelect")?.value;
+        document.getElementById("chat-ai-send").addEventListener("click", function () {
+            const input = document.getElementById("chat-ai-input");
+            const messages = document.getElementById("chat-ai-messages");
 
             const message = input.value.trim();
-            if (!message || !receiverId) return;
+            if (!message) return;
 
-            // Gửi tin nhắn qua Hub
-            connection.invoke("SendMessage", senderId, receiverId, message)
-                .catch(err => console.error(err.toString()));
-
-            // Hiển thị ngay tin nhắn
             const userMsg = document.createElement("div");
             userMsg.innerHTML = `<strong>Bạn:</strong> ${message}`;
             userMsg.classList.add("text-end", "text-primary");
             messages.appendChild(userMsg);
 
+            // Giả lập trả lời từ AI
+            const aiReply = document.createElement("div");
+            aiReply.innerHTML = `<strong>Trợ lý:</strong> Tôi đang xử lý câu hỏi của bạn...`;
+            messages.appendChild(aiReply);
+
             input.value = "";
             messages.scrollTop = messages.scrollHeight;
         });
-
-        // Nhận tin nhắn realtime
-        connection.on("ReceiveMessage", function (senderId, message) {
-            const messages = document.getElementById("chat-messages");
-
-            const receivedMsg = document.createElement("div");
-            receivedMsg.innerHTML = `<strong>Người gửi:</strong> ${message}`;
-            receivedMsg.classList.add("text-start");
-            messages.appendChild(receivedMsg);
-
-            messages.scrollTop = messages.scrollHeight;
-        });
-
-        // Tùy chọn: Load danh sách người nhận nếu cần
-        window.addEventListener("load", function () {
-            const receiverSelect = document.getElementById("receiverSelect");
-            if (receiverSelect) {
-                fetch("/api/chat/receivers")
-                    .then(res => res.json())
-                    .then(users => {
-                        users.forEach(user => {
-                            const opt = document.createElement("option");
-                            opt.value = user.userID;
-                            opt.textContent = `${user.fullName} (${user.roleID})`;
-                            receiverSelect.appendChild(opt);
-                        });
-                    });
-            }
-        });
     </script>
+
+    <script src="~/js/LayoutAdmin.js" asp-append-version="true"></script>
     @RenderSection("Scripts", required: false)
 </body>
 </html>
