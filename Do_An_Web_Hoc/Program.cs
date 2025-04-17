@@ -7,6 +7,7 @@ using Do_An_Web_Hoc.Repositories.Interfaces;
 using Do_An_Web_Hoc.Repositories;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Do_An_Web_Hoc.Hubs;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -27,6 +28,7 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
         options.AppSecret = builder.Configuration["Facebook:AppSecret"];  // Lấy AppSecret từ appsettings.json
     });
 
+builder.Services.AddSignalR(); //  Thêm SignalR
 
 // 💡 **Cấu hình Cookies**
 builder.Services.ConfigureApplicationCookie(options =>
@@ -121,5 +123,8 @@ app.UseAuthorization();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
+
+
+app.MapHub<ChatHub>("/chathub"); // Đường dẫn tới ChatHub
 
 app.Run();
