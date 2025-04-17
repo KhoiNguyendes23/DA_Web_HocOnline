@@ -28,6 +28,7 @@ namespace Do_An_Web_Hoc.Models
         public DbSet<UserActivities> UserActivities { get; set; }
         public DbSet<UserAnswers> UserAnswers { get; set; }
         public DbSet<UserStatus> UserStatus { get; set; }
+        public DbSet<ChatMessage> ChatMessages { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -226,6 +227,19 @@ namespace Do_An_Web_Hoc.Models
                 .OnDelete(DeleteBehavior.Cascade);
 
             base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<ChatMessage>()
+                .HasOne(m => m.Sender)
+                .WithMany()
+                .HasForeignKey(m => m.SenderId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<ChatMessage>()
+                .HasOne(m => m.Receiver)
+                .WithMany()
+                .HasForeignKey(m => m.ReceiverId)
+                .OnDelete(DeleteBehavior.Restrict);
+
         }
     }
 }
