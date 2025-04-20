@@ -10,10 +10,13 @@
     };
 }
 
-<h3 class="mb-3">💬 Giao diện Chat Realtime</h3>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+
+<h3 class="mb-3">💬 Chats</h3>
 <div class="row">
     <!-- Danh sách người dùng bên trái -->
-    <div class="col-md-3 border-end user-list-container">
+    <div class="col-md-4 border-end user-list-container">
         <h6 class="text-muted mt-2">📋 Người dùng</h6>
         <ul class="list-group" id="user-list">
             @foreach (var user in ViewBag.Users)
@@ -30,14 +33,17 @@
     </div>
 
     <!-- Khung chat -->
-    <div class="col-md-9">
+    <div class="col-md-8">
         <h5 id="chat-title" class="mt-2">💬 Chat với <span class="text-primary">...</span></h5>
         <div id="chat-messages" class="chat-box mb-2"></div>
 
-        <div class="input-group">
-            <input type="text" id="chat-input" class="form-control" placeholder="Nhập tin nhắn..." />
-            <button id="chat-send" class="btn btn-primary">Gửi</button>
+        <div class="chat-input-wrapper d-flex align-items-center mt-3">
+            <input type="text" id="chat-input" class="form-control chat-input-box me-2" placeholder="Aa" />
+            <button id="chat-send" class="btn btn-send-icon">
+                <i class="fas fa-paper-plane"></i> <!-- FontAwesome send icon -->
+            </button>
         </div>
+
     </div>
 </div>
 
