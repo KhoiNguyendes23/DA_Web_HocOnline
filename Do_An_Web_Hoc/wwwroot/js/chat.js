@@ -87,12 +87,38 @@
     // Thêm tin nhắn vào khung
     function appendMessage(senderLabel, message, isMine) {
         const container = document.getElementById("chat-messages");
+
+        const wrapper = document.createElement("div");
+        wrapper.className = `d-flex justify-content-${isMine ? "end" : "start"} align-items-end mb-2`;
+
+        const avatar = document.createElement("img");
+        avatar.src = isMine
+            ? "/images/Avatar_images/default-avatar.png"  // Avatar của chính mình
+            : document.querySelector(".user-item.active img")?.src || "/images/Avatar_images/default-avatar.png"; // Avatar đối phương
+
+        avatar.className = "chat-avatar";
+        avatar.width = 32;
+        avatar.height = 32;
+
         const div = document.createElement("div");
         div.className = isMine ? "message message-sent" : "message message-received";
-        div.innerHTML = `<strong>${escapeHtml(senderLabel)}:</strong> ${escapeHtml(message)}`;
-        container.appendChild(div);
+        div.innerText = message;
+
+        if (isMine) {
+            // Bạn: hiển thị bubble trước, avatar sau
+            wrapper.appendChild(div);
+            wrapper.appendChild(avatar);
+        } else {
+            // Họ: avatar trước, bubble sau
+            wrapper.appendChild(avatar);
+            wrapper.appendChild(div);
+        }
+
+        container.appendChild(wrapper);
         container.scrollTop = container.scrollHeight;
     }
+
+
 
     // Escape XSS
     function escapeHtml(text) {
