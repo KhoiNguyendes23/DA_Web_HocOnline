@@ -12,10 +12,9 @@
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
-
 <h3 class="mb-3">💬 Chats</h3>
 <div class="row">
-    <!-- Danh sách người dùng bên trái -->
+    <!-- Cột trái: danh sách người dùng -->
     <div class="col-md-4 border-end user-list-container">
         <h6 class="text-muted mt-2">📋 Người dùng</h6>
         <ul class="list-group" id="user-list">
@@ -32,18 +31,29 @@
         </ul>
     </div>
 
-    <!-- Khung chat -->
+    <!-- Cột phải: khung chat -->
     <div class="col-md-8">
         <h5 id="chat-title" class="mt-2">💬 Chat với <span class="text-primary">...</span></h5>
         <div id="chat-messages" class="chat-box mb-2"></div>
+        <div id="image-preview-container" class="mb-2"></div>
 
         <div class="chat-input-wrapper d-flex align-items-center mt-3">
+            <!-- Ẩn input file ảnh -->
+            <input type="file" id="chat-image" accept="image/*" style="width: 0.1px; height: 0.1px; opacity: 0; position: absolute; z-index: -1;" />
+
+            <!-- Nút chọn ảnh -->
+            <button type="button" id="chat-image-btn" class="btn btn-secondary me-2">
+                <i class="fas fa-image"></i>
+            </button>
+
+            <!-- Ô nhập tin nhắn -->
             <input type="text" id="chat-input" class="form-control chat-input-box me-2" placeholder="Aa" />
+
+            <!-- Nút gửi -->
             <button id="chat-send" class="btn btn-send-icon">
-                <i class="fas fa-paper-plane"></i> <!-- FontAwesome send icon -->
+                <i class="fas fa-paper-plane"></i>
             </button>
         </div>
-
     </div>
 </div>
 
@@ -55,7 +65,9 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.5/signalr.min.js"></script>
     <script src="~/js/chat.js"></script>
     <script>
-        const senderId = @userId;
-        window.initializeChat(senderId);
+        document.addEventListener("DOMContentLoaded", function () {
+            const senderId = @userId;
+            window.initializeChat(senderId);
+        });
     </script>
 }

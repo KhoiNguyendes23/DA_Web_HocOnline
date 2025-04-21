@@ -15,11 +15,10 @@ namespace Do_An_Web_Hoc.Models
         [Required]
         public int ReceiverId { get; set; }
 
-        [Required]
-        public string Message { get; set; }
+        public string? Message { get; set; }
 
         public DateTime Timestamp { get; set; } = DateTime.Now;
-
+        public string? ImageUrl { get; set; }
         public bool IsRead { get; set; } = false;
 
         // Đổi sang nullable để không gây lỗi nếu không gán khi insert

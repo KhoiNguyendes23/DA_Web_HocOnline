@@ -43,6 +43,7 @@
     <Folder Include="Views\Account\" />
     <Folder Include="wwwroot\images\Avatar_images\" />
     <Folder Include="wwwroot\images\Course_images\" />
+    <Folder Include="wwwroot\images\Chat_images\" />
     <Folder Include="wwwroot\images\questions\" />
   </ItemGroup>
 

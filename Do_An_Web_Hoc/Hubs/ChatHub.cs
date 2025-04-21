@@ -15,18 +15,25 @@ namespace Do_An_Web_Hoc.Hubs
             _logger = logger;
         }
 
-        public async Task SendMessage(int senderId, int receiverId, string message)
+        // ✅ Gửi tin nhắn và/hoặc ảnh
+        public async Task SendMessageFull(int senderId, int receiverId, string message, string imageUrl)
         {
             try
             {
+                // Nếu cả tin nhắn và ảnh đều trống thì không xử lý
+                if (string.IsNullOrWhiteSpace(message) && string.IsNullOrWhiteSpace(imageUrl))
+                {
+                    _logger.LogWarning("⚠️ Bỏ qua tin nhắn trống từ " + senderId);
+                    return;
+                }
+
                 var chat = new ChatMessage
                 {
                     SenderId = senderId,
                     ReceiverId = receiverId,
-                    Message = message,
+                    Message = string.IsNullOrWhiteSpace(message) ? null : message,
+                    ImageUrl = string.IsNullOrWhiteSpace(imageUrl) ? null : imageUrl,
                     Timestamp = DateTime.Now,
-
-                    //  QUAN TRỌNG: Nếu có Navigation Property thì phải gán null nếu không dùng
                     Sender = null,
                     Receiver = null
                 };
@@ -34,14 +41,14 @@ namespace Do_An_Web_Hoc.Hubs
                 _context.ChatMessages.Add(chat);
                 await _context.SaveChangesAsync();
 
-                _logger.LogInformation($"✅ Tin nhắn từ {senderId} đến {receiverId} đã lưu DB và gửi realtime");
+                _logger.LogInformation($"✅ [SendMessageFull] {senderId} → {receiverId} đã lưu DB");
 
-                // Gửi realtime đến người nhận (nếu họ đang online)
-                await Clients.User(receiverId.ToString()).SendAsync("ReceiveMessage", senderId, message);
+                await Clients.User(receiverId.ToString())
+                    .SendAsync("ReceiveMessageFull", senderId, chat.Message, chat.ImageUrl);
             }
             catch (Exception ex)
             {
-                _logger.LogError($"❌ Lỗi khi gửi tin nhắn: {ex.Message}");
+                _logger.LogError($"❌ Lỗi tại SendMessageFull: {ex.Message}");
             }
         }
     }

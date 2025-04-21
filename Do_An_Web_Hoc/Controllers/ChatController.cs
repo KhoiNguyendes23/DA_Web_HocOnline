@@ -133,5 +133,33 @@ namespace Do_An_Web_Hoc.Controllers
 
         //    return Content("✅ Lưu thành công!");
         //}
+
+
+        [HttpPost("api/chat/upload")]
+        public async Task<IActionResult> UploadImage(IFormFile imageFile)
+        {
+            if (imageFile == null || imageFile.Length == 0)
+                return BadRequest("Không có ảnh được gửi");
+
+            try
+            {
+                var fileName = $"{Guid.NewGuid()}_{Path.GetFileName(imageFile.FileName)}";
+                var imagePath = Path.Combine("wwwroot/images/Chat_images", fileName);
+
+                // Lưu file vào thư mục
+                using (var stream = new FileStream(imagePath, FileMode.Create))
+                {
+                    await imageFile.CopyToAsync(stream);
+                }
+
+                // Đường dẫn public để client truy cập ảnh
+                var imageUrl = $"/images/Chat_images/{fileName}";
+                return Ok(new { imageUrl });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "Lỗi khi upload ảnh: " + ex.Message);
+            }
+        }
     }
 }
