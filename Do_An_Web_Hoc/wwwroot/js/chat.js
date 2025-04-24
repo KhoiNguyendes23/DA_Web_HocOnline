@@ -7,21 +7,17 @@
         .then(() => console.log("✅ SignalR connected"))
         .catch(err => console.error("❌ SignalR connection failed:", err));
 
-    // Chọn ảnh từ nút
+    // Chọn ảnh
     document.getElementById("chat-image-btn").addEventListener("click", () => {
         document.getElementById("chat-image").click();
     });
 
-    // Khi chọn ảnh
     document.getElementById("chat-image").addEventListener("change", function () {
         selectedImageFile = this.files[0] || null;
-        if (selectedImageFile) {
-            showImagePreview(selectedImageFile);
-        }
-        this.value = ""; // reset lại input để có thể chọn lại cùng ảnh
+        if (selectedImageFile) showImagePreview(selectedImageFile);
+        this.value = "";
     });
 
-    // Gửi khi click hoặc Enter
     document.getElementById("chat-send").addEventListener("click", sendMessage);
     document.getElementById("chat-input").addEventListener("keydown", e => {
         if (e.key === "Enter") {
@@ -33,20 +29,10 @@
     async function sendMessage() {
         const input = document.getElementById("chat-input");
         const message = input.value.trim();
-
-        if (!message && !selectedImageFile) {
-            console.warn("❗ Vui lòng nhập nội dung hoặc chọn ảnh");
-            return;
-        }
-
-        if (!currentReceiverId) {
-            alert("❗ Vui lòng chọn người nhận");
-            return;
-        }
+        if (!message && !selectedImageFile) return;
+        if (!currentReceiverId) return alert("❗ Vui lòng chọn người nhận");
 
         let imageUrl = null;
-
-        // Nếu có ảnh thì upload ảnh trước
         if (selectedImageFile) {
             const formData = new FormData();
             formData.append("imageFile", selectedImageFile);
@@ -58,13 +44,11 @@
                 const data = await res.json();
                 imageUrl = data.imageUrl;
             } catch (err) {
-                alert("❌ Lỗi upload ảnh");
-                console.error(err);
+                alert("❌ Upload ảnh thất bại");
                 return;
             }
         }
 
-        // Gửi tin nhắn (văn bản và/hoặc ảnh)
         await connection.invoke("SendMessageFull", senderId, currentReceiverId, message, imageUrl);
 
         if (message) appendMessage("Bạn", message, true);
@@ -75,7 +59,6 @@
         document.getElementById("image-preview-container").innerHTML = "";
     }
 
-    // Load người nhận
     document.querySelectorAll(".user-item").forEach(item => {
         item.addEventListener("click", function () {
             currentReceiverId = parseInt(this.dataset.userid);
@@ -96,21 +79,30 @@
                         if (m.imageUrl) appendImage(isMine, m.imageUrl);
                         if (m.message) appendMessage(isMine ? "Bạn" : "Họ", m.message, isMine);
                     });
+
+                    return fetch("/api/chat/mark-as-read", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({
+                            senderId: currentReceiverId,
+                            receiverId: senderId
+                        })
+                    });
                 })
+                .then(() => console.log("✅ Tin nhắn đã được đánh dấu là đã đọc."))
                 .catch(err => {
                     container.innerHTML = "<span class='text-danger'>Không thể tải tin nhắn</span>";
-                    console.error("❌ Lỗi tải tin nhắn:", err);
+                    console.error("❌ Lỗi tải hoặc mark-as-read:", err);
                 });
         });
     });
 
-    // Lắng nghe tin nhắn mới
     connection.on("ReceiveMessageFull", (fromId, message, imageUrl) => {
         if (parseInt(fromId) === currentReceiverId) {
             if (imageUrl) appendImage(false, imageUrl);
             if (message) appendMessage("Họ", message, false);
         } else {
-            console.log("📩 Nhận từ user khác:", fromId);
+            console.log("📩 Tin nhắn từ người khác:", fromId);
         }
     });
 
@@ -123,7 +115,6 @@
         img.style.maxWidth = "200px";
         img.style.borderRadius = "8px";
         img.style.marginBottom = "10px";
-        img.alt = "Ảnh chuẩn bị gửi";
         preview.appendChild(img);
     }
 

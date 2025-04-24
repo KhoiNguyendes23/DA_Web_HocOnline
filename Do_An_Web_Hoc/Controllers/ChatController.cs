@@ -1,4 +1,5 @@
 ﻿using Do_An_Web_Hoc.Models;
+using Do_An_Web_Hoc.Repositories.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
@@ -8,10 +9,11 @@ namespace Do_An_Web_Hoc.Controllers
     public class ChatController : Controller
     {
         private readonly ApplicationDbContext _context;
-
-        public ChatController(ApplicationDbContext context)
+        private readonly IChatRepository _chatRepository;
+        public ChatController(ApplicationDbContext context, IChatRepository chatRepository)
         {
             _context = context;
+            _chatRepository = chatRepository;
         }
 
         // Giao diện Chat chính
@@ -160,6 +162,12 @@ namespace Do_An_Web_Hoc.Controllers
             {
                 return StatusCode(500, "Lỗi khi upload ảnh: " + ex.Message);
             }
+        }
+        [HttpPost("api/chat/mark-as-read")]
+        public async Task<IActionResult> MarkAsRead(int senderId, int receiverId)
+        {
+            await _chatRepository.MarkMessagesAsReadAsync(senderId, receiverId);
+            return Ok("✅ Đã đánh dấu đã đọc");
         }
     }
 }

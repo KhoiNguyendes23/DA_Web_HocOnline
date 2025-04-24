@@ -1,50 +1,40 @@
 ﻿using Microsoft.AspNetCore.SignalR;
-using Do_An_Web_Hoc.Models;
+using Do_An_Web_Hoc.Repositories.Interfaces;
 using Microsoft.Extensions.Logging;
 
 namespace Do_An_Web_Hoc.Hubs
 {
     public class ChatHub : Hub
     {
-        private readonly ApplicationDbContext _context;
+        private readonly IChatRepository _chatRepository;
         private readonly ILogger<ChatHub> _logger;
 
-        public ChatHub(ApplicationDbContext context, ILogger<ChatHub> logger)
+        public ChatHub(IChatRepository chatRepository, ILogger<ChatHub> logger)
         {
-            _context = context;
+            _chatRepository = chatRepository;
             _logger = logger;
         }
 
-        // ✅ Gửi tin nhắn và/hoặc ảnh
+        // Gửi tin nhắn và/hoặc ảnh
         public async Task SendMessageFull(int senderId, int receiverId, string message, string imageUrl)
         {
             try
             {
-                // Nếu cả tin nhắn và ảnh đều trống thì không xử lý
+                // Nếu cả message và image đều trống → không gửi
                 if (string.IsNullOrWhiteSpace(message) && string.IsNullOrWhiteSpace(imageUrl))
                 {
-                    _logger.LogWarning("⚠️ Bỏ qua tin nhắn trống từ " + senderId);
+                    _logger.LogWarning($"⚠️ Tin nhắn rỗng không được gửi từ {senderId} đến {receiverId}");
                     return;
                 }
 
-                var chat = new ChatMessage
-                {
-                    SenderId = senderId,
-                    ReceiverId = receiverId,
-                    Message = string.IsNullOrWhiteSpace(message) ? null : message,
-                    ImageUrl = string.IsNullOrWhiteSpace(imageUrl) ? null : imageUrl,
-                    Timestamp = DateTime.Now,
-                    Sender = null,
-                    Receiver = null
-                };
+                // Gọi repository để lưu
+                await _chatRepository.SaveMessageAsync(senderId, receiverId, message, imageUrl);
 
-                _context.ChatMessages.Add(chat);
-                await _context.SaveChangesAsync();
-
-                _logger.LogInformation($"✅ [SendMessageFull] {senderId} → {receiverId} đã lưu DB");
-
+                // Gửi realtime
                 await Clients.User(receiverId.ToString())
-                    .SendAsync("ReceiveMessageFull", senderId, chat.Message, chat.ImageUrl);
+                    .SendAsync("ReceiveMessageFull", senderId, message, imageUrl);
+
+                _logger.LogInformation($"✅ Tin nhắn gửi thành công từ {senderId} → {receiverId}");
             }
             catch (Exception ex)
             {
