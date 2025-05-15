@@ -29,6 +29,7 @@ namespace Do_An_Web_Hoc.Models
         public DbSet<UserAnswers> UserAnswers { get; set; }
         public DbSet<UserStatus> UserStatus { get; set; }
         public DbSet<ChatMessage> ChatMessages { get; set; }
+        public DbSet<LectureProgress> LectureProgresses { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -239,6 +240,19 @@ namespace Do_An_Web_Hoc.Models
                 .WithMany(u => u.ReceivedMessages)
                 .HasForeignKey(m => m.ReceiverId)
                 .OnDelete(DeleteBehavior.Restrict);
+            // LectureProgress - UserAccount (1-N)
+            modelBuilder.Entity<LectureProgress>()
+                .HasOne<UserAccount>()
+                .WithMany()
+                .HasForeignKey(lp => lp.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // LectureProgress - Lectures (1-N)
+            modelBuilder.Entity<LectureProgress>()
+                .HasOne<Lectures>()
+                .WithMany()
+                .HasForeignKey(lp => lp.LectureID)
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

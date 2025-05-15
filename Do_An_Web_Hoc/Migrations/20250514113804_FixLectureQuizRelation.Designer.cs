@@ -4,6 +4,7 @@ using Do_An_Web_Hoc.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Do_An_Web_Hoc.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250514113804_FixLectureQuizRelation")]
+    partial class FixLectureQuizRelation
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -342,38 +345,6 @@ namespace Do_An_Web_Hoc.Migrations
                     b.HasIndex("CourseID");
 
                     b.ToTable("Exams");
-                });
-
-            modelBuilder.Entity("Do_An_Web_Hoc.Models.LectureProgress", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<bool>("IsPassed")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime>("LastAttempt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("LectureID")
-                        .HasColumnType("int");
-
-                    b.Property<double>("Score")
-                        .HasColumnType("float");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("LectureID");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("LectureProgresses");
                 });
 
             modelBuilder.Entity("Do_An_Web_Hoc.Models.Lectures", b =>
@@ -852,21 +823,6 @@ namespace Do_An_Web_Hoc.Migrations
                     b.HasOne("Do_An_Web_Hoc.Models.Courses", null)
                         .WithMany()
                         .HasForeignKey("CourseID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("Do_An_Web_Hoc.Models.LectureProgress", b =>
-                {
-                    b.HasOne("Do_An_Web_Hoc.Models.Lectures", null)
-                        .WithMany()
-                        .HasForeignKey("LectureID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Do_An_Web_Hoc.Models.UserAccount", null)
-                        .WithMany()
-                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

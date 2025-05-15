@@ -11,6 +11,8 @@ namespace Do_An_Web_Hoc.Models
         public int? TotalMarks { get; set; }
         public int? ExamID { get; set; }
         public int? Duration { get; set; }
+        public int? LectureID { get; set; }
+        public Lectures Lecture { get; set; }
 
     }
 }

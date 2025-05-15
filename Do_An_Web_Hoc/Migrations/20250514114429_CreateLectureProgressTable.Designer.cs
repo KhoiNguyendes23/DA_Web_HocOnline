@@ -4,6 +4,7 @@ using Do_An_Web_Hoc.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Do_An_Web_Hoc.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250514114429_CreateLectureProgressTable")]
+    partial class CreateLectureProgressTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -368,10 +371,6 @@ namespace Do_An_Web_Hoc.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("LectureID");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("LectureProgresses");
                 });
@@ -852,21 +851,6 @@ namespace Do_An_Web_Hoc.Migrations
                     b.HasOne("Do_An_Web_Hoc.Models.Courses", null)
                         .WithMany()
                         .HasForeignKey("CourseID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("Do_An_Web_Hoc.Models.LectureProgress", b =>
-                {
-                    b.HasOne("Do_An_Web_Hoc.Models.Lectures", null)
-                        .WithMany()
-                        .HasForeignKey("LectureID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Do_An_Web_Hoc.Models.UserAccount", null)
-                        .WithMany()
-                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

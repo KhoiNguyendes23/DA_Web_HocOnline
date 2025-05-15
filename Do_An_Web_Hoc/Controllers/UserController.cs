@@ -8,6 +8,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq;
 using System.Security.Claims;
+using Microsoft.EntityFrameworkCore;
+
 using ResultsModel = Do_An_Web_Hoc.Models.Results;
 
 namespace Do_An_Web_Hoc.Controllers
@@ -25,6 +27,8 @@ namespace Do_An_Web_Hoc.Controllers
         private readonly IUserAnswersRepository _userAnswersRepository;
         private readonly IResultsRepository _resultsRepository;
         private readonly IUserAccountRepository _userAccountRepository;
+        private readonly ApplicationDbContext _context;
+
         public UserController(ICoursesRepository coursesRepo, 
             IEnrollmentsRepository enrollmentsRepo, 
             ILecturesRepository lecturesRepo,
@@ -34,7 +38,8 @@ namespace Do_An_Web_Hoc.Controllers
             IExamsRepository examsRepository,
             IUserAnswersRepository userAnswersRepository, 
             IResultsRepository resultsRepository, 
-            IUserAccountRepository userAccountRepository)
+            IUserAccountRepository userAccountRepository,
+            ApplicationDbContext context)
         {
             _coursesRepo = coursesRepo;
             _enrollmentsRepo = enrollmentsRepo;
@@ -46,6 +51,7 @@ namespace Do_An_Web_Hoc.Controllers
             _userAnswersRepository = userAnswersRepository;
             _resultsRepository = resultsRepository;
             _userAccountRepository = userAccountRepository;
+            _context = context;
         }
         private void SetUserViewData()
         {
@@ -437,14 +443,14 @@ namespace Do_An_Web_Hoc.Controllers
                 }
             }
 
-            var lectures = await _lecturesRepo.GetLecturesByCourseIdAsync(id);
+            // Sử dụng hàm đã xử lý IsLocked trong repo
+            var lectures = await _lecturesRepo.GetLecturesWithLockStatusAsync(id, userId);
+
             ViewBag.CourseName = course.CourseName;
             ViewBag.CourseId = course.CourseID;
             SetUserViewData();
             return View(lectures);
         }
-
-
 
 
         [HttpPost]
@@ -486,7 +492,7 @@ namespace Do_An_Web_Hoc.Controllers
                             QuestionID = questionId,
                             AnswerID = selectedAnswerId,
                             CreatedAt = DateTime.Now,
-                            AttemptId = attemptId //  Gán mã lượt làm bài
+                            AttemptId = attemptId
                         };
 
                         await _userAnswersRepository.SaveUserAnswerAsync(userAnswer);
@@ -497,7 +503,7 @@ namespace Do_An_Web_Hoc.Controllers
             var quiz = await _quizzesRepository.GetQuizByIdAsync(quizId);
             int totalQuestions = questions.Count();
             int totalMarks = quiz?.TotalMarks ?? totalQuestions;
-            int examId = quiz?.ExamID ?? 0; // lấy exam id
+            int examId = quiz?.ExamID ?? 0;
             int score = 0;
             if (totalQuestions > 0)
             {
@@ -513,6 +519,35 @@ namespace Do_An_Web_Hoc.Controllers
             };
 
             await _resultsRepository.SaveResultFromUserAsync(result);
+
+            // ✅ THÊM PHẦN NÀY: cập nhật LectureProgress nếu quiz gắn với bài giảng
+            if (quiz?.LectureID != null)
+            {
+                var lectureId = quiz.LectureID.Value;
+                var existingProgress = await _context.LectureProgresses
+                    .FirstOrDefaultAsync(p => p.UserId == userId && p.LectureID == lectureId);
+
+                if (existingProgress == null)
+                {
+                    _context.LectureProgresses.Add(new LectureProgress
+                    {
+                        UserId = userId,
+                        LectureID = lectureId,
+                        Score = score,
+                        IsPassed = score >= 50,
+                        LastAttempt = DateTime.Now
+                    });
+                }
+                else
+                {
+                    existingProgress.Score = score;
+                    existingProgress.IsPassed = score >= 50;
+                    existingProgress.LastAttempt = DateTime.Now;
+                    _context.LectureProgresses.Update(existingProgress);
+                }
+
+                await _context.SaveChangesAsync();
+            }
 
             ViewBag.Score = score;
             ViewBag.Total = totalMarks;
