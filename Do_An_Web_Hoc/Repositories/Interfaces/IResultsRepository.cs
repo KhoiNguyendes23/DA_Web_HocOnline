@@ -31,6 +31,7 @@ namespace Do_An_Web_Hoc.Repositories.Interfaces
         Task DeleteResultAsync(int resultId, int userRoleId);
         Task SaveResultFromUserAsync(ModelsResults result);
         Task<IEnumerable<ResultExamViewModel>> GetExamResultsForLecturerAsync();
+        Task<List<int>> GetCompletedQuizIdsByUserAsync(int userId);
 
         Task<IEnumerable<RankingViewModel>> GetUserRankingAsync();
     }

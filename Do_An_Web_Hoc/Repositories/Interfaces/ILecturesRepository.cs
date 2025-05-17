@@ -24,6 +24,7 @@ namespace Do_An_Web_Hoc.Repositories.Interfaces
         Task<IEnumerable<Lectures>> GetLecturesWithActiveCoursesAsync();
 
         Task UpdateLecturerProfileAsync(Lectures lecturer);
+        Task<List<Lectures>> GetLecturesWithLockStatusAsync(int courseId, int userId);
 
     }
 }

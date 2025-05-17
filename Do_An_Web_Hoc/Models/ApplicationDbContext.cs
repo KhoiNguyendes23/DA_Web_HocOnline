@@ -29,6 +29,8 @@ namespace Do_An_Web_Hoc.Models
         public DbSet<UserAnswers> UserAnswers { get; set; }
         public DbSet<UserStatus> UserStatus { get; set; }
         public DbSet<LiveMeeting> LiveMeetings { get; set; }
+        public DbSet<ChatMessage> ChatMessages { get; set; }
+        public DbSet<LectureProgress> LectureProgresses { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -227,20 +229,6 @@ namespace Do_An_Web_Hoc.Models
                 .OnDelete(DeleteBehavior.Cascade);
 
             base.OnModelCreating(modelBuilder);
-            // LiveMeeting - Courses (1-N)
-            modelBuilder.Entity<LiveMeeting>()
-                .HasOne(lm => lm.Course)
-                .WithMany(c => c.LiveMeetings)
-                .HasForeignKey(lm => lm.CourseId)
-                .OnDelete(DeleteBehavior.Cascade);
-
-            // LiveMeeting - UserAccount (1-N)
-            modelBuilder.Entity<LiveMeeting>()
-                .HasOne(lm => lm.Lecturer)
-                .WithMany(u => u.CreatedMeetings)
-                .HasForeignKey(lm => lm.CreatedBy)
-                .OnDelete(DeleteBehavior.Restrict); // không xóa buổi học nếu giảng viên bị xóa
-
         }
     }
 }

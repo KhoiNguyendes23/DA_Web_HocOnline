@@ -1,0 +1,51 @@
+﻿@model IEnumerable<Do_An_Web_Hoc.Models.ViewModels.CompletedQuizViewModel>
+
+@{
+    Layout = "~/Views/Shared/_LayoutUsers.cshtml";
+    ViewData["Title"] = "Bài kiểm tra đã làm";
+}
+
+<div class="container mt-4">
+    <h3 class="text-primary text-center">📚 Danh sách bài kiểm tra đã làm</h3>
+
+    @if (Model != null && Model.Any())
+    {
+        <table class="table table-bordered table-striped mt-3">
+            <thead class="table-primary">
+                <tr>
+                    <th>#</th>
+                    <th>Tên bài kiểm tra</th>
+                    <th>Thời gian làm</th>
+                    <th>Điểm đạt</th>
+                    <th>Tổng điểm</th>
+                    <th>Thao tác</th>
+                </tr>
+            </thead>
+            <tbody>
+                @{
+                    int index = 1;
+                    foreach (var quiz in Model)
+                    {
+                        <tr>
+                            <td>@index</td>
+                            <td>@quiz.QuizName</td>
+                            <td>@quiz.SubmissionTime?.ToString("dd/MM/yyyy HH:mm")</td>
+                            <td>@quiz.Score</td>
+                            <td>@quiz.TotalMarks</td>
+                            <td>
+                                <a asp-action="ReviewResult" asp-controller="User" asp-route-quizId="@quiz.QuizID" class="btn btn-sm btn-info">
+                                    <i class="fas fa-eye"></i> Xem lại
+                                </a>
+                            </td>
+                        </tr>
+                        index++;
+                    }
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <div class="alert alert-warning text-center">Chưa có bài kiểm tra nào đã làm.</div>
+    }
+</div>

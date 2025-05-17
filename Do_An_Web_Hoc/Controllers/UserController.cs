@@ -8,6 +8,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq;
 using System.Security.Claims;
+using Microsoft.EntityFrameworkCore;
+
 using ResultsModel = Do_An_Web_Hoc.Models.Results;
 
 namespace Do_An_Web_Hoc.Controllers
@@ -25,6 +27,8 @@ namespace Do_An_Web_Hoc.Controllers
         private readonly IUserAnswersRepository _userAnswersRepository;
         private readonly IResultsRepository _resultsRepository;
         private readonly IUserAccountRepository _userAccountRepository;
+        private readonly ApplicationDbContext _context;
+
         public UserController(ICoursesRepository coursesRepo, 
             IEnrollmentsRepository enrollmentsRepo, 
             ILecturesRepository lecturesRepo,
@@ -34,7 +38,8 @@ namespace Do_An_Web_Hoc.Controllers
             IExamsRepository examsRepository,
             IUserAnswersRepository userAnswersRepository, 
             IResultsRepository resultsRepository, 
-            IUserAccountRepository userAccountRepository)
+            IUserAccountRepository userAccountRepository,
+            ApplicationDbContext context)
         {
             _coursesRepo = coursesRepo;
             _enrollmentsRepo = enrollmentsRepo;
@@ -46,6 +51,7 @@ namespace Do_An_Web_Hoc.Controllers
             _userAnswersRepository = userAnswersRepository;
             _resultsRepository = resultsRepository;
             _userAccountRepository = userAccountRepository;
+            _context = context;
         }
         private void SetUserViewData()
         {
@@ -214,10 +220,16 @@ namespace Do_An_Web_Hoc.Controllers
                 return RedirectToAction("QuizExamSelection");
             }
 
+            int userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            var completedQuizIds = await _resultsRepository.GetCompletedQuizIdsByUserAsync(userId);
+
             ViewBag.Quizzes = quizzes;
+            ViewBag.CompletedQuizIds = completedQuizIds;
             ViewBag.ExamName = exam.ExamName;
+
             return View("QuizSelection");
         }
+
 
         // Trang 3: Làm bài theo quizId
         public async Task<IActionResult> TakeQuiz(int quizId)
@@ -255,6 +267,14 @@ namespace Do_An_Web_Hoc.Controllers
         }
 
 
+        // Xem lại kết quả bài làm
+        public async Task<IActionResult> ReviewResult(int quizId)
+        {
+            SetUserViewData();
+            int userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            var result = await _examsRepository.GetQuizReviewResultAsync(quizId, userId);
+            return View("ReviewResult", result);
+        }
 
 
 
@@ -423,7 +443,9 @@ namespace Do_An_Web_Hoc.Controllers
                 }
             }
 
-            var lectures = await _lecturesRepo.GetLecturesByCourseIdAsync(id);
+            // Sử dụng hàm đã xử lý IsLocked trong repo
+            var lectures = await _lecturesRepo.GetLecturesWithLockStatusAsync(id, userId);
+
             ViewBag.CourseName = course.CourseName;
             ViewBag.CourseId = course.CourseID;
             SetUserViewData();
@@ -431,26 +453,22 @@ namespace Do_An_Web_Hoc.Controllers
         }
 
 
-
-
         [HttpPost]
         public async Task<IActionResult> SubmitQuiz(IFormCollection form)
         {
             int userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
             int quizId = int.Parse(form["QuizID"]);
+            var attemptId = Guid.NewGuid(); // tạo mã lượt làm bài
 
-            // Lấy danh sách câu hỏi trong quiz
             var questions = await _questionsRepository.GetQuestionsByQuizIdAsync(quizId);
             var questionIds = questions.Select(q => q.QuestionID).ToList();
-
-            // Lấy đáp án đúng
             var correctAnswers = await _answersRepository.GetAnswersByQuestionIdsAsync(questionIds);
 
             int correctCount = 0;
 
             foreach (var question in questions)
             {
-                if (question.QuestionType != "MCQ") continue; // Bỏ qua câu Essay
+                if (question.QuestionType != "MCQ") continue;
 
                 int questionId = question.QuestionID;
                 string key = $"Question_{questionId}";
@@ -458,7 +476,6 @@ namespace Do_An_Web_Hoc.Controllers
                 if (form.ContainsKey(key))
                 {
                     string answerValue = form[key];
-
                     if (int.TryParse(answerValue, out int selectedAnswerId))
                     {
                         var correctAnswer = correctAnswers
@@ -473,7 +490,9 @@ namespace Do_An_Web_Hoc.Controllers
                         {
                             UserID = userId,
                             QuestionID = questionId,
-                            AnswerID = selectedAnswerId
+                            AnswerID = selectedAnswerId,
+                            CreatedAt = DateTime.Now,
+                            AttemptId = attemptId
                         };
 
                         await _userAnswersRepository.SaveUserAnswerAsync(userAnswer);
@@ -481,19 +500,16 @@ namespace Do_An_Web_Hoc.Controllers
                 }
             }
 
-            // Lấy tổng điểm từ Quiz
             var quiz = await _quizzesRepository.GetQuizByIdAsync(quizId);
             int totalQuestions = questions.Count();
-            int totalMarks = quiz?.TotalMarks ?? totalQuestions; // fallback nếu null
-
-            // Tính điểm: số câu đúng / tổng câu * totalMarks
+            int totalMarks = quiz?.TotalMarks ?? totalQuestions;
+            int examId = quiz?.ExamID ?? 0;
             int score = 0;
             if (totalQuestions > 0)
             {
                 score = (int)Math.Round((double)correctCount * totalMarks / totalQuestions);
             }
 
-            // Lưu kết quả bài làm
             var result = new ResultsModel
             {
                 UserID = userId,
@@ -504,13 +520,44 @@ namespace Do_An_Web_Hoc.Controllers
 
             await _resultsRepository.SaveResultFromUserAsync(result);
 
+            // ✅ THÊM PHẦN NÀY: cập nhật LectureProgress nếu quiz gắn với bài giảng
+            if (quiz?.LectureID != null)
+            {
+                var lectureId = quiz.LectureID.Value;
+                var existingProgress = await _context.LectureProgresses
+                    .FirstOrDefaultAsync(p => p.UserId == userId && p.LectureID == lectureId);
+
+                if (existingProgress == null)
+                {
+                    _context.LectureProgresses.Add(new LectureProgress
+                    {
+                        UserId = userId,
+                        LectureID = lectureId,
+                        Score = score,
+                        IsPassed = score >= 50,
+                        LastAttempt = DateTime.Now
+                    });
+                }
+                else
+                {
+                    existingProgress.Score = score;
+                    existingProgress.IsPassed = score >= 50;
+                    existingProgress.LastAttempt = DateTime.Now;
+                    _context.LectureProgresses.Update(existingProgress);
+                }
+
+                await _context.SaveChangesAsync();
+            }
+
             ViewBag.Score = score;
             ViewBag.Total = totalMarks;
             ViewBag.CorrectAnswers = correctCount;
             ViewBag.TotalQuestions = totalQuestions;
+            ViewBag.ExamID = examId;
             SetUserViewData();
             return View("QuizResult");
         }
+
 
 
 
@@ -566,7 +613,21 @@ namespace Do_An_Web_Hoc.Controllers
             return RedirectToAction("SecuritySettings");
         }
 
+        public async Task<IActionResult> CompletedQuizzes()
+        {
+            int userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
 
+            var completedQuizzes = await _examsRepository.GetCompletedQuizzesByUserAsync(userId);
+
+            return View(completedQuizzes);
+        }
+        public async Task<IActionResult> CompletedExams()
+        {
+            SetUserViewData();
+            int userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            var exams = await _examsRepository.GetCompletedQuizzesByUserAsync(userId);
+            return View(exams);
+        }
 
 
 

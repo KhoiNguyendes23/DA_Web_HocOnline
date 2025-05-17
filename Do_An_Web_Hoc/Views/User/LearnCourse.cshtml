@@ -30,14 +30,24 @@
                 <ul class="list-group list-group-flush">
                     @foreach (var lecture in Model)
                     {
-                        <li class="list-group-item lecture-item"
-                            data-title="@lecture.Title"
-                            data-content="@lecture.Content"
-                            data-video="@lecture.VideoUrl"
-                            data-doc="@lecture.DocumentURL"
-                            style="cursor:pointer;">
-                            <i class="fas fa-play-circle text-primary me-2"></i> @lecture.Title
-                        </li>
+                        @if (lecture.IsLocked)
+                        {
+                            <li class="list-group-item text-muted" style="cursor:not-allowed;">
+                                <i class="fas fa-lock me-2"></i> @lecture.Title
+                                <span class="badge bg-danger float-end">Chưa mở khóa</span>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="list-group-item lecture-item"
+                                data-title="@lecture.Title"
+                                data-content="@lecture.Content"
+                                data-video="@lecture.VideoUrl"
+                                data-doc="@lecture.DocumentURL"
+                                style="cursor:pointer;">
+                                <i class="fas fa-play-circle text-primary me-2"></i> @lecture.Title
+                            </li>
+                        }
                     }
                 </ul>
             </div>

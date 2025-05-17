@@ -1,0 +1,60 @@
+﻿using Microsoft.EntityFrameworkCore.Migrations;
+
+#nullable disable
+
+namespace Do_An_Web_Hoc.Migrations
+{
+    /// <inheritdoc />
+    public partial class AddLectureProgressRelations : Migration
+    {
+        /// <inheritdoc />
+        protected override void Up(MigrationBuilder migrationBuilder)
+        {
+            migrationBuilder.CreateIndex(
+                name: "IX_LectureProgresses_LectureID",
+                table: "LectureProgresses",
+                column: "LectureID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_LectureProgresses_UserId",
+                table: "LectureProgresses",
+                column: "UserId");
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_LectureProgresses_Lectures_LectureID",
+                table: "LectureProgresses",
+                column: "LectureID",
+                principalTable: "Lectures",
+                principalColumn: "LectureID",
+                onDelete: ReferentialAction.Cascade);
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_LectureProgresses_UserAccounts_UserId",
+                table: "LectureProgresses",
+                column: "UserId",
+                principalTable: "UserAccounts",
+                principalColumn: "UserID",
+                onDelete: ReferentialAction.Cascade);
+        }
+
+        /// <inheritdoc />
+        protected override void Down(MigrationBuilder migrationBuilder)
+        {
+            migrationBuilder.DropForeignKey(
+                name: "FK_LectureProgresses_Lectures_LectureID",
+                table: "LectureProgresses");
+
+            migrationBuilder.DropForeignKey(
+                name: "FK_LectureProgresses_UserAccounts_UserId",
+                table: "LectureProgresses");
+
+            migrationBuilder.DropIndex(
+                name: "IX_LectureProgresses_LectureID",
+                table: "LectureProgresses");
+
+            migrationBuilder.DropIndex(
+                name: "IX_LectureProgresses_UserId",
+                table: "LectureProgresses");
+        }
+    }
+}

@@ -1,0 +1,73 @@
+﻿@{
+    Layout = ViewData["Layout"]?.ToString();
+    var userId = ViewBag.CurrentUserId ?? 0;
+    Func<int, string> getRoleName = roleId => roleId switch
+    {
+        1 => "Admin",
+        2 => "Giảng viên",
+        3 => "Học viên",
+        _ => "Không rõ"
+    };
+}
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+<h3 class="mb-3">💬 Chats</h3>
+<div class="row">
+    <!-- Cột trái: danh sách người dùng -->
+    <div class="col-md-4 border-end user-list-container">
+        <h6 class="text-muted mt-2">📋 Người dùng</h6>
+        <ul class="list-group" id="user-list">
+            @foreach (var user in ViewBag.Users)
+            {
+                <li class="list-group-item list-group-item-action d-flex align-items-center user-item" data-userid="@user.UserID">
+                    <img src="@((user.Image ?? "/images/Avatar_images/default-avatar.png"))" class="rounded-circle me-2" width="36" height="36" />
+                    <div>
+                        <strong>@user.FullName</strong><br />
+                        <small class="text-muted">(@getRoleName(user.RoleID))</small>
+                    </div>
+                </li>
+            }
+        </ul>
+    </div>
+
+    <!-- Cột phải: khung chat -->
+    <div class="col-md-8">
+        <h5 id="chat-title" class="mt-2">💬 Chat với <span class="text-primary">...</span></h5>
+        <div id="chat-messages" class="chat-box mb-2"></div>
+        <div id="image-preview-container" class="mb-2"></div>
+
+        <div class="chat-input-wrapper d-flex align-items-center mt-3">
+            <!-- Ẩn input file ảnh -->
+            <input type="file" id="chat-image" accept="image/*" style="width: 0.1px; height: 0.1px; opacity: 0; position: absolute; z-index: -1;" />
+
+            <!-- Nút chọn ảnh -->
+            <button type="button" id="chat-image-btn" class="btn btn-secondary me-2">
+                <i class="fas fa-image"></i>
+            </button>
+
+            <!-- Ô nhập tin nhắn -->
+            <input type="text" id="chat-input" class="form-control chat-input-box me-2" placeholder="Aa" />
+
+            <!-- Nút gửi -->
+            <button id="chat-send" class="btn btn-send-icon">
+                <i class="fas fa-paper-plane"></i>
+            </button>
+        </div>
+    </div>
+</div>
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/chat.css" />
+}
+
+@section Scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.5/signalr.min.js"></script>
+    <script src="~/js/chat.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const senderId = @userId;
+            window.initializeChat(senderId);
+        });
+    </script>
+}

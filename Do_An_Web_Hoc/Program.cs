@@ -10,6 +10,8 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Do_An_Web_Hoc.Services;
 using Do_An_Web_Hoc.Services.Interfaces;
 using Do_An_Web_Hoc.Services.Odoo;
+using Do_An_Web_Hoc.Hubs;
+using Microsoft.AspNetCore.SignalR;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -31,7 +33,8 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
         options.AppSecret = builder.Configuration["Facebook:AppSecret"];  // Lấy AppSecret từ appsettings.json
     });
 
-
+builder.Services.AddSignalR(); //  Thêm SignalR
+builder.Services.AddSingleton<IUserIdProvider, NameIdentifierUserIdProvider>();
 // 💡 **Cấu hình Cookies**
 builder.Services.ConfigureApplicationCookie(options =>
 {
@@ -74,16 +77,6 @@ builder.Services.AddScoped<IEnrollmentsRepository, EFEnrollmentsRepository>();
 builder.Services.AddScoped<IAnswersRepository, EFAnswersRepository>();
 builder.Services.AddScoped<IUserAnswersRepository, EFUserAnswersRepository>();
 builder.Services.AddScoped<IRolesRepository, EFRolesRepository>();
-builder.Services.AddScoped<IOdooEnrollmentService, OdooEnrollmentService>();
-builder.Services.AddScoped<IOdooCourseService, OdooCourseService>();
-builder.Services.AddScoped<IOdooLectureService, OdooLectureService>();
-builder.Services.AddScoped<IOdooPartnerService, OdooPartnerService>();
-builder.Services.AddScoped<IOdooRoleService, OdooRoleService>();
-
-
-
-
-
 
 
 // 💡 **Cấu hình MVC & View Localization**
@@ -135,5 +128,8 @@ app.UseAuthorization();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
+
+
+app.MapHub<ChatHub>("/chathub"); // Đường dẫn tới ChatHub
 
 app.Run();

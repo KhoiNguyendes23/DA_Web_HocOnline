@@ -24,6 +24,10 @@ namespace Do_An_Web_Hoc.Models
         public string? Image { get; set; }
 
         public ICollection<Enrollments> Enrollments { get; set; } = new List<Enrollments>();
+        public ICollection<ChatMessage> SentMessages { get; set; } = new List<ChatMessage>();
+        public ICollection<ChatMessage> ReceivedMessages { get; set; } = new List<ChatMessage>();
+
+    }
         // Danh sách buổi học do giảng viên này tạo
         public ICollection<LiveMeeting> CreatedMeetings { get; set; } = new List<LiveMeeting>();
     

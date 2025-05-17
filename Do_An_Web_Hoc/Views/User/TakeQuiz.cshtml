@@ -6,7 +6,6 @@
     var questions = ViewBag.Questions as List<Do_An_Web_Hoc.Models.Questions>;
     var answers = ViewBag.Answers as List<Do_An_Web_Hoc.Models.Answers>;
     var duration = ViewBag.Duration ?? 60;
-
 }
 
 <div class="container mt-4">
@@ -14,7 +13,7 @@
 
     @if (selectedQuiz != null && questions != null && questions.Any())
     {
-        <form method="post" asp-action="SubmitQuiz" asp-controller="User">
+        <form method="post" asp-action="SubmitQuiz" asp-controller="User" id="quizForm">
             <input type="hidden" name="QuizID" value="@selectedQuiz.QuizID" />
             <div class="text-danger text-end fw-bold mb-2" id="timer"></div>
 
@@ -51,7 +50,7 @@
             }
 
             <div class="text-center">
-                <button type="submit" class="btn btn-success">Nộp bài</button>
+                <button type="button" class="btn btn-success" id="submitQuizBtn">Nộp bài</button>
                 <a asp-action="QuizSelection" asp-controller="User" class="btn btn-secondary">Quay lại</a>
             </div>
         </form>
@@ -62,17 +61,43 @@
     }
 </div>
 
-<script>
-    let seconds = @duration * 60;
-    let timer = setInterval(function () {
-        let min = Math.floor(seconds / 60);
-        let sec = seconds % 60;
-        document.getElementById("timer").innerText = `⏳ Còn lại: ${min} phút ${sec} giây`;
-        seconds--;
-        if (seconds < 0) {
-            clearInterval(timer);
-            alert("⏰ Hết giờ! Bài sẽ được nộp.");
-            document.forms[0].submit();
-        }
-    }, 1000);
-</script>
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        let seconds = @duration * 60;
+        let timer = setInterval(function () {
+            let min = Math.floor(seconds / 60);
+            let sec = seconds % 60;
+            document.getElementById("timer").innerText = `⏳ Còn lại: ${min} phút ${sec} giây`;
+            seconds--;
+            if (seconds < 0) {
+                clearInterval(timer);
+                Swal.fire({
+                    icon: 'warning',
+                    title: '⏰ Hết giờ!',
+                    text: 'Bài kiểm tra sẽ được nộp ngay bây giờ.',
+                    confirmButtonText: 'OK'
+                }).then(() => {
+                    document.getElementById("quizForm").submit();
+                });
+            }
+        }, 1000);
+
+        document.getElementById("submitQuizBtn").addEventListener("click", function () {
+            Swal.fire({
+                title: 'Bạn có chắc muốn nộp bài?',
+                text: "Sau khi nộp, bạn sẽ không thể thay đổi câu trả lời.",
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonText: 'Nộp bài',
+                cancelButtonText: 'Hủy',
+                confirmButtonColor: '#198754',
+                cancelButtonColor: '#6c757d'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    document.getElementById("quizForm").submit();
+                }
+            });
+        });
+    </script>
+}

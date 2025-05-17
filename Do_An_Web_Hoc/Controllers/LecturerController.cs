@@ -583,6 +583,7 @@ namespace Do_An_Web_Hoc.Controllers
 
             return View(exam);
         }
+
         [HttpPost, ActionName("DeleteExam")]
         public async Task<IActionResult> ConfirmDeleteExam(int id)
         {
@@ -604,6 +605,9 @@ namespace Do_An_Web_Hoc.Controllers
             var exam = _context.Exams.FirstOrDefault(e => e.ExamID == id);
             if (exam == null) return NotFound();
 
+            var course = _context.Courses.FirstOrDefault(c => c.CourseID == exam.CourseID);
+            ViewBag.CourseName = course?.CourseName ?? "Không xác định";
+
             var quizzes = _context.Quizzes.Where(q => q.ExamID == id).ToList();
             var quizIds = quizzes.Select(q => q.QuizID).ToList();
             var questions = _context.Questions.Where(q => quizIds.Contains(q.QuizID ?? 0)).ToList();
@@ -616,6 +620,7 @@ namespace Do_An_Web_Hoc.Controllers
 
             return View(exam);
         }
+
 
         public async Task<IActionResult> ResultExam()
         {

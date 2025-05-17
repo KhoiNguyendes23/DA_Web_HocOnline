@@ -114,5 +114,33 @@ namespace Do_An_Web_Hoc.Repositories
                           where c.Status == 1 && cat.Status == 1
                           select l).ToListAsync();
         }
+        public async Task<List<Lectures>> GetLecturesWithLockStatusAsync(int courseId, int userId)
+        {
+            var lectures = await _context.Lectures
+                .Where(l => l.CourseID == courseId)
+                .OrderBy(l => l.Order)
+                .ToListAsync();
+
+            var progresses = await _context.LectureProgresses
+                .Where(p => p.UserId == userId)
+                .ToListAsync();
+
+            for (int i = 0; i < lectures.Count; i++)
+            {
+                lectures[i].IsLocked = false;
+
+                if (i == 0) continue; // bài đầu tiên luôn mở
+
+                var prevLecture = lectures[i - 1];
+                var progress = progresses.FirstOrDefault(p => p.LectureID == prevLecture.LectureID);
+
+                if (progress == null || !progress.IsPassed)
+                {
+                    lectures[i].IsLocked = true;
+                }
+            }
+
+            return lectures;
+        }
     }
 }

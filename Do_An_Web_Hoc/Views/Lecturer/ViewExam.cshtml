@@ -15,7 +15,7 @@
         <div class="card-body">
             <h5 class="card-title"><i class="fas fa-file-alt"></i> Bài Kiểm Tra: @Model.ExamName</h5>
             <p><strong>Ngày Tạo:</strong> @Model.CreatedAt?.ToString("dd/MM/yyyy")</p>
-            <p><strong>Khóa Học ID:</strong> @Model.CourseID</p>
+            <p><strong>Khóa Học:</strong> @ViewBag.CourseName</p>
             <p><strong>Tổng điểm:</strong> @Model.TotalMarks</p>
             <p><strong>Thời gian:</strong> @Model.Duration phút</p>
             <p>
