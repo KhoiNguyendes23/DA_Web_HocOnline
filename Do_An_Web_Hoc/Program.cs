@@ -7,6 +7,10 @@ using Do_An_Web_Hoc.Repositories.Interfaces;
 using Do_An_Web_Hoc.Repositories;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Do_An_Web_Hoc.Services;
+using Do_An_Web_Hoc.Services.Interfaces;
+using Do_An_Web_Hoc.Services.Odoo;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -70,6 +74,16 @@ builder.Services.AddScoped<IEnrollmentsRepository, EFEnrollmentsRepository>();
 builder.Services.AddScoped<IAnswersRepository, EFAnswersRepository>();
 builder.Services.AddScoped<IUserAnswersRepository, EFUserAnswersRepository>();
 builder.Services.AddScoped<IRolesRepository, EFRolesRepository>();
+builder.Services.AddScoped<IOdooEnrollmentService, OdooEnrollmentService>();
+builder.Services.AddScoped<IOdooCourseService, OdooCourseService>();
+builder.Services.AddScoped<IOdooLectureService, OdooLectureService>();
+builder.Services.AddScoped<IOdooPartnerService, OdooPartnerService>();
+builder.Services.AddScoped<IOdooRoleService, OdooRoleService>();
+
+
+
+
+
 
 
 // 💡 **Cấu hình MVC & View Localization**

@@ -1,0 +1,17 @@
+﻿@{
+    ViewData["Title"] = "Kết Quả";
+}
+<h2>Kết Quả</h2>
+
+@if (ViewBag.Result != null)
+{
+    <div class="alert alert-info">
+        @ViewBag.Result
+    </div>
+}
+else
+{
+    <div class="alert alert-warning">
+        Không có dữ liệu kết quả để hiển thị.
+    </div>
+}

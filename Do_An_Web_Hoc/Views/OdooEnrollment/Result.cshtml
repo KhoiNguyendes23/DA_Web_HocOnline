@@ -1,0 +1,11 @@
+﻿@{
+    ViewData["Title"] = "Kết quả";
+}
+
+<h2>Kết Quả</h2>
+<p>@ViewBag.Result</p>
+
+<div>
+    <a class="btn btn-secondary" href="@Url.Action("CreateEnrollment")">Quay lại Ghi danh</a>
+    <a class="btn btn-secondary" href="@Url.Action("SyncAll")">Quay lại Đồng bộ</a>
+</div>

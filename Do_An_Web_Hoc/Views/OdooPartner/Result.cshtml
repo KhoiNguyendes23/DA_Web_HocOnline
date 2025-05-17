@@ -1,0 +1,21 @@
+﻿@{
+    ViewBag.Title = "Kết quả đồng bộ";
+}
+
+<h2 class="text-primary fw-bold">📋 Kết quả đồng bộ</h2>
+
+<div class="alert alert-light border rounded shadow-sm p-3" style="white-space: pre-line">
+    @Html.Raw(ViewBag.Result)
+</div>
+
+<hr />
+<a href="@Url.Action("SyncAll", "OdooPartner")" class="btn btn-secondary">
+    ⬅ Quay lại Đồng Bộ
+</a>
+
+@section Scripts {
+    <script>
+        // Tự động cuộn lên đầu khi load xong (nếu nội dung dài)
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    </script>
+}

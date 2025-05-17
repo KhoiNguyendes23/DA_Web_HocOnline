@@ -1,0 +1,17 @@
+﻿@{
+    ViewData["Title"] = "Ghi danh thủ công";
+}
+
+<h2>Ghi Danh Thủ Công</h2>
+
+<form asp-action="CreateEnrollment" method="post">
+    <div class="mb-3">
+        <label for="studentOdooId" class="form-label">ID Học Viên (Odoo)</label>
+        <input type="number" class="form-control" name="studentOdooId" required />
+    </div>
+    <div class="mb-3">
+        <label for="courseOdooId" class="form-label">ID Khóa Học (Odoo)</label>
+        <input type="number" class="form-control" name="courseOdooId" required />
+    </div>
+    <button type="submit" class="btn btn-primary">Ghi Danh</button>
+</form>

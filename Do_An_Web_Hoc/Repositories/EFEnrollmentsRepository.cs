@@ -161,5 +161,13 @@ namespace Do_An_Web_Hoc.Repositories
                     CreatedAt = u.CreateAt
                 }).ToListAsync();
         }
+
+        public async Task<IEnumerable<Enrollments>> GetAllEnrollmentsAsync()
+        {
+            return await _context.Enrollments
+                .Include(e => e.Course) // lấy luôn thông tin khóa học
+                .Include(e => e.User)   // lấy luôn thông tin học viên
+                .ToListAsync();
+        }
     }
 }

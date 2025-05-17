@@ -1,0 +1,13 @@
+﻿@{
+    ViewData["Title"] = "Tìm Khóa Học";
+}
+<h2>Tìm Khóa Học Theo Tên</h2>
+
+<form asp-action="Search" method="post">
+    <div class="form-group">
+        <label for="courseName">Tên Khóa Học:</label>
+        <input type="text" name="courseName" class="form-control" required />
+    </div>
+    <button type="submit" class="btn btn-success mt-2">Tìm kiếm</button>
+</form>
+s
