@@ -12,67 +12,70 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authentication.Facebook;
+using Do_An_Web_Hoc.Models.Odoo;
+using Do_An_Web_Hoc.Services.Interfaces;
 
 namespace Do_An_Web_Hoc.Controllers
 {
     public class AccountController : Controller
     {
-        private readonly IUserAccountRepository _userAccountRepository;
-        private readonly IConfiguration _configuration;
-        public AccountController(IUserAccountRepository userAccountRepository, IConfiguration configuration)
+        private readonly IUserAccountRepository _userAccountRepository; // Repository truy cập dữ liệu người dùng
+        private readonly IConfiguration _configuration; // Cấu hình appsettings
+        private readonly IOdooPartnerService _odooPartnerService; // Dịch vụ đồng bộ Odoo mới (Odoo 17)
+
+        public AccountController(
+            IUserAccountRepository userAccountRepository,
+            IConfiguration configuration,
+            IOdooPartnerService odooPartnerService)
         {
             _userAccountRepository = userAccountRepository;
             _configuration = configuration;
+            _odooPartnerService = odooPartnerService;
         }
 
-        // Trang đăng nhập / đăng ký
-        public IActionResult Index()
-        {
-            return View();
-        }
+        // Hiển thị trang đăng nhập / đăng ký
+        public IActionResult Index() => View();
 
         // Xử lý đăng nhập
         [HttpPost]
         public async Task<IActionResult> Login(string email, string password)
         {
             var user = await _userAccountRepository.LoginAsync(email, password);
-            if (user == null)
+
+            // Kiểm tra tài khoản hợp lệ và không bị cấm
+            if (user == null || user.Status == 3)
             {
-                ViewBag.Error = "Sai email hoặc mật khẩu!";
-                return View("Index");
-            }
-            // Nếu người dùng bị cấm (Status == 3), không cho đăng nhập
-            if (user.Status == 3)
-            {
-                ViewBag.Error = "Tài khoản của bạn đã bị cấm.";
+                ViewBag.Error = user == null ? "Sai email hoặc mật khẩu!" : "Tài khoản của bạn đã bị cấm.";
                 return View("Index");
             }
 
+            // Gán vai trò dựa trên RoleID
             int roleId = user.RoleID ?? 0;
             string roleName = roleId switch
             {
                 1 => "Admin",
                 2 => "Lecturer",
-                _ => "User" // Nếu không có RoleID, mặc định là "User"
+                _ => "User"
             };
-            // Gán Role vào Claims để `[Authorize(Roles="User")]` nhận diện được
+
+            // Tạo danh sách claim để xác thực Cookie
             var claims = new List<Claim>
-    {
-        new Claim(ClaimTypes.NameIdentifier, user.UserID.ToString()),
-        new Claim(ClaimTypes.Name, user.UserName),
-        new Claim(ClaimTypes.Email, user.Email),
-        new Claim(ClaimTypes.Role, roleName) //Đây là Role mà `[Authorize]` sử dụng
-        //new Claim("FullName", user.FullName)
-    };
+            {
+                new Claim(ClaimTypes.NameIdentifier, user.UserID.ToString()),
+                new Claim(ClaimTypes.Name, user.UserName),
+                new Claim(ClaimTypes.Email, user.Email),
+                new Claim(ClaimTypes.Role, roleName)
+            };
+
             var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
             var authProperties = new AuthenticationProperties { IsPersistent = true };
 
-            // Lưu email vào Session sau khi đăng nhập thành công
-            HttpContext.Session.SetString("UserEmail", user.Email);  // Lưu email vào session
+            // Lưu session và thực hiện đăng nhập
+            HttpContext.Session.SetString("UserEmail", user.Email);
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,
                 new ClaimsPrincipal(claimsIdentity), authProperties);
-            Console.WriteLine($"[DEBUG] Đăng nhập thành công: {user.UserName} - Role: {roleName}");
-            // Chuyển hướng theo Role
+
+            // Điều hướng tới trang Dashboard tương ứng với role
             return roleId switch
             {
                 1 => RedirectToAction("Dashboard", "Admin"),
@@ -81,35 +84,55 @@ namespace Do_An_Web_Hoc.Controllers
             };
         }
 
-
-        // Xử lý đăng ký
+        // Xử lý đăng ký người dùng mới
         [HttpPost]
         public async Task<IActionResult> Register(UserAccount model)
         {
+            // Kiểm tra email đã tồn tại chưa
             if (await _userAccountRepository.CheckUserExistsAsync(model.Email))
             {
                 ViewBag.Error = "Email đã tồn tại!";
                 return View("Index", model);
             }
-            // Gán mặc định RoleID là 3 nếu chưa có
-            if (model.RoleID == null)
-            {
-                model.RoleID = 3; // 3: Học viên
-            }
-            if (model.CreateAt == default)
-            {
-                model.CreateAt = DateTime.Now;
-            }
-            // Mã hóa mật khẩu trước khi lưu
-            //var hasher = new PasswordHasher<UserAccount>();
-            //model.Password = hasher.HashPassword(model, model.Password);
 
+            // Gán role mặc định là học viên nếu chưa có
+            model.RoleID ??= 3;
+            model.CreateAt = model.CreateAt == default ? DateTime.Now : model.CreateAt;
+
+            // Đăng ký người dùng trong SQL Server
             var newUser = await _userAccountRepository.RegisterAsync(model, model.Password);
-
             if (newUser == null)
             {
                 ViewBag.Error = "Đăng ký thất bại!";
                 return View(model);
+            }
+
+            // ✅ Sau khi đăng ký thành công → gửi dữ liệu sang Odoo để tạo res.partner
+            try
+            {
+                var dto = new OdooPartnerDto
+                {
+                    FullName = newUser.FullName,
+                    Email = newUser.Email,
+                    PhoneNumber = newUser.PhoneNumber,
+                    Address = newUser.Address,
+                   
+                    Username = newUser.UserName,
+                    ExternalUserId = newUser.UserID,
+                    Birthday = newUser.Birthday,
+                    RoleId = newUser.RoleID,
+                    Status = newUser.Status,
+                    ImageUrl = string.IsNullOrWhiteSpace(newUser.Image)
+               ? null
+               : $"{Request.Scheme}://{Request.Host}/images/{newUser.Image}"
+                };
+
+                var odooId = await _odooPartnerService.CreatePartnerAsync(dto); // sử dụng Odoo 17 API mới
+                Console.WriteLine($"✅ Đồng bộ Odoo thành công. ID: {odooId}");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("❌ Lỗi đồng bộ Odoo: " + ex.Message);
             }
 
             return RedirectToAction("Index");
@@ -122,6 +145,7 @@ namespace Do_An_Web_Hoc.Controllers
             HttpContext.Session.Clear();                   // Xóa session
             return RedirectToAction("Index");
         }
+
         // Trang yêu cầu gửi OTP
         public IActionResult ForgotPassword() => View();
 
@@ -138,7 +162,6 @@ namespace Do_An_Web_Hoc.Controllers
             HttpContext.Session.SetString("EmailOTP", email); // Dùng Session
             return Json(new { success = true });
         }
-
 
         // nhập OTP
         public IActionResult VerifyOTP()
@@ -184,12 +207,6 @@ namespace Do_An_Web_Hoc.Controllers
             return Json(new { success = true });
         }
 
-        [HttpGet]
-        public IActionResult Login()
-        {
-            return RedirectToAction("Index"); // Chuyển hướng đến trang Index (chứa cả đăng nhập & đăng ký)
-        }
-
         // Reset mật khẩu
         [HttpPost]
         public async Task<IActionResult> ResetPassword(string newPassword, string confirmPassword)
@@ -203,21 +220,20 @@ namespace Do_An_Web_Hoc.Controllers
                 var email = HttpContext.Session.GetString("EmailVerified");
                 if (string.IsNullOrEmpty(email))
                 {
-                    return Json(new { success = false, message = "Phiên đặt lại mật khẩu đã hết hạn! Vui lòng thực hiện lại từ đầu." });
+                    return Json(new { success = false, message = "Phiên đặt lại mật khẩu đã hết hạn!" });
                 }
 
                 // Kiểm tra độ mạnh mật khẩu
                 if (newPassword.Length < 8 || !newPassword.Any(char.IsUpper) ||
                     !newPassword.Any(char.IsDigit) || !newPassword.Any(ch => !char.IsLetterOrDigit(ch)))
                 {
-                    return Json(new { success = false, message = "Mật khẩu không đủ mạnh! Yêu cầu: ít nhất 8 ký tự, 1 chữ hoa, 1 số, 1 ký tự đặc biệt." });
+                    return Json(new { success = false, message = "Mật khẩu không đủ mạnh!" });
                 }
 
-                // Gửi mật khẩu gốc sang Repository để mã hóa tại đó
                 bool resetSuccess = await _userAccountRepository.ResetPasswordByOTPAsync(email, newPassword);
                 if (!resetSuccess)
                 {
-                    return Json(new { success = false, message = "Đặt lại mật khẩu thất bại! Vui lòng thử lại." });
+                    return Json(new { success = false, message = "Đặt lại mật khẩu thất bại!" });
                 }
 
                 HttpContext.Session.Remove("EmailVerified");
@@ -226,10 +242,9 @@ namespace Do_An_Web_Hoc.Controllers
             catch (Exception ex)
             {
                 Console.WriteLine($"[ERROR] Lỗi khi đặt lại mật khẩu: {ex.Message}");
-                return Json(new { success = false, message = "Đã xảy ra lỗi hệ thống. Vui lòng thử lại sau." });
+                return Json(new { success = false, message = "Đã xảy ra lỗi hệ thống." });
             }
         }
-
         //Để mã hóa mật khẩu cũ
         //[HttpGet]
         //[AllowAnonymous] // hoặc [Authorize(Roles = "Admin")] nếu muốn giới hạn
@@ -251,14 +266,14 @@ namespace Do_An_Web_Hoc.Controllers
         //    return Content("✅ Mã hóa mật khẩu cũ thành công!");
         //}
 
-
-        // đăng nhập bằng facebook
+        // Đăng nhập bằng Facebook
         public IActionResult LoginFacebook()
         {
             var redirectUrl = Url.Action("FacebookResponse", "Account");
             var properties = new AuthenticationProperties { RedirectUri = redirectUrl };
             return Challenge(properties, FacebookDefaults.AuthenticationScheme);
         }
+
         // Xử lý phản hồi từ Facebook
         public async Task<IActionResult> FacebookResponse()
         {
@@ -270,8 +285,6 @@ namespace Do_An_Web_Hoc.Controllers
             }
 
             var externalInfo = result.Principal;
-
-            // Lấy thông tin người dùng từ Facebook
             var name = externalInfo.FindFirstValue(ClaimTypes.Name);
             var email = externalInfo.FindFirstValue(ClaimTypes.Email);
 
@@ -279,41 +292,37 @@ namespace Do_An_Web_Hoc.Controllers
             var user = await _userAccountRepository.GetByEmailAsync(email);
             if (user == null)
             {
-                // Nếu không có user, có thể tạo mới tài khoản từ thông tin Facebook
                 var newUser = new UserAccount
                 {
                     UserName = name,
                     Email = email,
-                    Password = "", // Có thể để trống vì không cần mật khẩu khi đăng nhập qua Facebook
-                    Status = 1, // Trạng thái hoạt động, có thể thay đổi tùy theo yêu cầu
-                    RoleID = 3  // Đặt role tùy theo yêu cầu
+                    Password = "",
+                    Status = 1,
+                    RoleID = 3
                 };
 
                 await _userAccountRepository.RegisterAsync(newUser, newUser.Password);
                 user = newUser;
             }
 
-            // Gán Role vào Claims để `[Authorize(Roles="User")]` nhận diện được
-            var roleName = "User"; // Mặc định là User
+            var roleName = "User";
 
             var claims = new List<Claim>
-    {
-        new Claim(ClaimTypes.Name, user.UserName),
-        new Claim(ClaimTypes.Email, user.Email),
-        new Claim(ClaimTypes.Role, roleName)
-    };
+            {
+                new Claim(ClaimTypes.Name, user.UserName),
+                new Claim(ClaimTypes.Email, user.Email),
+                new Claim(ClaimTypes.Role, roleName)
+            };
 
             var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
             var authProperties = new AuthenticationProperties { IsPersistent = true };
 
-            // Lưu email vào Session sau khi đăng nhập thành công
             HttpContext.Session.SetString("UserEmail", user.Email);
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,
                 new ClaimsPrincipal(claimsIdentity), authProperties);
 
             Console.WriteLine($"[DEBUG] Đăng nhập qua Facebook thành công: {user.UserName} - Role: {roleName}");
 
-            // Chuyển hướng theo Role
             return roleName switch
             {
                 "Admin" => RedirectToAction("Dashboard", "Admin"),
@@ -323,4 +332,3 @@ namespace Do_An_Web_Hoc.Controllers
         }
     }
 }
-

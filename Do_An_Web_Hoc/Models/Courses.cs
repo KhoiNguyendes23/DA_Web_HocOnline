@@ -15,5 +15,8 @@ namespace Do_An_Web_Hoc.Models
 
         public virtual ICollection<Enrollments> Enrollments { get; set; } = new List<Enrollments>();
 
-    }
+        // Danh sách buổi học trực tuyến trong khóa học này
+        public virtual ICollection<LiveMeeting> LiveMeetings { get; set; } = new List<LiveMeeting>();
+    
+}
 }

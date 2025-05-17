@@ -27,5 +27,9 @@ namespace Do_An_Web_Hoc.Models
         public ICollection<ChatMessage> SentMessages { get; set; } = new List<ChatMessage>();
         public ICollection<ChatMessage> ReceivedMessages { get; set; } = new List<ChatMessage>();
 
-    }
+    
+        // Danh sách buổi học do giảng viên này tạo
+        public ICollection<LiveMeeting> CreatedMeetings { get; set; } = new List<LiveMeeting>();
+    
+}
 }

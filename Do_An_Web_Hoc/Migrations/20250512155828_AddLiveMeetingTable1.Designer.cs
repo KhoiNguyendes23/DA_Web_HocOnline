@@ -4,6 +4,7 @@ using Do_An_Web_Hoc.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Do_An_Web_Hoc.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250512155828_AddLiveMeetingTable1")]
+    partial class AddLiveMeetingTable1
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -44,7 +47,7 @@ namespace Do_An_Web_Hoc.Migrations
 
                     b.HasIndex("QuestionID");
 
-                    b.ToTable("Answers", (string)null);
+                    b.ToTable("Answers");
                 });
 
             modelBuilder.Entity("Do_An_Web_Hoc.Models.Categories", b =>
@@ -66,7 +69,7 @@ namespace Do_An_Web_Hoc.Migrations
 
                     b.HasIndex("Status");
 
-                    b.ToTable("Categories", (string)null);
+                    b.ToTable("Categories");
                 });
 
             modelBuilder.Entity("Do_An_Web_Hoc.Models.CategoryStatus", b =>
@@ -83,42 +86,7 @@ namespace Do_An_Web_Hoc.Migrations
 
                     b.HasKey("StatusId");
 
-                    b.ToTable("CategoryStatus", (string)null);
-                });
-
-            modelBuilder.Entity("Do_An_Web_Hoc.Models.ChatMessage", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("ImageUrl")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("IsRead")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Message")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("ReceiverId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("SenderId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("Timestamp")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ReceiverId");
-
-                    b.HasIndex("SenderId");
-
-                    b.ToTable("ChatMessages", (string)null);
+                    b.ToTable("CategoryStatus");
                 });
 
             modelBuilder.Entity("Do_An_Web_Hoc.Models.Contacts", b =>
@@ -146,7 +114,7 @@ namespace Do_An_Web_Hoc.Migrations
 
                     b.HasKey("ContactId");
 
-                    b.ToTable("Contacts", (string)null);
+                    b.ToTable("Contacts");
                 });
 
             modelBuilder.Entity("Do_An_Web_Hoc.Models.CourseContent", b =>
@@ -163,7 +131,7 @@ namespace Do_An_Web_Hoc.Migrations
 
                     b.HasKey("ContentId");
 
-                    b.ToTable("CourseContent", (string)null);
+                    b.ToTable("CourseContent");
                 });
 
             modelBuilder.Entity("Do_An_Web_Hoc.Models.CourseStatus", b =>
@@ -180,7 +148,7 @@ namespace Do_An_Web_Hoc.Migrations
 
                     b.HasKey("StatusID");
 
-                    b.ToTable("CourseStatus", (string)null);
+                    b.ToTable("CourseStatus");
                 });
 
             modelBuilder.Entity("Do_An_Web_Hoc.Models.Courses", b =>
@@ -217,7 +185,7 @@ namespace Do_An_Web_Hoc.Migrations
 
                     b.HasIndex("Status");
 
-                    b.ToTable("Courses", (string)null);
+                    b.ToTable("Courses");
                 });
 
             modelBuilder.Entity("Do_An_Web_Hoc.Models.Documents", b =>
@@ -259,7 +227,7 @@ namespace Do_An_Web_Hoc.Migrations
 
                     b.HasIndex("UploadedBy");
 
-                    b.ToTable("Documents", (string)null);
+                    b.ToTable("Documents");
                 });
 
             modelBuilder.Entity("Do_An_Web_Hoc.Models.Enrollments", b =>
@@ -297,7 +265,7 @@ namespace Do_An_Web_Hoc.Migrations
 
                     b.HasIndex("UserID");
 
-                    b.ToTable("Enrollments", (string)null);
+                    b.ToTable("Enrollments");
                 });
 
             modelBuilder.Entity("Do_An_Web_Hoc.Models.Exams", b =>
@@ -341,39 +309,7 @@ namespace Do_An_Web_Hoc.Migrations
 
                     b.HasIndex("CourseID");
 
-                    b.ToTable("Exams", (string)null);
-                });
-
-            modelBuilder.Entity("Do_An_Web_Hoc.Models.LectureProgress", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<bool>("IsPassed")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime>("LastAttempt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("LectureID")
-                        .HasColumnType("int");
-
-                    b.Property<double>("Score")
-                        .HasColumnType("float");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("LectureID");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("LectureProgresses", (string)null);
+                    b.ToTable("Exams");
                 });
 
             modelBuilder.Entity("Do_An_Web_Hoc.Models.Lectures", b =>
@@ -398,9 +334,6 @@ namespace Do_An_Web_Hoc.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("Order")
-                        .HasColumnType("int");
-
                     b.Property<int>("Status")
                         .HasColumnType("int");
 
@@ -416,7 +349,7 @@ namespace Do_An_Web_Hoc.Migrations
 
                     b.HasIndex("CourseID");
 
-                    b.ToTable("Lectures", (string)null);
+                    b.ToTable("Lectures");
                 });
 
             modelBuilder.Entity("Do_An_Web_Hoc.Models.LiveMeeting", b =>
@@ -479,7 +412,7 @@ namespace Do_An_Web_Hoc.Migrations
 
                     b.HasIndex("CreatedBy");
 
-                    b.ToTable("LiveMeetings", (string)null);
+                    b.ToTable("LiveMeetings");
                 });
 
             modelBuilder.Entity("Do_An_Web_Hoc.Models.Payments", b =>
@@ -512,7 +445,7 @@ namespace Do_An_Web_Hoc.Migrations
 
                     b.HasIndex("UserID");
 
-                    b.ToTable("Payments", (string)null);
+                    b.ToTable("Payments");
                 });
 
             modelBuilder.Entity("Do_An_Web_Hoc.Models.Questions", b =>
@@ -541,7 +474,7 @@ namespace Do_An_Web_Hoc.Migrations
 
                     b.HasIndex("QuizID");
 
-                    b.ToTable("Questions", (string)null);
+                    b.ToTable("Questions");
                 });
 
             modelBuilder.Entity("Do_An_Web_Hoc.Models.Quizzes", b =>
@@ -562,9 +495,6 @@ namespace Do_An_Web_Hoc.Migrations
                     b.Property<int?>("ExamID")
                         .HasColumnType("int");
 
-                    b.Property<int?>("LectureID")
-                        .HasColumnType("int");
-
                     b.Property<string>("QuizName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -576,11 +506,7 @@ namespace Do_An_Web_Hoc.Migrations
 
                     b.HasIndex("ExamID");
 
-                    b.HasIndex("LectureID")
-                        .IsUnique()
-                        .HasFilter("[LectureID] IS NOT NULL");
-
-                    b.ToTable("Quizzes", (string)null);
+                    b.ToTable("Quizzes");
                 });
 
             modelBuilder.Entity("Do_An_Web_Hoc.Models.Ratings", b =>
@@ -606,7 +532,7 @@ namespace Do_An_Web_Hoc.Migrations
 
                     b.HasIndex("UserID");
 
-                    b.ToTable("Ratings", (string)null);
+                    b.ToTable("Ratings");
                 });
 
             modelBuilder.Entity("Do_An_Web_Hoc.Models.Results", b =>
@@ -635,7 +561,7 @@ namespace Do_An_Web_Hoc.Migrations
 
                     b.HasIndex("UserID");
 
-                    b.ToTable("Results", (string)null);
+                    b.ToTable("Results");
                 });
 
             modelBuilder.Entity("Do_An_Web_Hoc.Models.Reviews", b =>
@@ -665,7 +591,7 @@ namespace Do_An_Web_Hoc.Migrations
 
                     b.HasIndex("UserID");
 
-                    b.ToTable("Reviews", (string)null);
+                    b.ToTable("Reviews");
                 });
 
             modelBuilder.Entity("Do_An_Web_Hoc.Models.Roles", b =>
@@ -682,7 +608,7 @@ namespace Do_An_Web_Hoc.Migrations
 
                     b.HasKey("RoleId");
 
-                    b.ToTable("Roles", (string)null);
+                    b.ToTable("Roles");
                 });
 
             modelBuilder.Entity("Do_An_Web_Hoc.Models.UserAccount", b =>
@@ -742,7 +668,7 @@ namespace Do_An_Web_Hoc.Migrations
 
                     b.HasIndex("Status");
 
-                    b.ToTable("UserAccounts", (string)null);
+                    b.ToTable("UserAccounts");
                 });
 
             modelBuilder.Entity("Do_An_Web_Hoc.Models.UserActivities", b =>
@@ -767,7 +693,7 @@ namespace Do_An_Web_Hoc.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("UserActivities", (string)null);
+                    b.ToTable("UserActivities");
                 });
 
             modelBuilder.Entity("Do_An_Web_Hoc.Models.UserAnswers", b =>
@@ -780,12 +706,6 @@ namespace Do_An_Web_Hoc.Migrations
 
                     b.Property<int>("AnswerID")
                         .HasColumnType("int");
-
-                    b.Property<Guid>("AttemptId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
 
                     b.Property<int?>("QuestionID")
                         .HasColumnType("int");
@@ -801,7 +721,7 @@ namespace Do_An_Web_Hoc.Migrations
 
                     b.HasIndex("UserID");
 
-                    b.ToTable("UserAnswers", (string)null);
+                    b.ToTable("UserAnswers");
                 });
 
             modelBuilder.Entity("Do_An_Web_Hoc.Models.UserStatus", b =>
@@ -818,7 +738,7 @@ namespace Do_An_Web_Hoc.Migrations
 
                     b.HasKey("StatusId");
 
-                    b.ToTable("UserStatus", (string)null);
+                    b.ToTable("UserStatus");
                 });
 
             modelBuilder.Entity("Do_An_Web_Hoc.Models.Answers", b =>
@@ -834,25 +754,6 @@ namespace Do_An_Web_Hoc.Migrations
                     b.HasOne("Do_An_Web_Hoc.Models.CategoryStatus", null)
                         .WithMany()
                         .HasForeignKey("Status");
-                });
-
-            modelBuilder.Entity("Do_An_Web_Hoc.Models.ChatMessage", b =>
-                {
-                    b.HasOne("Do_An_Web_Hoc.Models.UserAccount", "Receiver")
-                        .WithMany("ReceivedMessages")
-                        .HasForeignKey("ReceiverId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("Do_An_Web_Hoc.Models.UserAccount", "Sender")
-                        .WithMany("SentMessages")
-                        .HasForeignKey("SenderId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Receiver");
-
-                    b.Navigation("Sender");
                 });
 
             modelBuilder.Entity("Do_An_Web_Hoc.Models.CourseContent", b =>
@@ -919,21 +820,6 @@ namespace Do_An_Web_Hoc.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Do_An_Web_Hoc.Models.LectureProgress", b =>
-                {
-                    b.HasOne("Do_An_Web_Hoc.Models.Lectures", null)
-                        .WithMany()
-                        .HasForeignKey("LectureID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Do_An_Web_Hoc.Models.UserAccount", null)
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("Do_An_Web_Hoc.Models.Lectures", b =>
                 {
                     b.HasOne("Do_An_Web_Hoc.Models.Courses", null)
@@ -954,7 +840,7 @@ namespace Do_An_Web_Hoc.Migrations
                     b.HasOne("Do_An_Web_Hoc.Models.UserAccount", "Lecturer")
                         .WithMany("CreatedMeetings")
                         .HasForeignKey("CreatedBy")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Course");
@@ -983,12 +869,6 @@ namespace Do_An_Web_Hoc.Migrations
                     b.HasOne("Do_An_Web_Hoc.Models.Exams", null)
                         .WithMany()
                         .HasForeignKey("ExamID");
-
-                    b.HasOne("Do_An_Web_Hoc.Models.Lectures", "Lecture")
-                        .WithOne("Quiz")
-                        .HasForeignKey("Do_An_Web_Hoc.Models.Quizzes", "LectureID");
-
-                    b.Navigation("Lecture");
                 });
 
             modelBuilder.Entity("Do_An_Web_Hoc.Models.Ratings", b =>
@@ -1075,20 +955,11 @@ namespace Do_An_Web_Hoc.Migrations
                     b.Navigation("LiveMeetings");
                 });
 
-            modelBuilder.Entity("Do_An_Web_Hoc.Models.Lectures", b =>
-                {
-                    b.Navigation("Quiz");
-                });
-
             modelBuilder.Entity("Do_An_Web_Hoc.Models.UserAccount", b =>
                 {
                     b.Navigation("CreatedMeetings");
 
                     b.Navigation("Enrollments");
-
-                    b.Navigation("ReceivedMessages");
-
-                    b.Navigation("SentMessages");
                 });
 #pragma warning restore 612, 618
         }

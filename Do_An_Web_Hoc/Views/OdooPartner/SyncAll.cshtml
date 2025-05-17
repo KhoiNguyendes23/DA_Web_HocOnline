@@ -1,0 +1,17 @@
+﻿@{
+    ViewBag.Title = "Đồng Bộ Dữ Liệu";
+}
+
+<h2>Đồng Bộ Dữ Liệu Từ ASP.NET Core Sang Odoo</h2>
+
+<form asp-action="SyncAllStudents" asp-controller="OdooPartner" method="post">
+    @Html.AntiForgeryToken()
+    <button type="submit">Đồng Bộ Tất Cả Học Viên</button>
+</form>
+
+<br />
+
+<form asp-action="SyncAllTeachers" asp-controller="OdooPartner" method="post">
+    @Html.AntiForgeryToken()
+    <button type="submit">Đồng Bộ Tất Cả Giảng Viên</button>
+</form>

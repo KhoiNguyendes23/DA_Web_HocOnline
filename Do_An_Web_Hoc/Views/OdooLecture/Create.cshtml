@@ -1,0 +1,18 @@
+﻿@{
+    ViewData["Title"] = "Tạo Bài Giảng";
+}
+
+<h2>Tạo Bài Giảng</h2>
+
+<form asp-action="Create" method="post">
+    <label>Tiêu đề:</label>
+    <input name="title" required class="form-control" />
+    <label>Nội dung:</label>
+    <textarea name="content" required class="form-control"></textarea>
+    <label>Link Video:</label>
+    <input name="videoUrl" required class="form-control" />
+    <label>ID Khóa Học:</label>
+    <input name="courseId" type="number" required class="form-control" />
+    <br />
+    <button type="submit" class="btn btn-primary">Tạo</button>
+</form>

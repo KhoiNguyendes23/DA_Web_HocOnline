@@ -28,6 +28,7 @@ namespace Do_An_Web_Hoc.Models
         public DbSet<UserActivities> UserActivities { get; set; }
         public DbSet<UserAnswers> UserAnswers { get; set; }
         public DbSet<UserStatus> UserStatus { get; set; }
+        public DbSet<LiveMeeting> LiveMeetings { get; set; }
         public DbSet<ChatMessage> ChatMessages { get; set; }
         public DbSet<LectureProgress> LectureProgresses { get; set; }
 
@@ -253,6 +254,14 @@ namespace Do_An_Web_Hoc.Models
                 .WithMany()
                 .HasForeignKey(lp => lp.LectureID)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            // LiveMeeting - UserAccount (1-N)
+            modelBuilder.Entity<LiveMeeting>()
+                .HasOne<UserAccount>()
+                .WithMany()
+                .HasForeignKey(lm => lm.CreatedBy)
+                .OnDelete(DeleteBehavior.Cascade);
+
         }
     }
 }

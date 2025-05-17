@@ -28,6 +28,8 @@ namespace Do_An_Web_Hoc.Repositories.Interfaces
         Task<decimal> GetRevenueByMonthAsync(int month, int year);
         Task<List<TopCourseViewModel>> GetTopCoursesAsync(int topN);
         Task<List<RecentUserViewModel>> GetRecentUsersAsync(int topN);
+        // 🔥 BỔ SUNG:
+        Task<IEnumerable<Enrollments>> GetAllEnrollmentsAsync(); // DÙNG ĐỂ ĐỒNG BỘ VỚI ODOO
 
     }
 }
