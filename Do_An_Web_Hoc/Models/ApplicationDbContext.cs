@@ -229,6 +229,39 @@ namespace Do_An_Web_Hoc.Models
                 .OnDelete(DeleteBehavior.Cascade);
 
             base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<ChatMessage>()
+                .HasOne(m => m.Sender)
+                .WithMany(u => u.SentMessages)
+                .HasForeignKey(m => m.SenderId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<ChatMessage>()
+                .HasOne(m => m.Receiver)
+                .WithMany(u => u.ReceivedMessages)
+                .HasForeignKey(m => m.ReceiverId)
+                .OnDelete(DeleteBehavior.Restrict);
+            // LectureProgress - UserAccount (1-N)
+            modelBuilder.Entity<LectureProgress>()
+                .HasOne<UserAccount>()
+                .WithMany()
+                .HasForeignKey(lp => lp.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // LectureProgress - Lectures (1-N)
+            modelBuilder.Entity<LectureProgress>()
+                .HasOne<Lectures>()
+                .WithMany()
+                .HasForeignKey(lp => lp.LectureID)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // LiveMeeting - UserAccount (1-N)
+            modelBuilder.Entity<LiveMeeting>()
+                .HasOne<UserAccount>()
+                .WithMany()
+                .HasForeignKey(lm => lm.CreatedBy)
+                .OnDelete(DeleteBehavior.Cascade);
+
         }
     }
 }

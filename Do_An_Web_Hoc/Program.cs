@@ -77,7 +77,8 @@ builder.Services.AddScoped<IEnrollmentsRepository, EFEnrollmentsRepository>();
 builder.Services.AddScoped<IAnswersRepository, EFAnswersRepository>();
 builder.Services.AddScoped<IUserAnswersRepository, EFUserAnswersRepository>();
 builder.Services.AddScoped<IRolesRepository, EFRolesRepository>();
-
+builder.Services.AddScoped<IChatRepository, EFChatRepository>();
+builder.Services.AddScoped<IOdooPartnerService, OdooPartnerService>();
 
 // 💡 **Cấu hình MVC & View Localization**
 builder.Services.AddControllersWithViews()
