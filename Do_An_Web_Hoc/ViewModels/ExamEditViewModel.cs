@@ -23,5 +23,6 @@ namespace Do_An_Web_Hoc.ViewModels
         public DateTime? EndTime { get; set; }
 
         public List<QuizViewModel> Quizzes { get; set; } = new();
+        public int? LectureID { get; set; }
     }
 }

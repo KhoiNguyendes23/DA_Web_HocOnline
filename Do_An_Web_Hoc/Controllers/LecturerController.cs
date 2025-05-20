@@ -257,6 +257,7 @@ namespace Do_An_Web_Hoc.Controllers
         {
             SetLecturerViewData();
 
+            // Gán danh sách khóa học cho dropdown
             ViewBag.CourseList = _context.Courses
                 .Select(c => new SelectListItem
                 {
@@ -264,8 +265,18 @@ namespace Do_An_Web_Hoc.Controllers
                     Text = c.CourseName
                 }).ToList();
 
+            // Gán danh sách bài giảng cho dropdown
+            ViewBag.Lectures = _context.Lectures
+                .Where(l => l.Status == 1)
+                .Select(l => new SelectListItem
+                {
+                    Value = l.LectureID.ToString(),    // Hoặc l.ID tùy theo tên trường của bạn
+                    Text = l.Title
+                }).ToList();
+
             return View(new ExamEditViewModel());
         }
+
 
 
         [HttpPost]
@@ -304,7 +315,8 @@ namespace Do_An_Web_Hoc.Controllers
                     QuizName = quizVM.QuizName,
                     Description = quizVM.Description,
                     ExamID = exam.ExamID,
-                    TotalMarks = quizVM.TotalMarks
+                    TotalMarks = quizVM.TotalMarks,
+                    LectureID = quizVM.LectureID
                 };
                 _context.Quizzes.Add(quiz);
                 await _context.SaveChangesAsync();
@@ -403,6 +415,7 @@ namespace Do_An_Web_Hoc.Controllers
                     QuizName = quiz.QuizName,
                     Description = quiz.Description,
                     TotalMarks = quiz.TotalMarks,
+                    LectureID = quiz.LectureID,
                     Questions = new List<QuestionViewModel>()
                 };
 
@@ -448,6 +461,10 @@ namespace Do_An_Web_Hoc.Controllers
 
                 model.Quizzes.Add(quizVM);
             }
+            ViewBag.Lectures = _context.Lectures
+                .Where(l => l.Status == 1)
+                .Select(l => new { l.LectureID, l.Title })
+                .ToList();
 
             return View(model);
         }
@@ -502,7 +519,8 @@ namespace Do_An_Web_Hoc.Controllers
                     ExamID = exam.ExamID,
                     QuizName = quizVM.QuizName,
                     Description = quizVM.Description,
-                    TotalMarks = quizVM.TotalMarks
+                    TotalMarks = quizVM.TotalMarks,
+                    LectureID = quizVM.LectureID
                 };
 
                 _context.Quizzes.Add(quiz);

@@ -8,7 +8,7 @@ namespace Do_An_Web_Hoc.ViewModels
         public string QuizName { get; set; }
         public string? Description { get; set; }
         public int? TotalMarks { get; set; }
-
+        public int? LectureID { get; set; }
         public List<QuestionViewModel> Questions { get; set; } = new();
     }
 }

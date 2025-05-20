@@ -88,6 +88,16 @@
             <div class="accordion" id="quizAccordion"></div>
         </div>
 
+        <div class="mb-3">
+            <label class="form-label">Bài giảng liên kết</label>
+            <select name="Quizzes[${index}].LectureID" class="form-select">
+                <option value="">-- Chọn bài giảng --</option>
+                ${lectureOptionsHtml}
+            </select>
+        </div>
+
+
+
         <div class="text-center mt-4">
             <button type="submit" class="btn btn-primary btn-lg">
                 <i class="fas fa-save"></i> Lưu thay đổi
@@ -101,6 +111,9 @@
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+    <script>
+        window.availableLectures = @Html.Raw(Json.Serialize(ViewBag.Lectures));
+    </script>
     <script id="quiz-data-json" type="application/json">
         @Html.Raw(Json.Serialize(Model.Quizzes))
     </script>

@@ -8,7 +8,12 @@ window.onload = () => {
         });
     }
 };
-
+function renderLectureOptions(selectedId) {
+    const lectures = window.availableLectures || [];
+    return lectures.map(l =>
+        `<option value="${l.value}" ${selectedId == l.value ? "selected" : ""}>${l.text}</option>`
+    ).join('');
+}
 function addQuiz(quizData = null, index = quizIndex) {
     const quizId = `quiz-${index}`;
     const html = `
