@@ -55,7 +55,7 @@ namespace Do_An_Web_Hoc.Repositories
             existingCourse.CategoryID = course.CategoryID;
             existingCourse.Status = course.Status;
             existingCourse.ImageUrl = course.ImageUrl; // Nếu có thay đổi hình ảnh
-
+            existingCourse.Type = course.Type;
             // Nếu có thay đổi, thực hiện lưu lại
             await _context.SaveChangesAsync();
             return true;

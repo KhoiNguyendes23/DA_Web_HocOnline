@@ -57,8 +57,30 @@
                         <img src="@course.ImageUrl" class="card-img-top" alt="Ảnh khóa học" style="height:200px; object-fit:cover;" />
                         <div class="card-body">
                             <h5 class="card-title">@course.CourseName</h5>
-                            <p class="card-text">@course.Description</p>
+
+                            @if (course.Type == Do_An_Web_Hoc.Models.CourseType.Video)
+                            {
+                                <span class="badge bg-primary mb-2">Video</span>
+                            }
+                            else if (course.Type == Do_An_Web_Hoc.Models.CourseType.Live)
+                            {
+                                <div class="d-flex align-items-center justify-content-between mb-2">
+                                    <span class="badge bg-success">Trực tuyến</span>
+                                    <a href="@Url.Action("JoinBBB", "User", new { courseId = course.CourseID })"
+                                       class="btn btn-sm btn-outline-primary ms-2">
+                                        <i class="fas fa-video"></i> Tham gia BBB
+                                    </a>
+                                </div>
+                            }
+                            else
+                            {
+                                <span class="badge bg-secondary mb-2">Chưa phân loại</span>
+                            }
+
+                            <p class="card-text mt-2">@course.Description</p>
                         </div>
+
+
                         <div class="card-footer bg-transparent text-end border-0">
                             @if (enrolledCourseIds.Contains(course.CourseID))
                             {

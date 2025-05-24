@@ -27,6 +27,7 @@ namespace Do_An_Web_Hoc.Controllers
         private readonly IUserAnswersRepository _userAnswersRepository;
         private readonly IResultsRepository _resultsRepository;
         private readonly IUserAccountRepository _userAccountRepository;
+        private readonly IBBBService _bbbService;
         private readonly ApplicationDbContext _context;
 
         public UserController(ICoursesRepository coursesRepo, 
@@ -39,6 +40,7 @@ namespace Do_An_Web_Hoc.Controllers
             IUserAnswersRepository userAnswersRepository, 
             IResultsRepository resultsRepository, 
             IUserAccountRepository userAccountRepository,
+            IBBBService bbbService,
             ApplicationDbContext context)
         {
             _coursesRepo = coursesRepo;
@@ -51,6 +53,7 @@ namespace Do_An_Web_Hoc.Controllers
             _userAnswersRepository = userAnswersRepository;
             _resultsRepository = resultsRepository;
             _userAccountRepository = userAccountRepository;
+            _bbbService = bbbService;
             _context = context;
         }
         private void SetUserViewData()
@@ -675,6 +678,13 @@ namespace Do_An_Web_Hoc.Controllers
                 // Nếu là khóa trả phí => chuyển hướng đến trang thanh toán
                 return RedirectToAction("Payment", new { courseId = courseId });
             }
+        }
+        public async Task<IActionResult> JoinBBB(int courseId)
+        {
+            string fullName = User.Identity.Name ?? "Khách";
+            string url = await _bbbService.GenerateJoinUrlAsync(courseId, fullName);
+
+            return Redirect(url);
         }
     }
 }

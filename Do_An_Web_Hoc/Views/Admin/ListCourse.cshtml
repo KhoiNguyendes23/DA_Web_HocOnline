@@ -29,6 +29,7 @@
                 <th>Tên khóa học</th>
                 <th>Giá</th>
                 <th>Trạng thái</th>
+                <th>Loại khóa học</th>  <!-- Cột mới -->
                 <th>Hành động</th>
             </tr>
         </thead>
@@ -50,6 +51,22 @@
                         }
                     </td>
                     <td>
+                        @{
+                            if (course.Type == null)
+                            {
+                                <span class="badge bg-secondary">Chưa phân loại</span>
+                            }
+                            else if (course.Type == Do_An_Web_Hoc.Models.CourseType.Video)
+                            {
+                                <span class="badge bg-primary">Video</span>
+                            }
+                            else if (course.Type == Do_An_Web_Hoc.Models.CourseType.Live)
+                            {
+                                <span class="badge bg-success">Trực tuyến</span>
+                            }
+                        }
+                    </td>
+                    <td>
                         <a href="@Url.Action("ViewCourse", "Admin", new { id = course.CourseID })" class="btn btn-sm btn-info">
                             <i class="fas fa-eye"></i> Xem
                         </a>
@@ -64,6 +81,7 @@
             }
         </tbody>
     </table>
+
 </div>
 
 @section Scripts {

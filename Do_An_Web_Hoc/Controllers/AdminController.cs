@@ -103,25 +103,31 @@ namespace Do_An_Web_Hoc.Controllers
             var courses = await _coursesRepo.GetAllCoursesAsync();
             return View(courses);
         }
-        [HttpGet]
-        public async Task<IActionResult> AddCourse()
-        {
-            var categories = await _catogoriesRepository.GetAllCategoriesAsync();
-
-            ViewBag.Categories = categories.Select(c => new SelectListItem
+            [HttpGet]
+            public async Task<IActionResult> AddCourse()
             {
-                Value = c.CategoryId.ToString(),
-                Text = c.CategoryName
-            }).ToList();
+                var categories = await _catogoriesRepository.GetAllCategoriesAsync();
+                ViewBag.Categories = categories.Select(c => new SelectListItem
+                {
+                    Value = c.CategoryId.ToString(),
+                    Text = c.CategoryName
+                }).ToList();
 
-            ViewBag.StatusOptions = new List<SelectListItem>
-         {
+                ViewBag.StatusOptions = new List<SelectListItem>
+        {
             new SelectListItem { Value = "1", Text = "Hoạt động" },
             new SelectListItem { Value = "0", Text = "Không hoạt động" }
-         };
+        };
 
-            return View();
-        }
+                ViewBag.CourseTypeOptions = new List<SelectListItem>
+        {
+            new SelectListItem { Value = "1", Text = "Video" },
+            new SelectListItem { Value = "2", Text = "Trực tuyến" }
+        };
+
+                return View();
+            }
+
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -140,6 +146,12 @@ namespace Do_An_Web_Hoc.Controllers
         {
             new SelectListItem { Value = "1", Text = "Hoạt động" },
             new SelectListItem { Value = "0", Text = "Không hoạt động" }
+        };
+
+                ViewBag.CourseTypeOptions = new List<SelectListItem>
+        {
+            new SelectListItem { Value = "1", Text = "Video" },
+            new SelectListItem { Value = "2", Text = "Trực tuyến" }
         };
 
                 return View(course);
@@ -163,9 +175,12 @@ namespace Do_An_Web_Hoc.Controllers
                 }
             }
 
+            // course.Type đã được bind tự động nếu tên trường đúng với model Courses.Type (CourseType?)
+
             await _coursesRepo.AddCourseAsync(course);
             return RedirectToAction("ListCourse");
         }
+
 
         // thêm danh mục
         [HttpPost]
@@ -529,6 +544,11 @@ namespace Do_An_Web_Hoc.Controllers
         new SelectListItem { Value = "1", Text = "Hoạt động" },
         new SelectListItem { Value = "2", Text = "Ngừng hoạt động" }
     };
+            ViewBag.CourseTypeOptions = new List<SelectListItem>
+{
+    new SelectListItem { Value = "1", Text = "Video" },
+    new SelectListItem { Value = "2", Text = "Trực tuyến" }
+};
 
             return View(course);
         }
@@ -538,7 +558,7 @@ namespace Do_An_Web_Hoc.Controllers
         {
             if (!ModelState.IsValid)
             {
-                await LoadCategoriesAndStatusAsync();
+                await LoadCategoriesStatusAndTypeAsync();
                 return View(updatedCourse);
             }
 
@@ -548,7 +568,7 @@ namespace Do_An_Web_Hoc.Controllers
             if (updatedCourse.CategoryID == null)
             {
                 ModelState.AddModelError("", "Danh mục không hợp lệ.");
-                await LoadCategoriesAndStatusAsync();
+                await LoadCategoriesStatusAndTypeAsync();
                 return View(updatedCourse);
             }
 
@@ -556,13 +576,17 @@ namespace Do_An_Web_Hoc.Controllers
             if (category == null || category.Status == 2)
             {
                 ModelState.AddModelError("", "Không thể cập nhật vì danh mục đã ngưng hoạt động.");
-                await LoadCategoriesAndStatusAsync();
+                await LoadCategoriesStatusAndTypeAsync();
                 return View(updatedCourse);
             }
+
+            // ✅ Cập nhật thông tin
             course.CourseName = updatedCourse.CourseName;
             course.Description = updatedCourse.Description;
             course.Price = updatedCourse.Price;
             course.CategoryID = updatedCourse.CategoryID;
+            course.Type = updatedCourse.Type; // ✅ Cập nhật loại khóa học (Video / Trực tuyến)
+
             if (updatedCourse.Status == 2)
             {
                 course.Status = 2;
@@ -577,33 +601,57 @@ namespace Do_An_Web_Hoc.Controllers
                 foreach (var lecture in lectures) lecture.Status = 1;
                 await _lecturesRepository.SaveChangesAsync();
             }
+
+            // ✅ Xử lý ảnh
             if (image != null && image.Length > 0)
             {
                 var result = await UpdateCourseImageAsync(course, image);
                 if (!result)
                 {
                     ModelState.AddModelError("Image", "Lỗi khi tải ảnh.");
-                    await LoadCategoriesAndStatusAsync();
+                    await LoadCategoriesStatusAndTypeAsync();
                     return View(updatedCourse);
                 }
             }
+
             if (string.IsNullOrEmpty(course.ImageUrl))
             {
                 course.ImageUrl = "/images/default-course.png";
             }
 
-            // ✅ Lưu cập nhật
             var success = await _coursesRepo.UpdateCourseAsync(course);
             if (!success)
             {
                 ModelState.AddModelError("", "Không thể cập nhật khóa học.");
-                await LoadCategoriesAndStatusAsync();
+                await LoadCategoriesStatusAndTypeAsync();
                 return View(updatedCourse);
             }
 
             TempData["SuccessMessage"] = "Cập nhật khóa học thành công.";
             return RedirectToAction("ListCourse");
         }
+        private async Task LoadCategoriesStatusAndTypeAsync()
+        {
+            var categories = await _catogoriesRepository.GetAllCategoriesAsync();
+            ViewBag.Categories = categories.Select(c => new SelectListItem
+            {
+                Value = c.CategoryId.ToString(),
+                Text = c.CategoryName
+            }).ToList();
+
+            ViewBag.StatusOptions = new List<SelectListItem>
+    {
+        new SelectListItem { Value = "1", Text = "Hoạt động" },
+        new SelectListItem { Value = "2", Text = "Ngừng hoạt động" }
+    };
+
+            ViewBag.CourseTypeOptions = new List<SelectListItem>
+    {
+        new SelectListItem { Value = "1", Text = "Video" },
+        new SelectListItem { Value = "2", Text = "Trực tuyến" }
+    };
+        }
+
 
 
 

@@ -39,6 +39,14 @@
                     <option value="">-- Chọn trạng thái --</option>
                 </select>
             </div>
+            <div class="col-md-6">
+                <label asp-for="Type" class="form-label">Loại khóa học</label>
+                <select asp-for="Type" class="form-select" asp-items="@(new SelectList(ViewBag.CourseTypeOptions, "Value", "Text"))">
+                    <option value="">-- Chọn loại khóa học --</option>
+                </select>
+                <span asp-validation-for="Type" class="text-danger small"></span>
+            </div>
+
 
             <div class="col-md-12">
                 <label class="form-label">Ảnh khóa học</label>
