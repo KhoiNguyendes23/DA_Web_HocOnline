@@ -14,9 +14,9 @@ namespace Do_An_Web_Hoc.Migrations
                 name: "FK_ChatMessages_UserAccounts_ReceiverId",
                 table: "ChatMessages");
 
-            migrationBuilder.DropForeignKey(
-                name: "FK_ChatMessages_UserAccounts_SenderId",
-                table: "ChatMessages");
+            //migrationBuilder.DropForeignKey(
+            //    name: "FK_ChatMessages_UserAccounts_SenderId",
+            //    table: "ChatMessages");
 
             migrationBuilder.CreateIndex(
                 name: "IX_LectureProgresses_LectureID",
@@ -68,9 +68,9 @@ namespace Do_An_Web_Hoc.Migrations
                 name: "FK_ChatMessages_UserAccounts_ReceiverId",
                 table: "ChatMessages");
 
-            migrationBuilder.DropForeignKey(
-                name: "FK_ChatMessages_UserAccounts_SenderId",
-                table: "ChatMessages");
+            //migrationBuilder.DropForeignKey(
+            //    name: "FK_ChatMessages_UserAccounts_SenderId",
+            //    table: "ChatMessages");
 
             migrationBuilder.DropForeignKey(
                 name: "FK_LectureProgresses_Lectures_LectureID",

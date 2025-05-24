@@ -44,7 +44,7 @@ namespace Do_An_Web_Hoc.Migrations
 
                     b.HasIndex("QuestionID");
 
-                    b.ToTable("Answers", (string)null);
+                    b.ToTable("Answers");
                 });
 
             modelBuilder.Entity("Do_An_Web_Hoc.Models.Categories", b =>
@@ -66,7 +66,7 @@ namespace Do_An_Web_Hoc.Migrations
 
                     b.HasIndex("Status");
 
-                    b.ToTable("Categories", (string)null);
+                    b.ToTable("Categories");
                 });
 
             modelBuilder.Entity("Do_An_Web_Hoc.Models.CategoryStatus", b =>
@@ -83,7 +83,7 @@ namespace Do_An_Web_Hoc.Migrations
 
                     b.HasKey("StatusId");
 
-                    b.ToTable("CategoryStatus", (string)null);
+                    b.ToTable("CategoryStatus");
                 });
 
             modelBuilder.Entity("Do_An_Web_Hoc.Models.ChatMessage", b =>
@@ -118,7 +118,7 @@ namespace Do_An_Web_Hoc.Migrations
 
                     b.HasIndex("SenderId");
 
-                    b.ToTable("ChatMessages", (string)null);
+                    b.ToTable("ChatMessages");
                 });
 
             modelBuilder.Entity("Do_An_Web_Hoc.Models.Contacts", b =>
@@ -146,7 +146,7 @@ namespace Do_An_Web_Hoc.Migrations
 
                     b.HasKey("ContactId");
 
-                    b.ToTable("Contacts", (string)null);
+                    b.ToTable("Contacts");
                 });
 
             modelBuilder.Entity("Do_An_Web_Hoc.Models.CourseContent", b =>
@@ -163,7 +163,7 @@ namespace Do_An_Web_Hoc.Migrations
 
                     b.HasKey("ContentId");
 
-                    b.ToTable("CourseContent", (string)null);
+                    b.ToTable("CourseContent");
                 });
 
             modelBuilder.Entity("Do_An_Web_Hoc.Models.CourseStatus", b =>
@@ -180,7 +180,7 @@ namespace Do_An_Web_Hoc.Migrations
 
                     b.HasKey("StatusID");
 
-                    b.ToTable("CourseStatus", (string)null);
+                    b.ToTable("CourseStatus");
                 });
 
             modelBuilder.Entity("Do_An_Web_Hoc.Models.Courses", b =>
@@ -211,13 +211,16 @@ namespace Do_An_Web_Hoc.Migrations
                     b.Property<int?>("Status")
                         .HasColumnType("int");
 
+                    b.Property<int?>("Type")
+                        .HasColumnType("int");
+
                     b.HasKey("CourseID");
 
                     b.HasIndex("CategoryID");
 
                     b.HasIndex("Status");
 
-                    b.ToTable("Courses", (string)null);
+                    b.ToTable("Courses");
                 });
 
             modelBuilder.Entity("Do_An_Web_Hoc.Models.Documents", b =>
@@ -259,7 +262,7 @@ namespace Do_An_Web_Hoc.Migrations
 
                     b.HasIndex("UploadedBy");
 
-                    b.ToTable("Documents", (string)null);
+                    b.ToTable("Documents");
                 });
 
             modelBuilder.Entity("Do_An_Web_Hoc.Models.Enrollments", b =>
@@ -297,7 +300,7 @@ namespace Do_An_Web_Hoc.Migrations
 
                     b.HasIndex("UserID");
 
-                    b.ToTable("Enrollments", (string)null);
+                    b.ToTable("Enrollments");
                 });
 
             modelBuilder.Entity("Do_An_Web_Hoc.Models.Exams", b =>
@@ -341,7 +344,7 @@ namespace Do_An_Web_Hoc.Migrations
 
                     b.HasIndex("CourseID");
 
-                    b.ToTable("Exams", (string)null);
+                    b.ToTable("Exams");
                 });
 
             modelBuilder.Entity("Do_An_Web_Hoc.Models.LectureProgress", b =>
@@ -373,7 +376,7 @@ namespace Do_An_Web_Hoc.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("LectureProgresses", (string)null);
+                    b.ToTable("LectureProgresses");
                 });
 
             modelBuilder.Entity("Do_An_Web_Hoc.Models.Lectures", b =>
@@ -416,7 +419,7 @@ namespace Do_An_Web_Hoc.Migrations
 
                     b.HasIndex("CourseID");
 
-                    b.ToTable("Lectures", (string)null);
+                    b.ToTable("Lectures");
                 });
 
             modelBuilder.Entity("Do_An_Web_Hoc.Models.LiveMeeting", b =>
@@ -450,6 +453,9 @@ namespace Do_An_Web_Hoc.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("LecturerUserID")
+                        .HasColumnType("int");
+
                     b.Property<string>("MeetingCode")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -479,7 +485,9 @@ namespace Do_An_Web_Hoc.Migrations
 
                     b.HasIndex("CreatedBy");
 
-                    b.ToTable("LiveMeetings", (string)null);
+                    b.HasIndex("LecturerUserID");
+
+                    b.ToTable("LiveMeetings");
                 });
 
             modelBuilder.Entity("Do_An_Web_Hoc.Models.Payments", b =>
@@ -512,7 +520,7 @@ namespace Do_An_Web_Hoc.Migrations
 
                     b.HasIndex("UserID");
 
-                    b.ToTable("Payments", (string)null);
+                    b.ToTable("Payments");
                 });
 
             modelBuilder.Entity("Do_An_Web_Hoc.Models.Questions", b =>
@@ -541,7 +549,7 @@ namespace Do_An_Web_Hoc.Migrations
 
                     b.HasIndex("QuizID");
 
-                    b.ToTable("Questions", (string)null);
+                    b.ToTable("Questions");
                 });
 
             modelBuilder.Entity("Do_An_Web_Hoc.Models.Quizzes", b =>
@@ -580,7 +588,7 @@ namespace Do_An_Web_Hoc.Migrations
                         .IsUnique()
                         .HasFilter("[LectureID] IS NOT NULL");
 
-                    b.ToTable("Quizzes", (string)null);
+                    b.ToTable("Quizzes");
                 });
 
             modelBuilder.Entity("Do_An_Web_Hoc.Models.Ratings", b =>
@@ -606,7 +614,7 @@ namespace Do_An_Web_Hoc.Migrations
 
                     b.HasIndex("UserID");
 
-                    b.ToTable("Ratings", (string)null);
+                    b.ToTable("Ratings");
                 });
 
             modelBuilder.Entity("Do_An_Web_Hoc.Models.Results", b =>
@@ -635,7 +643,7 @@ namespace Do_An_Web_Hoc.Migrations
 
                     b.HasIndex("UserID");
 
-                    b.ToTable("Results", (string)null);
+                    b.ToTable("Results");
                 });
 
             modelBuilder.Entity("Do_An_Web_Hoc.Models.Reviews", b =>
@@ -665,7 +673,7 @@ namespace Do_An_Web_Hoc.Migrations
 
                     b.HasIndex("UserID");
 
-                    b.ToTable("Reviews", (string)null);
+                    b.ToTable("Reviews");
                 });
 
             modelBuilder.Entity("Do_An_Web_Hoc.Models.Roles", b =>
@@ -682,7 +690,7 @@ namespace Do_An_Web_Hoc.Migrations
 
                     b.HasKey("RoleId");
 
-                    b.ToTable("Roles", (string)null);
+                    b.ToTable("Roles");
                 });
 
             modelBuilder.Entity("Do_An_Web_Hoc.Models.UserAccount", b =>
@@ -742,7 +750,7 @@ namespace Do_An_Web_Hoc.Migrations
 
                     b.HasIndex("Status");
 
-                    b.ToTable("UserAccounts", (string)null);
+                    b.ToTable("UserAccounts");
                 });
 
             modelBuilder.Entity("Do_An_Web_Hoc.Models.UserActivities", b =>
@@ -767,7 +775,7 @@ namespace Do_An_Web_Hoc.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("UserActivities", (string)null);
+                    b.ToTable("UserActivities");
                 });
 
             modelBuilder.Entity("Do_An_Web_Hoc.Models.UserAnswers", b =>
@@ -801,7 +809,7 @@ namespace Do_An_Web_Hoc.Migrations
 
                     b.HasIndex("UserID");
 
-                    b.ToTable("UserAnswers", (string)null);
+                    b.ToTable("UserAnswers");
                 });
 
             modelBuilder.Entity("Do_An_Web_Hoc.Models.UserStatus", b =>
@@ -818,7 +826,7 @@ namespace Do_An_Web_Hoc.Migrations
 
                     b.HasKey("StatusId");
 
-                    b.ToTable("UserStatus", (string)null);
+                    b.ToTable("UserStatus");
                 });
 
             modelBuilder.Entity("Do_An_Web_Hoc.Models.Answers", b =>
@@ -951,9 +959,15 @@ namespace Do_An_Web_Hoc.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("Do_An_Web_Hoc.Models.UserAccount", null)
+                        .WithMany()
+                        .HasForeignKey("CreatedBy")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("Do_An_Web_Hoc.Models.UserAccount", "Lecturer")
                         .WithMany("CreatedMeetings")
-                        .HasForeignKey("CreatedBy")
+                        .HasForeignKey("LecturerUserID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

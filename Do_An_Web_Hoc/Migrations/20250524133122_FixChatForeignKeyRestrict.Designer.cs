@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Do_An_Web_Hoc.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250517034417_Odoo")]
-    partial class Odoo
+    [Migration("20250524133122_FixChatForeignKeyRestrict")]
+    partial class FixChatForeignKeyRestrict
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -372,6 +372,10 @@ namespace Do_An_Web_Hoc.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("LectureID");
+
+                    b.HasIndex("UserId");
+
                     b.ToTable("LectureProgresses");
                 });
 
@@ -449,6 +453,9 @@ namespace Do_An_Web_Hoc.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("LecturerUserID")
+                        .HasColumnType("int");
+
                     b.Property<string>("MeetingCode")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -477,6 +484,8 @@ namespace Do_An_Web_Hoc.Migrations
                     b.HasIndex("CourseId");
 
                     b.HasIndex("CreatedBy");
+
+                    b.HasIndex("LecturerUserID");
 
                     b.ToTable("LiveMeetings");
                 });
@@ -840,13 +849,13 @@ namespace Do_An_Web_Hoc.Migrations
                     b.HasOne("Do_An_Web_Hoc.Models.UserAccount", "Receiver")
                         .WithMany("ReceivedMessages")
                         .HasForeignKey("ReceiverId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("Do_An_Web_Hoc.Models.UserAccount", "Sender")
                         .WithMany("SentMessages")
                         .HasForeignKey("SenderId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Receiver");
@@ -918,6 +927,21 @@ namespace Do_An_Web_Hoc.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("Do_An_Web_Hoc.Models.LectureProgress", b =>
+                {
+                    b.HasOne("Do_An_Web_Hoc.Models.Lectures", null)
+                        .WithMany()
+                        .HasForeignKey("LectureID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Do_An_Web_Hoc.Models.UserAccount", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("Do_An_Web_Hoc.Models.Lectures", b =>
                 {
                     b.HasOne("Do_An_Web_Hoc.Models.Courses", null)
@@ -935,9 +959,15 @@ namespace Do_An_Web_Hoc.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("Do_An_Web_Hoc.Models.UserAccount", null)
+                        .WithMany()
+                        .HasForeignKey("CreatedBy")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("Do_An_Web_Hoc.Models.UserAccount", "Lecturer")
                         .WithMany("CreatedMeetings")
-                        .HasForeignKey("CreatedBy")
+                        .HasForeignKey("LecturerUserID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

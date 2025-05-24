@@ -234,13 +234,13 @@ namespace Do_An_Web_Hoc.Models
                 .HasOne(m => m.Sender)
                 .WithMany(u => u.SentMessages)
                 .HasForeignKey(m => m.SenderId)
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.Restrict);  // KHÔNG dùng Cascade
 
             modelBuilder.Entity<ChatMessage>()
                 .HasOne(m => m.Receiver)
                 .WithMany(u => u.ReceivedMessages)
                 .HasForeignKey(m => m.ReceiverId)
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.Restrict);  // KHÔNG dùng Cascade
             // LectureProgress - UserAccount (1-N)
             modelBuilder.Entity<LectureProgress>()
                 .HasOne<UserAccount>()
@@ -261,6 +261,15 @@ namespace Do_An_Web_Hoc.Models
                 .WithMany()
                 .HasForeignKey(lm => lm.CreatedBy)
                 .OnDelete(DeleteBehavior.Cascade);
+
+
+            modelBuilder.Entity<Courses>()
+             .Property(c => c.Price)
+             .HasColumnType("decimal(18,2)");
+
+            modelBuilder.Entity<Payments>()
+                .Property(p => p.Amount)
+                .HasColumnType("decimal(18,2)");
 
         }
     }

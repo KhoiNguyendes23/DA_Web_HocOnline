@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Do_An_Web_Hoc.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250517041028_FixChatMessageCascadePath")]
-    partial class FixChatMessageCascadePath
+    [Migration("20250524190042_AddCourseTypeNullable")]
+    partial class AddCourseTypeNullable
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -212,6 +212,9 @@ namespace Do_An_Web_Hoc.Migrations
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<int?>("Status")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("Type")
                         .HasColumnType("int");
 
                     b.HasKey("CourseID");
@@ -453,6 +456,9 @@ namespace Do_An_Web_Hoc.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("LecturerUserID")
+                        .HasColumnType("int");
+
                     b.Property<string>("MeetingCode")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -481,6 +487,8 @@ namespace Do_An_Web_Hoc.Migrations
                     b.HasIndex("CourseId");
 
                     b.HasIndex("CreatedBy");
+
+                    b.HasIndex("LecturerUserID");
 
                     b.ToTable("LiveMeetings");
                 });
@@ -954,9 +962,15 @@ namespace Do_An_Web_Hoc.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("Do_An_Web_Hoc.Models.UserAccount", null)
+                        .WithMany()
+                        .HasForeignKey("CreatedBy")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("Do_An_Web_Hoc.Models.UserAccount", "Lecturer")
                         .WithMany("CreatedMeetings")
-                        .HasForeignKey("CreatedBy")
+                        .HasForeignKey("LecturerUserID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
