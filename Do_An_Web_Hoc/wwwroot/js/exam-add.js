@@ -1,6 +1,13 @@
 ﻿let quizIndex = 0;
+let lectureOptionsHtml = '';
 
 window.onload = () => {
+    const templateSelect = document.getElementById("lectureOptionsTemplate");
+    lectureOptionsHtml = Array.from(templateSelect.content.children)
+        .map(opt => opt.outerHTML)
+        .join('');
+
+
     const modelData = JSON.parse(document.getElementById("quiz-data-json")?.textContent || "null");
     if (Array.isArray(modelData)) {
         modelData.forEach((quiz, i) => {
@@ -8,6 +15,7 @@ window.onload = () => {
         });
     }
 };
+
 
 function addQuiz(quizData = null, index = quizIndex) {
     const quizHtml = `
@@ -28,6 +36,13 @@ function addQuiz(quizData = null, index = quizIndex) {
                 <div class="mb-3">
                     <label class="form-label">Tổng điểm Quiz</label>
                     <input name="Quizzes[${index}].TotalMarks" class="form-control quiz-points" type="number" value="${quizData?.totalMarks || 0}" />
+                </div>
+                <div class="mb-3">
+                <label class="form-label">Bài giảng liên kết</label>
+                <select name="Quizzes[${index}].LectureID" class="form-select">
+                    <option value="">-- Chọn bài giảng --</option>
+                    ${lectureOptionsHtml}
+                </select>
                 </div>
                 <div class="question-list"></div>
                 <button type="button" class="btn btn-outline-primary mt-2" onclick="addQuestion(this, ${index})">Thêm câu hỏi</button>

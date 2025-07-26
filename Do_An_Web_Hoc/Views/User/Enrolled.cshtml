@@ -31,12 +31,31 @@
                         <img src="@course.ImageUrl" class="card-img-top" style="height:200px; object-fit:cover;" />
                         <div class="card-body">
                             <h5 class="card-title">@course.CourseName</h5>
-                            <p class="card-text">@course.Description</p>
+
+                            @if (course.Type == Do_An_Web_Hoc.Models.CourseType.Video)
+                            {
+                                <span class="badge bg-primary mb-2">Video</span>
+                            }
+                            else if (course.Type == Do_An_Web_Hoc.Models.CourseType.Live)
+                            {
+                                <span class="badge bg-success mb-2">Trực tuyến</span>
+                            }
+
+                            <p class="card-text mt-2">@course.Description</p>
                         </div>
-                        <div class="card-footer bg-transparent border-0 text-end">
-                            <a asp-action="LearnCourse" asp-route-id="@course.CourseID" class="custom-btn primary">
-                                <i class="fas fa-play-circle"></i> HỌC NGAY
-                            </a>
+                        <div class="card-footer bg-transparent border-0 text-center">
+                            @if (course.Type == Do_An_Web_Hoc.Models.CourseType.Live)
+                            {
+                                <a asp-action="JoinBBB" asp-route-courseId="@course.CourseID" class="custom-btn success">
+                                    <i class="fas fa-video"></i> Tham gia BBB
+                                </a>
+                            }
+                            else
+                            {
+                                <a asp-action="LearnCourse" asp-route-id="@course.CourseID" class="custom-btn primary">
+                                    <i class="fas fa-play-circle"></i> HỌC NGAY
+                                </a>
+                            }
                         </div>
                     </div>
                 </div>

@@ -285,13 +285,24 @@ namespace Do_An_Web_Hoc.Controllers
             if (!ModelState.IsValid)
             {
                 SetLecturerViewData();
+
                 ViewBag.CourseList = _context.Courses.Select(c => new SelectListItem
                 {
                     Value = c.CourseID.ToString(),
                     Text = c.CourseName
                 }).ToList();
+
+                ViewBag.Lectures = _context.Lectures
+                    .Where(l => l.Status == 1)
+                    .Select(l => new SelectListItem
+                    {
+                        Value = l.LectureID.ToString(),
+                        Text = l.Title
+                    }).ToList();
+
                 return View(model);
             }
+
 
             var exam = new Exams
             {

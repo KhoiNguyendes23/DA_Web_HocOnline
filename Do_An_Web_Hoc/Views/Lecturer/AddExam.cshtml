@@ -21,6 +21,13 @@
             <i class="fas fa-exclamation-triangle"></i> Vui lòng kiểm tra lại thông tin!
         </div>
     }
+    <template id="lectureOptionsTemplate">
+        @foreach (var lecture in (IEnumerable<SelectListItem>)ViewBag.Lectures)
+        {
+            <option value="@lecture.Value">@lecture.Text</option>
+        }
+    </template>
+
 
     <form asp-action="AddExam" method="post" enctype="multipart/form-data" id="examForm">
         <!-- Thông tin bài kiểm tra -->
@@ -85,20 +92,6 @@
             </button>
             <div class="accordion" id="quizAccordion"></div>
         </div>
-
-        <div class="mb-3">
-            <label class="form-label">Bài giảng liên kết</label>
-            <select name="Quizzes[${index}].LectureID" class="form-select">
-                <option value="">-- Chọn bài giảng --</option>
-                @foreach (var lecture in (IEnumerable<SelectListItem>)ViewBag.Lectures)
-                {
-                    <option value="@lecture.Value">@lecture.Text</option>
-                }
-            </select>
-        </div>
-
-
-
         <div class="text-center mt-4">
             <button type="submit" class="btn btn-success btn-lg">
                 <i class="fas fa-save"></i> Lưu bài kiểm tra

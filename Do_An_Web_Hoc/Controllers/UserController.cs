@@ -658,7 +658,7 @@ namespace Do_An_Web_Hoc.Controllers
                 return RedirectToAction("Dashboard");
             }
 
-            // Nếu khóa miễn phí => cho đăng ký ngay
+            // Nếu khóa miễn phí => cho đăng ký ngay 
             if (course.Price == 0 || course.Price == null)
             {
                 var enrollment = new Enrollments
@@ -681,9 +681,7 @@ namespace Do_An_Web_Hoc.Controllers
         }
         public async Task<IActionResult> JoinBBB(int courseId)
         {
-            string fullName = User.Identity.Name ?? "Khách";
-            string url = await _bbbService.GenerateJoinUrlAsync(courseId, fullName);
-
+            string url = await _bbbService.GenerateJoinUrlAsync(courseId, "ThienNhan");
             return Redirect(url);
         }
     }
